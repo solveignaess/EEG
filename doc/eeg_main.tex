@@ -1,0 +1,272 @@
+% !TEX root = /Users/solveig/Documents/PhD/EEG/doc/eeg_main.tex
+\documentclass[preprint,10pt,authoryear]{elsarticle}
+\pdfoutput=1
+\pdfminorversion=4
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{multicol}
+\usepackage[usenames, dvipsnames]{xcolor}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[margin=1.4in]{geometry}
+\usepackage{float}
+\usepackage{array}
+\usepackage{graphicx}
+\graphicspath{{../src/figures/}}
+\usepackage{rotating}
+\usepackage[labelfont={bf,up}, font={small}]{caption}
+\usepackage{sidecap}
+\sidecaptionvpos{figure}{c}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{adjustbox}
+\usepackage{placeins}
+\usepackage{lineno}
+\usepackage{tabularx}
+\bibliographystyle{elsarticle-harv}
+\biboptions{square}
+
+\renewcommand\familydefault{\sfdefault}
+\usepackage[scaled]{helvet}
+
+\usepackage{units}
+
+
+\usepackage{soul}
+\usepackage{placeins}
+
+\usepackage{nameref}
+\usepackage[pdftex,breaklinks=true,colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue,filecolor=blue,pdffitwindow,pagebackref=false,bookmarks=true,bookmarksopen=true,bookmarksnumbered=true]{hyperref}
+\usepackage[plain]{fancyref}
+\usepackage{array}
+\usepackage{multirow}
+
+%custom color for \hlc
+\newcommand{\hlb}[2][NavyBlue]{ {\sethlcolor{#1} \hl{#2}} }
+\newcommand{\hlg}[2][Emerald]{ {\sethlcolor{#1} \hl{#2}} }
+\newcommand{\hlp}[2][Purple]{ {\sethlcolor{#1} \hl{#2}} }
+
+
+%boxes and highlight color for text updates, personified!
+\newcommand{\snnote}[1]{\color{white}{\hlb{SN: #1 }}\color{black}}
+\newcommand{\sntxt}[1]{{\color{NavyBlue}#1}}
+\newcommand{\tvnnote}[1]{\color{white}{\hlg{TVN: #1 }}\color{black}}
+\newcommand{\tvntxt}[1]{{\color{Emerald}#1}}
+\newcommand{\gtenote}[1]{\color{white}{\hlp{GTE: #1 }}\color{black}}
+\newcommand{\gtetxt}[1]{{\color{Purple}#1}}
+\usepackage{ulem} % for deleting = strike out
+
+
+\begin{document}
+	
+\begin{frontmatter}
+\linenumbers
+
+\title{Biophysical modeling of ECoG, EEG and MEG signals}
+
+\author{Solveig N\ae{}ss\corref{cor1}\fnref{label1}}
+\author{Torbj\o{}rn V. Ness\fnref{label2}}
+\author{Geir Halnes\fnref{label2}}
+\author{Espen Hagen \fnref{label5}}
+\author{Eric Halgren\fnref{label3}}
+\author{Anders M. Dale\fnref{label4}}
+\author{Gaute T. Einevoll\fnref{label2,label5}}
+
+\address[label1]{Department of Informatics, University of Oslo, Oslo, Norway}
+\address[label2]{Department of Mathematical Sciences and Technology, Norwegian University of Life Sciences, Ås, Norway}
+\address[label3]{Department of Radiology, University of California, San Diego, CA, USA}
+\address[label4]{Departments of Neurosciences and Radiology, University of California, San Diego, CA, USA}
+\address[label5]{Department of Physics, University of Oslo, Oslo, Norway}
+%\cortext[cor1]{correspondance: \href{}{}}
+
+%\date{\today}
+
+\begin{abstract}
+Many important brain signals, like the LFP, ECoG, EEG and MEG are thought to primarily reflect synaptic input to populations of geometrically aligned pyramidal neurons. Therefore, it is important to get a better understanding of the biophysics underlying the synaptic contribution to these brain signals. For a pyramidal neuron receiving a single synaptic input, it is well established that the ensuing extracellular potential will take the shape of a dipole in the far field limit, i.e., sufficiently far away from the neuron. This can potentially greatly simplify the link between the measured brain signals and the underlying neural sources, but this link has not yet been taken full advantage of in the framework of detailed biophysical forward modelling of brain signals. 
+Here we present a framework for reducing complex simulated neural activity to simple dipoles, and test the applicability of the approach. We find that the framework works excellently for calculating EEG signals, but not ECoG signals. We demonstrate how this approach can greatly simplify the link between the experimentally measurable EEG signal and the underlying neural sources, in a manner that is firmly grounded in the underlying biophysics. We demonstrate the power of this approach by showing that the EEG from a simple neural population can be well represented by reducing it to a single dipole, based on the average obtained from the cells in the neural population.
+\end{abstract}
+
+\end{frontmatter}
+
+\linenumbers
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%INTRODUCTION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}\label{sec:introduction}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%METHODS%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Methods}\label{sec:methods}
+Neural activity generates electric currents in the brain, which in turn create electromagnetic fields. In this section, we explain how electric and magnetic brain signals can be modeled in simple and more complex volume conductors.
+
+\subsection{Forward modeling of electric potentials}
+Due to negligibility of capacitive effects in the head, electric and magnetic signals effectively decouple, and we can apply the quasistatic approximation of Maxwell's equations for calculating these signals \citep{HAMALAINEN1993,NUNEZ2006}. In other words, for computing extracellular electric potentials, we envision the head as a 3D volume conductor, and combining Maxwell's equations with the current conservation law, we obtain the Poisson Equation for computing extracellular potentials \cite{GRIFFITHS1999}:
+
+
+\begin{equation} \label{eq:poisson}
+\mathbf{\nabla} \mathbf{J^p} = \mathbf{\nabla} (\sigma \mathbf{\nabla} \phi)~,
+\end{equation}
+where $\mathbf{J^p}$ is the primary current density, $\sigma$ is the extracellular conductivity and $\phi$ is the electric potential. The Poisson equation can be solved analytically for simple, symmetric head models, such as an infinitely big space and spherically symmetric models. For more complex head models, numerical methods such as the Boundary Element Method (BEM) can be applied.
+
+\subsubsection{Compartment-based (CB) model}
+Extracellular potentials generated by transmembrane currents can be calculated with the well-founded biophysical two-step forward-modeling scheme. The first step involves \textit{multicompartmental modeling} and incorporates the details of reconstructed neuron morphologies for calculating transmembrane currents \citep{STERRATT2011}. In the second step, Equation~\eqref{eq:poisson} is solved under the assumption of the extracellular medium being an infinitely large, linear, ohmic, isotropic, homogeneous and frequency-independent volume conductor. The transmembrane currents can be seen as current sinks and sources, and give the extracellular potential $\phi$ at the electrode location $\mathbf{r}$
+\begin{equation}
+\phi(\mathbf{r}) = \frac{1}{4 \pi \sigma}\sum_{n=1}^N \frac{I_n}{|\mathbf{r} - \mathbf{r}_n|}~,
+\end{equation}
+where $\mathbf{r}_n$ is the location of transmembrane current $I_n$ and $\sigma$ is the extracellular conductivity.
+This scheme is referred to as the compartment-based (CB) model, and can easily be applied making use of the Python package \texttt{LFPy 2.0} running NEURON under the hood \citep{HAGEN2017,CARNEVALE2006}.
+
+\subsubsection{Dipole-based (DB) model}\label{subsec:cda}
+Analogous to how electric charges can create charge multipoles, a combination of sinks and sources can set up current multipoles \citep{NUNEZ2006}. From electrodynamics we know that extracellular potentials at a distance $R$ from the source can be precisely described by a multipole expansion
+\begin{equation*}
+\phi(R) = \frac{C_{monopole}}{R} + \frac{C_{dipole}}{R^2} + \frac{C_{quadrupole}}{R^3} + \frac{C_{octupole}}{R^4} + ...~.
+\end{equation*}
+Since current monopoles are unphysical due to current conservation, and the quadrupole, octupole and higher order terms are negligible to the current dipole contribution when $R$ is sufficiently large, the extracellular potential from a neuron simulation can be estimated with the \textit{current dipole approximation} \citep{PETTERSEN&EINEVOLL2008,PETTERSEN2014,NUNEZ2006}:
+\begin{equation}
+\phi(\mathbf{r}) = \frac{1}{4 \pi \sigma} \frac{|\mathbf{p}| \cos \theta}{R^2}~.
+\end{equation}
+Here, $\mathbf{p}$ is the current dipole moment in a medium with conductivity $\sigma$, $R = |\mathbf{R}|$, where $\mathbf{R}$ is the distance between the current dipole moment and the electrode location and $\theta$ denotes the angle between $\mathbf{p}$ and $\mathbf{R}$. As mentioned above, this approximation is applicable in the far-field limit, that is when $R$ is much larger than the dipole length $d$, $R > 3d$ or $4d$ \citep{NUNEZ2006}. We will hereby refer to this approximation as the dipole-based (DB) model.
+\\\\
+%As described in \cite{LINDEN2010}, we can compute the current dipole moment from a neuron simulation, as follows:
+%\begin{equation}
+%\mathbf{p} = \sum_{n=1}^N I_n \mathbf{r}_n~,
+%\end{equation}
+%where $I_n$ is the transmembrane current at location $\mathbf{r}_n$. Alternatively, we can apply the axial currents as described in Appendix~\ref{sec:cdm},
+%\begin{equation}
+%\mathbf{p} = \sum_{n=1}^N I_n^{axial} \mathbf{r}_n~.
+%\end{equation}
+%by multiplying each axial current $I_n^{axial}$ between neighbor neuron compartments, by the distance $d_n$ between neighbor compartment mid points. Both methods are implemented in \texttt{CBRAPy} which can further be used for approximating extracellular potentials based on the current dipole approximation, as described in Section~\ref{subsec:cda} \cite{HAGEN2017}.
+The current dipole moment can be calculated from transmembrane currents as follows:
+\begin{equation}\label{eq:dip_sum_trans}
+\mathbf{p}(t) = \sum_{n = 1}^{N} \mathbf{r}_n I_n(t)~,
+\end{equation}
+where $I_n$ is the transmembrane current in compartment $n$ at position $\mathbf{r}_n$.
+
+The simplest possible neuron model from which we can calculate the current dipole moment is a  two-compartmental neural stick, where one compartment will act as a current sink and the other as a current source. Applying the point-source approximation and Kirchhoff's current law, we obtain the following relation:
+\begin{equation}\label{eq:dip_trans_to_axial}
+\mathbf{p} = I_{source} \mathbf{r}_{source} + I_{sink} \mathbf{r}_{sink}
+= I \mathbf{r}_{source} - I \mathbf{r}_{sink}
+= I (\mathbf{r}_{source} - \mathbf{r}_{sink}) = I \mathbf{d}~,
+\end{equation}
+where $\mathbf{d}$ denotes the distance between the two compartments, and $I$ is the axial current. Generalizing this relation to an N-compartment neuron model, we can calculate the current dipole moment by summing up axial currents $I_i^{axial}$ between neighboring compartments $i$ and $i+1$, separated by a distance $\mathbf{d}_i$:
+\begin{equation}\label{eq:dip_sum_axial}
+\mathbf{p}(t) = \sum_{i=1}^{N-1} I_i^{axial}(t) \mathbf{d}_i~.
+\end{equation}
+Equations~\eqref{eq:dip_sum_trans}-\eqref{eq:dip_sum_axial} apply the point-source approximation. For the proof of equality between point-source and line-source approximation when computing the current dipole moment from neuron simulation, see~\ref{subsec:point_line_cdm}.
+
+\subsubsection{Inhomogeneous four-sphere model}
+We can incorporate a simplified head geometry and different medium conductivities into our calculations by applying the four-sphere model. This head model consists of four concentric shells: brain tissue, cerebrospinal (CSF) fluid, skull and scalp, where the conductivity can be set individually for each shell, \citep{SRINIVASAN1998,NUNEZ2006}. The model solution is given in \citep{NAESS2017} and is found by solving the Poisson equation subject to boundary conditions ensuring continuity of current and electric potentials over the boundaries, as well as no current escaping the outer shell. This model is based on the current dipole approximation.
+
+\subsubsection{Inhomogeneous head model and Boundary Element Method}\label{subsubsec:eeg_BEM}
+Until now, we have focused on analytical solutions of the forward problem, and have therefore been restricted to relatively simple head models. Making use of high-resolution anatomical MRI-data, the surfaces of the different constituents of the head, such as the white matter, gray matter, inner skull, outer skull and outer scalp, can be mapped out, and used as boundaries in a geometrically detailed head volume conductor. The boundaries will divide the head model into subvolumes of constant conductivity. Next, we can solve the forward problem numerically with the Boundary Element Method (BEM). Applying BEM on the forward problem for EEG implies first of all to write the Poisson equation as a boundary integral equation where the potential $\phi$ only appears on the boundaries. This can be done making use of Green's theorem and boundary conditions ensuring continuity of current and potential on the boundaries, and no current escaping the scalp surface. Finally, we approximate the electric potential by discretizing the boundary integral equation. 
+
+
+%In order to incorporate realistic head geometries into our computations, we need to rely on numerical methods. In this study, we have chosen to apply the Boundary Element Method (BEM). From
+
+%To work with more realistic head models, we can apply the Boundary Element Method (BEM). A head model is created from MR-images, modeling the boundaries between white and gray matter, gray matter and skull ... Here you basically solve the Poisson equation in every point on the boundary. For magnetic signals you need to use Equation~\eqref{eq:ampere-laplace_2terms}.
+\subsection{Forward modeling of magnetic fields}
+When modeling magnetic brain signals, such as MEG, we can apply the quasistatic approximation and derive the Biot-Savart/ Ampère-Laplace law \citep{GRIFFITHS1999}:
+
+\begin{equation} \label{eq:ampere-laplace}
+\mathbf{B}(\mathbf{r}) = \frac{\mu_0}{4 \pi} \int_{\Omega} \mathbf{J} \times \frac{(\mathbf{r} - \mathbf{r'})}{|\mathbf{r} - \mathbf{r'}|} dr'~,
+\end{equation}
+where $\mathbf{B}(\mathbf{r})$ is the magnetic flux density at point $\mathbf{r}$ from current density $\mathbf{J}$ at location $\mathbf{r'}$ in a domain $\Omega$ with magnetic permeability $\mu_0$.
+We can write the current density in terms of primary currents and volume currents:
+\begin{align*}
+\mathbf{J} &= \mathbf{J^p} + \sigma\mathbf{E} \\
+&= \mathbf{J^p} - \sigma\mathbf{\nabla \phi}~,
+\end{align*}
+where $\mathbf{J^p}$ is the primary current density creating the electric field $\mathbf{E}$ equal to the negative gradient of the electric potential $-\mathbf{\nabla} \phi$. Inserting the expression above into Equation~\eqref{eq:ampere-laplace}, we obtain:
+\begin{equation} \label{eq:ampere-laplace_2terms}
+\mathbf{B}(\mathbf{r}) = \mathbf{B_0}(\mathbf{r}) - \frac{\mu_0}{4 \pi} \int_{\Omega} \sigma(\mathbf{r})\mathbf{\nabla \phi} \times \frac{(\mathbf{r} - \mathbf{r'})}{|\mathbf{r} - \mathbf{r'}|} dr'
+\end{equation}
+where
+\begin{equation} \label{eq:ampere-laplace_B0}
+\mathbf{B_0}(\mathbf{r}) = \frac{\mu_0}{4 \pi} \int_{\Omega} \mathbf{J^p} \times \frac{(\mathbf{r} - \mathbf{r'})}{|\mathbf{r} - \mathbf{r'}|} dr'~.
+\end{equation}
+Here, $\mathbf{B_0}$ is to be understood as the primary current contribution to the magnetic field, whereas the last term in Equation~\eqref{eq:ampere-laplace_2terms} is a result of volume currents. Note that in spherically symmetric volume conductors there is no volume current contribution to radially oriented MEG sensors \citep{HAMALAINEN1993,NUNEZ2006}.
+
+\subsubsection{Current dipole approximation of magnetic fields in homogeneous space and inhomogeneous four-sphere model}
+In an infinitely large volume conductor, only primary current sources will contribute to the magnetic field, which can be calculated using Equation~\eqref{eq:ampere-laplace_B0}  \citep{NUNEZ2006,HAMALAINEN1993}. Substituting current densities with the current dipole moment, we obtain the following approximation for magnetic field from a current dipole moment $\mathbf{p}$ \citep{NUNEZ2006}:
+\begin{equation}\label{eq:ampere_laplace_dipole}
+\mathbf{B} = \frac{\mu_0}{4 \pi}\frac{\mathbf{p \times R}}{R^3}~, 
+\end{equation}
+where we assume the distance $R$ to be much larger than the dipole length.
+
+For magnetic signal calculations in the four-sphere model, we can still use Equation~\eqref{eq:ampere_laplace_dipole} due to spherical symmetry \citep{HAMALAINEN1993,NUNEZ2006}.
+
+\subsubsection{Magnetic fields with Boundary Element Method}
+Rewriting Equation~\eqref{eq:ampere-laplace_2terms} we obtain a boundary integral equation, see \cite{GESELOWITZ1970,HAMALAINEN1993}. The magnetic field can then be found by discretizing the boundaries, and inserting the solution for the electric potential $\phi$ into the boundary integral version of the Ampère-Laplace equation.
+\todo[inline]{Don't know if I should include the formula?}
+
+\subsection{Simulation of neural activity}
+
+\subsection{Simulation of network activity}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%RESULTS%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}\label{sec:results}
+
+\subsection{Comparison of CB and DB model in infinite homogeneous 3D volume conductor}\label{subsec:cb_db_comp_inf}
+\sntxt{
+\begin{itemize}	
+	\item Extend figure 1 so that it shows CB, mini-dip and DNB in infinite homogeneous space
+\end{itemize}
+}
+\subsection{Comparison of CB and DB model in inhomogeneous four-sphere head model}\label{subsec:cb_db_comp_4s}
+\sntxt{
+New fig with 4 panels, showing how DB works in 4S (compared to mini-dip in 4S)
+\begin{enumerate}[A:]
+\item 4S-model sketch
+\item Neuron morphology
+\item Signal vs. distance from neuron
+\item RE vs. distance from neuron
+\end{enumerate}
+Mark location of all 4S-layers in C and D
+}
+\subsection{ECoG and EEG (and MEG?) predictions from 3 human cell types}
+\sntxt{
+\begin{itemize}
+	\item L23, L5 and interneuron - all human cells
+	\item basal excitatory input only, show synapse locations on morphologies
+	\item show dipole moment (x-, y- and z-components)
+	\item check parameters
+	
+\end{itemize}
+	}
+\subsection{How does single-neuron contributions to EEG and MEG signals, depend on neuron rotation}
+\sntxt{
+\begin{itemize}
+	\item L23 human cell
+\end{itemize}
+	}
+
+\subsection{EEG with inhomogeneous four-sphere model}
+\sntxt{
+\begin{itemize}
+	\item Show shorter time interval (one spike only)
+	\item Change 4S-illustration, only need top
+	\item L23-cell and axon
+	\item remove/ change MEG
+	\item single electrode = enough
+\end{itemize}
+	}
+
+\subsection{Dipole approximation for populations of cells}
+
+\subsection{Dipole approximation in more complex head models}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%DISCUSSION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Discussion}\label{sec:discussion}
+
+
+\bibliography{eeg_main}
+\end{document}
