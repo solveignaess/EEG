@@ -156,33 +156,7 @@ def plot_neuron(axis, syn=False, lengthbar=False):
                 markeredgecolor='k', markerfacecolor='r')
 
 if __name__ == '__main__':
-    plt.interactive(1)
-    plt.close('all')
-
-    colorbrewer = {'lightblue': '#a6cee3', 'blue': '#1f78b4', 'lightgreen': '#b2df8a',
-                   'green': '#33a02c', 'pink': '#fb9a99', 'red': '#e31a1c',
-                   'lightorange': '#fdbf6f', 'orange': '#ff7f00',
-                   'lightpurple': '#cab2d6', 'purple': '#6a3d9a',
-                   'yellow': '#ffff33', 'brown': '#b15928'}
-
-
     l23 = True
-    fig = plt.figure()
-
-    ax0 = plt.subplot2grid((3,3),(0,0))
-    ax1 = plt.subplot2grid((3,3),(1,0))
-    ax2 = plt.subplot2grid((3,3),(2,0))
-    ax3 = plt.subplot2grid((3,3),(0,1))
-    ax4 = plt.subplot2grid((3,3),(1,1))
-    ax5 = plt.subplot2grid((3,3),(2,1))
-    ax6 = plt.subplot2grid((3,3),(0,2))
-    ax7 = plt.subplot2grid((3,3),(1,2))
-    ax8 = plt.subplot2grid((3,3),(2,2))
-
-    # ax0.set_title('transmembrane currents')
-    ax0.set_ylabel('neuron simulation', labelpad=-.2)
-    ax1.set_ylabel(r'$\Phi$' + ' close-up')
-    ax2.set_ylabel(r'$\Phi$' + ' zoomed out')
 
     syn_loc = (60, 0, 600)
 
@@ -238,6 +212,34 @@ if __name__ == '__main__':
     ############################################################################
     #################################PLOTTING###################################
     ############################################################################
+    plt.interactive(1)
+    plt.close('all')
+    colorbrewer = {'lightblue': '#a6cee3', 'blue': '#1f78b4', 'lightgreen': '#b2df8a',
+                   'green': '#33a02c', 'pink': '#fb9a99', 'red': '#e31a1c',
+                   'lightorange': '#fdbf6f', 'orange': '#ff7f00',
+                   'lightpurple': '#cab2d6', 'purple': '#6a3d9a',
+                   'yellow': '#ffff33', 'brown': '#b15928'}
+
+
+    fig = plt.figure()
+
+    ax0 = plt.subplot2grid((3,3),(0,0))
+    ax1 = plt.subplot2grid((3,3),(1,0))
+    ax2 = plt.subplot2grid((3,3),(2,0))
+    ax3 = plt.subplot2grid((3,3),(0,1))
+    ax4 = plt.subplot2grid((3,3),(1,1))
+    ax5 = plt.subplot2grid((3,3),(2,1))
+    ax6 = plt.subplot2grid((3,3),(0,2))
+    ax7 = plt.subplot2grid((3,3),(1,2))
+    ax8 = plt.subplot2grid((3,3),(2,2))
+
+    # ax0.set_title('transmembrane currents')
+    ax0.set_ylabel('neuron simulation', labelpad=-.2)
+    ax1.set_ylabel(r'$\Phi$' + ' close-up')
+    ax2.set_ylabel(r'$\Phi$' + ' zoomed out')
+
+
+
     # plot neuron morphology in top row
     plot_neuron(ax0, syn=True, lengthbar=True)
     plot_neuron(ax3, syn=True, lengthbar=False)
@@ -245,17 +247,18 @@ if __name__ == '__main__':
 
     # plot transmembrane currents
     for idx in range(cell.totnsegs):
-        arrowlength = np.abs(cell.imem[idx, time_max])*2.*1e5
+        arrowlength = np.abs(cell.imem[idx, time_max])*1.5*1e5
         # print idx, arrowlength
         wdth = 1.
         if [idx] == cell.synidx:
             print idx, arrowlength
             arrowlength = -700.
-            wdth = 1.5
+            wdth = 2.
             ax0.arrow(cell.xmid[idx]-arrowlength, cell.zmid[idx],
                        arrowlength, 0.,
-                       width = wdth,
-                       head_length = 70.,
+                       width = 4.,
+                       head_length = 39.,
+                       head_width = 30.,
                        length_includes_head = True, color='#0D325F',
                     #    alpha=.5
                        )
@@ -264,6 +267,7 @@ if __name__ == '__main__':
                        arrowlength, 0.,
                        width = wdth,
                        head_length = 3.4,
+                       head_width = 7.,
                        length_includes_head = True, color='#D90011',
                        alpha=.5)
 
@@ -362,7 +366,7 @@ if __name__ == '__main__':
     #
 
 
-    fig.set_size_inches(6, 8)
+    fig.set_size_inches(8, 8)
     # plt.tight_layout()
 
     plotting_convention.simplify_axes(fig.axes)
