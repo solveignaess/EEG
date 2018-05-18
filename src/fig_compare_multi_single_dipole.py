@@ -68,7 +68,7 @@ def plot_neuron(axis, syn=False, lengthbar=False):
     # axis.text(150, -470, r'100$\mu$m', va='center', ha='center')
 
     plt.axis('tight')
-    axis.axis('off')
+    # axis.axis('off')
 
 
 if __name__ == '__main__':
@@ -78,7 +78,7 @@ if __name__ == '__main__':
     # set soma position
     rz = np.array([0., 0., 77500.])
     # make array of synapse positions
-    num_syns = 2
+    num_syns = 6
     max_ind = 216
     syn_locs = [(0., 0., z) for z in np.linspace(-150., 750., num_syns)]
     # make electrode array params
@@ -139,11 +139,12 @@ if __name__ == '__main__':
     ax1 = plt.subplot2grid((2,4),(0,2), colspan=2)
     ax2 = plt.subplot2grid((2,4),(1,2), colspan=2)
 
+    radii_tweaked = [radii[0]] + [r + 2000 for r in radii[1:]]
     # plot 4s-model
     for i in range(4):
-        ax0.add_patch(plt.Circle((0, 0), radius = radii[i], color = head_colors[i], fill=False, lw = 1.))
-        ax1.axvline(radii[i], color = head_colors[i])
-        ax2.axvline(radii[i], color = head_colors[i])
+        ax0.add_patch(plt.Circle((0, 0), radius = radii_tweaked[-1-i], color = head_colors[-1-i], fill=True, ec = 'k', lw = .1))
+        # ax1.axvline(radii[i], color = head_colors[-1-i])
+        # ax2.axvline(radii[i], color = head_colors[-1-i])
 
 
     # ax0.annotate("brain",
@@ -188,9 +189,10 @@ if __name__ == '__main__':
     x1, x2, y1, y2 = -1000, 1000, 56000, 59200
     zoom_ax.set_xlim(x1, x2)
     zoom_ax.set_ylim(y1, y2)
+    zoom_ax.xaxis.set_visible('True')
     plot_neuron(zoom_ax, syn=True)
     mark_inset(ax0, zoom_ax, loc1=2, loc2=3, fc="None", ec=".5", lw=.4)
-    # [i.set_linewidth(100) for i in zoom_ax.spines.itervalues()]
+    [i.set_linewidth(1) for i in zoom_ax.spines.itervalues()]
     zoom_ax.annotate('', xytext=(1000, 1200+neuron_offset),
                 xycoords='data',
                 xy=(0, 50+neuron_offset),
@@ -204,43 +206,73 @@ if __name__ == '__main__':
     zoom_ax.xaxis.set_ticklabels([])
     zoom_ax.yaxis.set_ticks_position('none')
     zoom_ax.yaxis.set_ticklabels([])
-    for axis in ['top', 'left', 'bottom', 'right']:
-        zoom_ax.spines[axis].set_color('r')
-        zoom_ax.spines[axis].set_linewidth(200)
+    # for axis in ['top', 'left', 'bottom', 'right']:
+    #     zoom_ax.spines[axis].set_color('r')
+    #     zoom_ax.spines[axis].set_linewidth(200)
 
-
+    plt.axis('tight')
     ax0.axis('off')
     ax0.set_aspect('equal')
 
     # plot LFP-signals
-    electrode_locs_z = electrode_locs[:,2]
+    electrode_locs_z = electrode_locs[:,2] - np.max(cell.zend)
 
     for i in range(num_syns):
         # plot lfps
         lfp_single_dip = lfp_single_dip_list[i].reshape(electrode_locs_z.shape)
         lfp_multi_dip = lfp_multi_dip_list[i].reshape(electrode_locs_z.shape)
-        lfp_single_dip_log = np.sign(lfp_single_dip)*np.log10(np.abs(lfp_single_dip))
-        lfp_multi_dip_log = np.sign(lfp_multi_dip)*np.log10(np.abs(lfp_multi_dip))
+        # lfp_single_dip_log = np.sign(lfp_single_dip)*np.log10(np.abs(lfp_single_dip))
+        # lfp_multi_dip_log = np.sign(lfp_multi_dip)*np.log10(np.abs(lfp_multi_dip))
         # ax1.plot(electrode_locs_z, lfp_single_dip_log, color=clrs[i], label='single dipole')
         # ax1.plot(electrode_locs_z, lfp_multi_dip_log, '--', color=clrs[i], label='multi-dipole')
-        ax1.plot(electrode_locs_z, lfp_single_dip, color=clrs[i], label='single dipole')
-        ax1.plot(electrode_locs_z, lfp_multi_dip, '--', color=clrs[i], label='multi-dipole')
+        ax1.loglog(electrode_locs_z, np.abs(lfp_single_dip), color=clrs[i], label=str(i))
+        ax1.loglog(electrode_locs_z, np.abs(lfp_multi_dip), '--', color=clrs[i], label=str(i))
 
 
         # plot relative errors
         RE = RE_list[i].reshape(electrode_locs_z.shape)
-        ax2.semilogy(electrode_locs_z, RE, color = clrs[i], label='RE')
+        ax2.loglog(electrode_locs_z, RE_list[i], color = clrs[i], label=str(i))
         # show synapse locations
-        zoom_ax.plot(syn_locs[i][0], syn_locs[i][2]+77500., 'o', color=clrs[i], ms = 5)
+        zoom_ax.plot(syn_locs[i][0], syn_locs[i][2]+77500., 'o', color=clrs[i], ms = 2)
 
-    ax1.legend(fontsize='xx-small')
+    # ax1.legend(fontsize='xx-small')
+    # fix axes
+    layer_dist_from_neuron = [r - np.max(cell.zend) for r in radii]
     for ax in [ax1, ax2]:
-        # fix axes
+        ax.set_xticks(list(ax.get_xticks()) + layer_dist_from_neuron)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.set_xlim([np.min(electrode_locs_z), np.max(electrode_locs_z)])
-    ax2.set_ylim([10**-4, 1])
-    ax1.set_ylabel(r'$\Phi$ (mV)')
+    ax1.set_xticklabels(['', '', '1', '10', '', '',
+                        'brain',
+                        'CSF',
+                        'skull',
+                        'scalp'], rotation=30, fontsize='xx-small')
+    ax1.get_xticklines()[8].set_color(head_colors[0])
+    ax1.get_xticklines()[8].set_markeredgewidth(2)
+    ax1.get_xticklines()[10].set_color(head_colors[1])
+    ax1.get_xticklines()[10].set_markeredgewidth(2)
+    ax1.get_xticklines()[12].set_color(head_colors[2])
+    ax1.get_xticklines()[12].set_markeredgewidth(2)
+    ax1.get_xticklines()[14].set_color(head_colors[3])
+    ax1.get_xticklines()[14].set_markeredgewidth(2)
+
+    ax2.set_xticklabels(['', '', '', '', '', '', '1', '10', 'brain', 'CSF', 'skull', 'scalp'], rotation=30, fontsize='xx-small')
+    ax2.get_xticklines()[16].set_color(head_colors[0])
+    ax2.get_xticklines()[16].set_markeredgewidth(2)
+    ax2.get_xticklines()[18].set_color(head_colors[1])
+    ax2.get_xticklines()[18].set_markeredgewidth(2)
+    ax2.get_xticklines()[20].set_color(head_colors[2])
+    ax2.get_xticklines()[20].set_markeredgewidth(2)
+    ax2.get_xticklines()[22].set_color(head_colors[3])
+    ax2.get_xticklines()[22].set_markeredgewidth(2)
+
+    ax2.set_yticks([10**i for i in np.linspace(-3,1,num=5)])
+    ax2.set_xlabel('electrode distance (mm) from top of neuron', fontsize = 'x-small')
+    # ax2.get_xticklines()[1].set_xticklabels('dfdfds')
+    ax2.set_ylim([10**-3, 10])
+    ax1.set_ylabel(r'$|\Phi|$ (mV)')
     ax2.set_ylabel('RE')
     fig.set_size_inches(10,4)
+    fig.subplots_adjust(bottom=.2)#wspace = 0.02, right = 0.84, left = 0.05)
     plt.savefig('./figures/fig_compare_multi_single_dipole.png', dpi=300)
