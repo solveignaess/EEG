@@ -71,11 +71,7 @@ def plot_neuron(axis, syn=False, lengthbar=False):
     if lengthbar:
         axis.plot([-500, -500], [-100, 900], 'k', lw=2, clip_on=False)
         axis.text(-430, 400, r'$1 \mathsf{mm}$', size = 8, va='center', ha='center', rotation = 'vertical')
-    # axis.plot([100, 200], [-400, -400], 'k', lw=1, clip_on=False)
-    # axis.text(150, -470, r'100$\mu$m', va='center', ha='center')
-
     plt.axis('tight')
-    # axis.axis('off')
 
 
 if __name__ == '__main__':
@@ -87,7 +83,7 @@ if __name__ == '__main__':
     # make array of synapse positions
     num_syns = 3
     max_ind = 216
-    syn_locs = [(0., 0., z) for z in np.linspace(-150., 600., num_syns)][0]
+    syn_locs = [(0., 0., z) for z in np.linspace(-100., 500., num_syns)]
     # make electrode array params
     num_electrodes = 40
     electrode_locs = np.zeros((num_electrodes, 3))
@@ -105,6 +101,7 @@ if __name__ == '__main__':
     fs = LFPy.FourSphereVolumeConductor(radii, sigmas, electrode_locs)
     # lists for storing data:
     p_list = []
+    p_loc_list = []
     lfp_single_dip_list = []
     lfp_multi_dip_list = []
     RE_list = []
@@ -127,21 +124,23 @@ if __name__ == '__main__':
         RE = np.abs((lfp_single_dip - lfp_multi_dip)/lfp_multi_dip)
 
         p_list.append(p)
+        p_loc_list.append(dip_loc)
         lfp_single_dip_list.append(lfp_single_dip)
         lfp_multi_dip_list.append(lfp_multi_dip)
         RE_list.append(RE)
-        cell1, cb_LFP_close, cb_LFP_far, multi_dip_LFP_close, multi_dip_LFP_far, db_LFP_close, db_LFP_far, LFP_max_close, LFP_max_far, time_max, multi_dips, multi_dip_locs, single_dip, r_mid, X, Z, X_f, Z_f = make_data('./cell_models/segev/CNG_version/2013_03_06_cell03_789_H41_03.CNG.swc', syn_loc)
-        fig = make_fig_1(cell1,
-                         cb_LFP_close, cb_LFP_far,
-                         multi_dip_LFP_close, multi_dip_LFP_far,
-                         db_LFP_close, db_LFP_far,
-                         LFP_max_close, LFP_max_far,
-                         time_max,
-                         multi_dips, multi_dip_locs,
-                         single_dip, r_mid,
-                         X, Z, X_f, Z_f)
-        fig1_title = './figures/fig_dipole_field' + str(i) + '.pdf'
-        fig.savefig(fig1_title, bbox_inches='tight', dpi=300, transparent=True)
+        ## uncomment if you want to make fig1 for each synapse location
+        # cell1, cb_LFP_close, cb_LFP_far, multi_dip_LFP_close, multi_dip_LFP_far, db_LFP_close, db_LFP_far, LFP_max_close, LFP_max_far, time_max, multi_dips, multi_dip_locs, single_dip, r_mid, X, Z, X_f, Z_f = make_data('./cell_models/segev/CNG_version/2013_03_06_cell03_789_H41_03.CNG.swc', syn_loc)
+        # fig = make_fig_1(cell1,
+        #                  cb_LFP_close, cb_LFP_far,
+        #                  multi_dip_LFP_close, multi_dip_LFP_far,
+        #                  db_LFP_close, db_LFP_far,
+        #                  LFP_max_close, LFP_max_far,
+        #                  time_max,
+        #                  multi_dips, multi_dip_locs,
+        #                  single_dip, r_mid,
+        #                  X, Z, X_f, Z_f)
+        # fig1_title = './figures/test_figs/fig_dipole_field' + str(i) + '.png'
+        # fig.savefig(fig1_title, bbox_inches='tight', dpi=300, transparent=True)
 
     ################################################################################
     ######################################plot######################################
@@ -149,7 +148,7 @@ if __name__ == '__main__':
     plt.close('all')
     fig = plt.figure()
     # line colors
-    clrs = plt.cm.viridis(np.linspace(0,1,num=num_syns))
+    clrs = plt.cm.viridis(np.linspace(0,0.8,num=num_syns))
     # head color
     head_colors = plt.cm.Pastel1([0,1,2,3])
 
@@ -162,42 +161,6 @@ if __name__ == '__main__':
     # plot 4s-model
     for i in range(4):
         ax0.add_patch(plt.Circle((0, 0), radius = radii_tweaked[-1-i], color = head_colors[-1-i], fill=True, ec = 'k', lw = .1))
-        # ax1.axvline(radii[i], color = head_colors[-1-i])
-        # ax2.axvline(radii[i], color = head_colors[-1-i])
-
-
-    # ax0.annotate("brain",
-    #             xy=(18*1e3, -50*1e3), xycoords='data',
-    #             xytext=(100*1e3, -50*1e3), textcoords='data',
-    #             size=10, va="center", ha="center",
-    #             arrowprops=dict(arrowstyle="->",
-    #                             connectionstyle="arc3,rad=-0.2",
-    #                             fc="k"),
-    #             )
-    # ax0.annotate("csf",
-    #             xy=(49.*1e3, -35*1e3), xycoords='data',
-    #             xytext=(102*1e3, -35*1e3), textcoords='data',
-    #             size=10, va="center", ha="center",
-    #             arrowprops=dict(arrowstyle="->",
-    #                             connectionstyle="arc3,rad=-0.2",
-    #                             fc="k"),
-    #             )
-    # ax0.annotate("skull",
-    #             xy=(66.*1e3, -20*1e3), xycoords='data',
-    #             xytext=(114*1e3, -20*1e3), textcoords='data',
-    #             size=10, va="center", ha="center",
-    #             arrowprops=dict(arrowstyle="->",
-    #                             connectionstyle="arc3,rad=-0.2",
-    #                             fc="k"),
-    #             )
-    # ax0.annotate("scalp",
-    #             xy=(80.*1e3, -5*1e3), xycoords='data',
-    #             xytext=(122*1e3, -5*1e3), textcoords='data',
-    #             size=10, va="center", ha="center",
-    #             arrowprops=dict(arrowstyle="->",
-    #                             connectionstyle="arc3,rad=-0.2",
-    #                             fc="k"),
-    #             )
 
     # plot morphology with synapses
     neuron_offset = 57000.
@@ -212,22 +175,18 @@ if __name__ == '__main__':
     plot_neuron(zoom_ax, syn=True)
     mark_inset(ax0, zoom_ax, loc1=2, loc2=3, fc="None", ec=".5", lw=.4)
     [i.set_linewidth(.6) for i in zoom_ax.spines.itervalues()]
-    # zoom_ax.annotate('', xytext=(1000, 1200+neuron_offset),
-    #             xycoords='data',
-    #             xy=(0, 50+neuron_offset),
-    #             arrowprops=dict(arrowstyle='wedge',
-    #                             fc='gray',
-    #                             # ec='gray'
-    #                             lw = .2
-    #                             )
-    #             )
+    for i in range(len(syn_locs)):
+        arrow = p_list[i][0]*5  # np.sum(P, axis = 0)*0.12
+        zoom_ax.arrow(p_loc_list[i][0] - 2*arrow[0],
+                      p_loc_list[i][2] - 2*arrow[2],
+                      arrow[0]*4, arrow[2]*4, #fc = 'k',ec = 'k',
+                      color=clrs[i], alpha=0.8, width = 7, #head_width = 60.,
+                      length_includes_head = True)#,
+
     zoom_ax.xaxis.set_ticks_position('none')
     zoom_ax.xaxis.set_ticklabels([])
     zoom_ax.yaxis.set_ticks_position('none')
     zoom_ax.yaxis.set_ticklabels([])
-    # for axis in ['top', 'left', 'bottom', 'right']:
-    #     zoom_ax.spines[axis].set_color('r')
-    #     zoom_ax.spines[axis].set_linewidth(200)
 
     plt.axis('tight')
     ax0.axis('off')
@@ -240,10 +199,6 @@ if __name__ == '__main__':
         # plot lfps
         lfp_single_dip = lfp_single_dip_list[i].reshape(electrode_locs_z.shape)
         lfp_multi_dip = lfp_multi_dip_list[i].reshape(electrode_locs_z.shape)
-        # lfp_single_dip_log = np.sign(lfp_single_dip)*np.log10(np.abs(lfp_single_dip))
-        # lfp_multi_dip_log = np.sign(lfp_multi_dip)*np.log10(np.abs(lfp_multi_dip))
-        # ax1.plot(electrode_locs_z, lfp_single_dip_log, color=clrs[i], label='single dipole')
-        # ax1.plot(electrode_locs_z, lfp_multi_dip_log, '--', color=clrs[i], label='multi-dipole')
         ax1.loglog(electrode_locs_z, np.abs(lfp_single_dip), color=clrs[i], label=str(i))
         ax1.loglog(electrode_locs_z, np.abs(lfp_multi_dip), '--', color=clrs[i], label=str(i))
 
@@ -257,7 +212,6 @@ if __name__ == '__main__':
     ax2.loglog(electrode_locs_z, np.ones(num_electrodes)*0.05, '--k', lw = 0.4)
     ax2.text(np.max(electrode_locs_z) + 800, 0.01*0.75, '0.01', fontsize='6')
     ax2.text(np.max(electrode_locs_z) + 800, 0.05*0.75, '0.05', fontsize='6')
-    # ax1.legend(fontsize='xx-small')
     # fix axes
     layer_dist_from_neuron = [r - np.max(cell.zend) for r in radii]
     for ax in [ax1, ax2]:
@@ -290,9 +244,9 @@ if __name__ == '__main__':
     # ax2.set_yticks([10**i for i in np.linspace(-3,1,num=5)])
     ax2.set_xlabel('electrode distance (mm) from top of neuron', fontsize = 'x-small')
     # ax2.get_xticklines()[1].set_xticklabels('dfdfds')
-    ax2.set_ylim([10**-4, 10])
-    ax1.set_ylabel(r'$|\Phi|$ (mV)')
-    ax2.set_ylabel('RE')
+    ax2.set_ylim([10**-6, 10])
+    ax1.set_ylabel('Extracellular potential (mV)', fontsize=8)
+    ax2.set_ylabel('Relative error', fontsize=8)
     fig.set_size_inches(10,4)
     fig.subplots_adjust(bottom=.2)#wspace = 0.02, right = 0.84, left = 0.05)
     plotting_convention.mark_subplots([ax0, ax1, ax2], xpos=-0.25)

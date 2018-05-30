@@ -5,9 +5,61 @@ import LFPy
 from matplotlib import colorbar
 from matplotlib.collections import PolyCollection
 
-def set_parameters():
+
+def make_data(morphology, syn_loc):
+    l23 = True
+    sigma = 0.3
+
+    # compute LFP close to neuron
+    X,Z = np.meshgrid(np.linspace(-1300,1301,101), np.linspace(-900,1800,101))
+    Y = np.zeros(X.shape)
+    cell_parameters, synapse_parameters, grid_electrode_parameters = set_parameters(morphology, X, Y, Z)
+    cell, synapse, grid_electrode = simulate(cell_parameters, synapse_parameters, grid_electrode_parameters, syn_loc)
+    ## multicompartment
+    cb_LFP_close = grid_electrode.LFP*1e6
+    ## multi-dipole
+    multi_dips, multi_dip_locs = cell.get_multi_current_dipole_moments()
+    inf_vol = LFPy.InfiniteVolumeConductor(sigma)
+    gridpoints_close = np.array([X.flatten(), Y.flatten(), Z.flatten()]).T
+    multi_dip_LFP_close = inf_vol.get_multi_dipole_potential(cell, gridpoints_close)*1E6
+    ## single dipole
+    single_dip = cell.current_dipole_moment
+    syninds = cell.synidx
+    r_soma_syns = [cell.get_intersegment_vector(idx0 = 0,
+                   idx1 = i) for i in syninds]
+    r_mid = np.average(r_soma_syns, axis = 0)
+    r_mid = r_mid/2. + cell.somapos
+
+    db_LFP_close = inf_vol.get_dipole_potential(single_dip , gridpoints_close - r_mid)*1e6
+
+    # compute LFP far from neuron
+    X_f,Z_f = np.meshgrid(np.linspace(-15000,15001,101), np.linspace(-15000,15000,101))
+    Y_f = np.zeros(X.shape)
+    grid_electrode_parameters = {'x': X_f.flatten(),
+                                 'y': Y_f.flatten(),
+                                 'z': Z_f.flatten()
+                                 }
+    cell, synapse, grid_electrode_far = simulate(cell_parameters, synapse_parameters, grid_electrode_parameters, syn_loc)
+    ## multicompartment
+    cb_LFP_far = grid_electrode_far.LFP*1e6
+    ## multi dipole
+    gridpoints_far = np.array([X_f.flatten(), Y_f.flatten(),Z_f.flatten()]).T
+    multi_dip_LFP_far = inf_vol.get_multi_dipole_potential(cell, gridpoints_far)*1e6
+
+    ## single dipole
+    db_LFP_far = inf_vol.get_dipole_potential(single_dip , gridpoints_far-r_mid)*1e6
+
+    max_ind = 10262844  # np.argmax(np.abs(grid_electrode_LFP)) + 100
+    time_max = 334  # np.mod(max_ind, len(cell.tvec))
+    LFP_max_close = 100.  #np.round(np.max(np.abs(grid_electrode_LFP[:, time_max])))
+    LFP_max_far = 100.
+    print '-'*200
+    return cell, cb_LFP_close, cb_LFP_far, multi_dip_LFP_close, multi_dip_LFP_far, db_LFP_close, db_LFP_far, LFP_max_close, LFP_max_far, time_max, multi_dips, multi_dip_locs, single_dip, r_mid, X, Z, X_f, Z_f
+    # print max_ind, time_max, LFP_max
+
+def set_parameters(morphology, X, Y, Z):
     """set cell, synapse and electrode parameters"""
-    cell_parameters = {'morphology': './cell_models/segev/CNG_version/2013_03_06_cell03_789_H41_03.CNG.swc', #'./patdemo/cells/j4a.hoc',# only mandatory parameter
+    cell_parameters = {'morphology': morphology,
                    'tstart': 0., # simulation start time
                    'tstop': 100 # simulation stop time [ms]
                    }
@@ -29,7 +81,7 @@ def set_parameters():
                                  }
     return cell_parameters, synapse_parameters, grid_electrode_parameters
 
-def simulate():
+def simulate(cell_parameters, synapse_parameters, grid_electrode_parameters, syn_loc):
     """set synapse location. simulate cell, synapse and electrodes for input synapse location"""
 
     # create cell with parameters in dictionary
@@ -57,161 +109,15 @@ def simulate():
 
     return cell, synapse, grid_electrode
 
-def plot_lfp(fig, ax, LFP_measurements, max_LFP, timestep, colorax = False,
-             lengthbar = False):
-
-    if LFP_measurements.size > X.size:
-        LFP_measurements = LFP_measurements[:,timestep]
-    LFP = np.array(LFP_measurements).reshape(X.shape)
-    LFP_norm = LFP/max_LFP
-    # print LFP_norm
-    # scalp levels:
-    # num = 5
-    num = 9
-    levels = np.logspace(-4, 0, num = num)
-    # levels = np.linspace(0.1,1,num)
-    levels_norm = np.concatenate((-levels[::-1], levels))
-    rainbow_cmap = plt.cm.get_cmap('PRGn') # rainbow, spectral, RdYlBu
-    colors_from_map = [rainbow_cmap(i*np.int(255/(len(levels_norm) - 2))) for i in range(len(levels_norm) -1)]
-    colors_from_map[num - 1] = (1.0, 1.0, 1.0, 1.0)
-    ticks = [levels_norm[2*i] for i in range(num/2 + 1)] + [levels_norm[num + 2*i] for i in range(num/2 + 1)]
-
-    ep_intervals = ax.contourf(X, Z, LFP_norm,# vmin=-200, vmax=200,
-                               zorder=-2, colors = colors_from_map,
-                               levels=levels_norm, extend = 'both') #norm = LogNorm())#,
-                                          # norm = SymLogNorm(1E-30))#, vmin = -40, vmax = 40))
-
-    ax.contour(X, Z, LFP_norm, lw = 0.4,  # 20,
-               colors='k', zorder = -2,  # extend='both')
-               levels=levels_norm)
-
-    if lengthbar:
-        ax.plot([-1200, -1200], [-800, 20], 'k', lw=2, clip_on=False)
-        ax.text(-1090, -380, r'$1 \mathsf{mm}$', size = 8, va='center', ha='center', rotation = 'vertical')
-    plt.axis('tight')
-    ax.axis('off')
-    return LFP, levels, ep_intervals
-
-def plot_lfp_far(fig, ax, LFP_measurements, max_LFP, timestep, colorax = False,
-             lengthbar = False):
-    # print 'lengthbar', lengthbar
-    # print 'far input', LFP_measurements[:, timestep]
-    if LFP_measurements.size > X.size:
-        LFP_measurements = LFP_measurements[:,timestep]
-    LFP = np.array(LFP_measurements).reshape(X.shape)
-    # print LFP
-    LFP_norm = LFP/max_LFP
-    # print LFP_norm
-    # scalp levels:
-    num = 9
-    # num = 5
-    levels = np.logspace(-4, 0, num = num)
-    # levels = np.linspace(0.1,1,num)
-    levels_norm = np.concatenate((-levels[::-1], levels))
-    rainbow_cmap = plt.cm.get_cmap('PRGn') # rainbow, spectral, RdYlBu
-    colors_from_map = [rainbow_cmap(i*np.int(255/(len(levels_norm) - 2))) for i in range(len(levels_norm) -1)]
-    colors_from_map[num - 1] = (1.0, 1.0, 1.0, 1.0)
-    ticks = [levels_norm[2*i] for i in range(num/2 + 1)] + [levels_norm[num + 2*i] for i in range(num/2 + 1)]
-
-    ep_intervals = ax.contourf(X_f, Z_f, LFP_norm,# vmin=-200, vmax=200,
-                               zorder=-2, colors = colors_from_map,
-                               levels=levels_norm, extend = 'both') #norm = LogNorm())#,
-                                          # norm = SymLogNorm(1E-30))#, vmin = -40, vmax = 40))
-    ep_lines = ax.contour(X_f, Z_f, LFP_norm, lw = 0.4,  # 20,
-               colors='k', zorder = -2,  # extend='both')
-               levels=levels_norm)
-
-    plt.axis('tight')
-    if lengthbar:
-        print 'lengthbar true'
-        ax.plot([-14000, -14000], [-14000, -13000], 'k', lw=2, clip_on=False)
-        ax.text(-11700, -13600, r'$1 \mathsf{mm}$', size = 8, va='center', ha='center')
-
-    ax.axis('off')
-
-    return LFP, levels, ep_intervals, ticks
-
-def plot_neuron(axis, syn=False, lengthbar=False):
-    zips = []
-    for x, z in cell.get_idx_polygons():
-        zips.append(zip(x, z))
-
-    # faster way to plot points:
-    polycol = PolyCollection(zips, edgecolors = 'none', facecolors = 'gray')
-    axis.add_collection(polycol)
-
-    # small length reference bar
-    if lengthbar:
-        axis.plot([-500, -500], [-100, 900], 'k', lw=2, clip_on=False)
-        axis.text(-430, 400, r'$1 \mathsf{mm}$', size = 8, va='center', ha='center', rotation = 'vertical')
-    # axis.plot([100, 200], [-400, -400], 'k', lw=1, clip_on=False)
-    # axis.text(150, -470, r'100$\mu$m', va='center', ha='center')
-
-    plt.axis('tight')
-    axis.axis('off')
-
-    # red dot where synapse is located, ms = markersize; number of points given as float:
-    if syn:
-        axis.plot(cell.xmid[cell.synidx], cell.zmid[cell.synidx], 'o', ms=3,
-                markeredgecolor='k', markerfacecolor='r')
-
-if __name__ == '__main__':
-    l23 = True
-
-    syn_loc = (60, 0, 600)
-
-    sigma = 0.3
-
-    # compute LFP close to neuron
-    X,Z = np.meshgrid(np.linspace(-1300,1301,101), np.linspace(-900,1800,101))
-    Y = np.zeros(X.shape)
-    cell_parameters, synapse_parameters, grid_electrode_parameters = set_parameters()
-    cell, synapse, grid_electrode = simulate()
-    ## multicompartment
-    cb_LFP_close = grid_electrode.LFP*1e6
-    ## multi-dipole
-    multi_dips, multi_dip_locs = cell.get_multi_current_dipole_moments()
-    inf_vol = LFPy.InfiniteVolumeConductor(sigma)
-    gridpoints_close = np.array([X.flatten(), Y.flatten(), Z.flatten()]).T
-    multi_dip_LFP_close = inf_vol.get_multi_dipole_potential(cell, gridpoints_close)*1E6
-    ## single dipole
-    single_dip = cell.current_dipole_moment
-    syninds = cell.synidx
-    r_soma_syns = [cell.get_intersegment_vector(idx0 = 0,
-                   idx1 = i) for i in syninds]
-    r_mid = np.average(r_soma_syns, axis = 0)
-    r_mid = r_mid/2. + cell.somapos
-
-    db_LFP_close = inf_vol.get_dipole_potential(single_dip , gridpoints_close - r_mid)*1e6
-
-    # compute LFP far from neuron
-    X_f,Z_f = np.meshgrid(np.linspace(-15000,15001,101), np.linspace(-15000,15000,101))
-    Y_f = np.zeros(X.shape)
-    grid_electrode_parameters = {'x': X_f.flatten(),
-                                 'y': Y_f.flatten(),
-                                 'z': Z_f.flatten()
-                                 }
-    cell, synapse, grid_electrode_far = simulate()
-    ## multicompartment
-    cb_LFP_far = grid_electrode_far.LFP*1e6
-    ## multi dipole
-    gridpoints_far = np.array([X_f.flatten(), Y_f.flatten(),Z_f.flatten()]).T
-    multi_dip_LFP_far = inf_vol.get_multi_dipole_potential(cell, gridpoints_far)*1e6
-
-    ## single dipole
-    db_LFP_far = inf_vol.get_dipole_potential(single_dip , gridpoints_far-r_mid)*1e6
-
-    max_ind = 10262844  # np.argmax(np.abs(grid_electrode_LFP)) + 100
-    time_max = 334  # np.mod(max_ind, len(cell.tvec))
-    LFP_max_close = 100.  #np.round(np.max(np.abs(grid_electrode_LFP[:, time_max])))
-    LFP_max_far = 100.
-    print '-'*200
-    # print max_ind, time_max, LFP_max
-
-
-    ############################################################################
-    #################################PLOTTING###################################
-    ############################################################################
+def make_fig_1(cell,
+               cb_LFP_close, cb_LFP_far,
+               multi_dip_LFP_close, multi_dip_LFP_far,
+               db_LFP_close, db_LFP_far,
+               LFP_max_close, LFP_max_far,
+               time_max,
+               multi_dips, multi_dip_locs,
+               single_dip, r_mid,
+               X, Z, X_f, Z_f):
     plt.interactive(1)
     plt.close('all')
     colorbrewer = {'lightblue': '#a6cee3', 'blue': '#1f78b4', 'lightgreen': '#b2df8a',
@@ -241,9 +147,9 @@ if __name__ == '__main__':
 
 
     # plot neuron morphology in top row
-    plot_neuron(ax0, syn=True, lengthbar=True)
-    plot_neuron(ax3, syn=True, lengthbar=False)
-    plot_neuron(ax6, syn=True, lengthbar=False)
+    plot_neuron(ax0, cell, syn=True, lengthbar=True)
+    plot_neuron(ax3, cell, syn=True, lengthbar=False)
+    plot_neuron(ax6, cell, syn=True, lengthbar=False)
 
     # plot transmembrane currents
     for idx in range(cell.totnsegs):
@@ -272,18 +178,18 @@ if __name__ == '__main__':
                        alpha=.5)
 
     # plt lfp close
-    plot_lfp(fig, ax1, cb_LFP_close, LFP_max_close, time_max, lengthbar=True)
-    plot_lfp(fig, ax4, multi_dip_LFP_close, LFP_max_close, time_max, lengthbar=False)
-    plot_lfp(fig, ax7, db_LFP_close, LFP_max_close, time_max, lengthbar=False)
+    plot_lfp(fig, ax1, cb_LFP_close, LFP_max_close, time_max, X, Z, lengthbar=True)
+    plot_lfp(fig, ax4, multi_dip_LFP_close, LFP_max_close, time_max, X, Z, lengthbar=False)
+    plot_lfp(fig, ax7, db_LFP_close, LFP_max_close, time_max, X, Z, lengthbar=False)
 
     # plot lfp far
-    plot_lfp_far(fig, ax2, cb_LFP_far, LFP_max_far, time_max, lengthbar=True)
-    plot_lfp_far(fig, ax5, multi_dip_LFP_far, LFP_max_far, time_max, lengthbar=False)
-    LFP, levels, ep_intervals, ticks = plot_lfp_far(fig, ax8, db_LFP_far, LFP_max_far, time_max, lengthbar=False, colorax=True)
+    plot_lfp_far(fig, ax2, cb_LFP_far, LFP_max_far, time_max, X_f, Z_f, lengthbar=True)
+    plot_lfp_far(fig, ax5, multi_dip_LFP_far, LFP_max_far, time_max, X_f, Z_f, lengthbar=False)
+    LFP, levels, ep_intervals, ticks = plot_lfp_far(fig, ax8, db_LFP_far, LFP_max_far, time_max, X_f, Z_f, lengthbar=False, colorax=True)
 
     # plot neurons in second row
     for ax in [ax1, ax4, ax7]:
-        plot_neuron(ax, syn=False)
+        plot_neuron(ax, cell, syn=False)
 
     # plot multi dipole arrows
     for i in range(len(multi_dips)):
@@ -299,10 +205,10 @@ if __name__ == '__main__':
                       )
 
     # plot single dipole arrow
-    if l23:
-        arrow = single_dip [time_max]*30  # np.sum(P, axis = 0)*0.12
-    else:
-        arrow = single_dip [time_max]*50  # np.sum(P, axis = 0)*0.12
+    # if l23:
+    arrow = single_dip[time_max]*30  # np.sum(P, axis = 0)*0.12
+    # else:
+        # arrow = single_dip[time_max]*50  # np.sum(P, axis = 0)*0.12
     for ax in [ax6, ax7]:
         ax.arrow(r_mid[0] - 2*arrow[0],
                  r_mid[2] - 2*arrow[2],
@@ -373,4 +279,118 @@ if __name__ == '__main__':
     for ax in [ax0, ax3, ax1, ax2, ax4, ax5, ax6, ax7, ax8]:
         ax.set_aspect('equal', 'datalim')
     plt.subplots_adjust(wspace=0.05, hspace=0.05, left=0.1, bottom=0.05, right=0.96, top=0.93)
-    fig.savefig('./figures/fig_dipole_field.pdf', bbox_inches='tight', dpi=300, transparent=True)
+    return fig
+
+def plot_lfp(fig, ax, LFP_measurements, max_LFP, timestep, X, Z, colorax = False,
+             lengthbar = False):
+
+    if LFP_measurements.size > X.size:
+        LFP_measurements = LFP_measurements[:,timestep]
+    LFP = np.array(LFP_measurements).reshape(X.shape)
+    LFP_norm = LFP/max_LFP
+    # print LFP_norm
+    # scalp levels:
+    # num = 5
+    num = 9
+    levels = np.logspace(-4, 0, num = num)
+    # levels = np.linspace(0.1,1,num)
+    levels_norm = np.concatenate((-levels[::-1], levels))
+    rainbow_cmap = plt.cm.get_cmap('PRGn') # rainbow, spectral, RdYlBu
+    colors_from_map = [rainbow_cmap(i*np.int(255/(len(levels_norm) - 2))) for i in range(len(levels_norm) -1)]
+    colors_from_map[num - 1] = (1.0, 1.0, 1.0, 1.0)
+    ticks = [levels_norm[2*i] for i in range(num/2 + 1)] + [levels_norm[num + 2*i] for i in range(num/2 + 1)]
+
+    ep_intervals = ax.contourf(X, Z, LFP_norm,# vmin=-200, vmax=200,
+                               zorder=-2, colors = colors_from_map,
+                               levels=levels_norm, extend = 'both') #norm = LogNorm())#,
+                                          # norm = SymLogNorm(1E-30))#, vmin = -40, vmax = 40))
+
+    ax.contour(X, Z, LFP_norm, lw = 0.4,  # 20,
+               colors='k', zorder = -2,  # extend='both')
+               levels=levels_norm)
+
+    if lengthbar:
+        ax.plot([-1200, -1200], [-800, 20], 'k', lw=2, clip_on=False)
+        ax.text(-1090, -380, r'$1 \mathsf{mm}$', size = 8, va='center', ha='center', rotation = 'vertical')
+    plt.axis('tight')
+    ax.axis('off')
+    return LFP, levels, ep_intervals
+
+def plot_lfp_far(fig, ax, LFP_measurements, max_LFP, timestep, X_f, Z_f, colorax = False,
+             lengthbar = False):
+    # print 'lengthbar', lengthbar
+    # print 'far input', LFP_measurements[:, timestep]
+    if LFP_measurements.size > X_f.size:
+        LFP_measurements = LFP_measurements[:,timestep]
+    LFP = np.array(LFP_measurements).reshape(X_f.shape)
+    # print LFP
+    LFP_norm = LFP/max_LFP
+    # print LFP_norm
+    # scalp levels:
+    num = 9
+    # num = 5
+    levels = np.logspace(-4, 0, num = num)
+    # levels = np.linspace(0.1,1,num)
+    levels_norm = np.concatenate((-levels[::-1], levels))
+    rainbow_cmap = plt.cm.get_cmap('PRGn') # rainbow, spectral, RdYlBu
+    colors_from_map = [rainbow_cmap(i*np.int(255/(len(levels_norm) - 2))) for i in range(len(levels_norm) -1)]
+    colors_from_map[num - 1] = (1.0, 1.0, 1.0, 1.0)
+    ticks = [levels_norm[2*i] for i in range(num/2 + 1)] + [levels_norm[num + 2*i] for i in range(num/2 + 1)]
+
+    ep_intervals = ax.contourf(X_f, Z_f, LFP_norm,# vmin=-200, vmax=200,
+                               zorder=-2, colors = colors_from_map,
+                               levels=levels_norm, extend = 'both') #norm = LogNorm())#,
+                                          # norm = SymLogNorm(1E-30))#, vmin = -40, vmax = 40))
+    ep_lines = ax.contour(X_f, Z_f, LFP_norm, lw = 0.4,  # 20,
+               colors='k', zorder = -2,  # extend='both')
+               levels=levels_norm)
+
+    plt.axis('tight')
+    if lengthbar:
+        print 'lengthbar true'
+        ax.plot([-14000, -14000], [-14000, -13000], 'k', lw=2, clip_on=False)
+        ax.text(-11700, -13600, r'$1 \mathsf{mm}$', size = 8, va='center', ha='center')
+
+    ax.axis('off')
+
+    return LFP, levels, ep_intervals, ticks
+
+def plot_neuron(axis, cell, syn=False, lengthbar=False):
+    zips = []
+    for x, z in cell.get_idx_polygons():
+        zips.append(zip(x, z))
+
+    # faster way to plot points:
+    polycol = PolyCollection(zips, edgecolors = 'none', facecolors = 'gray')
+    axis.add_collection(polycol)
+
+    # small length reference bar
+    if lengthbar:
+        axis.plot([-500, -500], [-100, 900], 'k', lw=2, clip_on=False)
+        axis.text(-430, 400, r'$1 \mathsf{mm}$', size = 8, va='center', ha='center', rotation = 'vertical')
+    # axis.plot([100, 200], [-400, -400], 'k', lw=1, clip_on=False)
+    # axis.text(150, -470, r'100$\mu$m', va='center', ha='center')
+
+    plt.axis('tight')
+    axis.axis('off')
+
+    # red dot where synapse is located, ms = markersize; number of points given as float:
+    if syn:
+        axis.plot(cell.xmid[cell.synidx], cell.zmid[cell.synidx], 'o', ms=3,
+                markeredgecolor='k', markerfacecolor='r')
+
+if __name__ == '__main__':
+
+    morphology = './cell_models/segev/CNG_version/2013_03_06_cell03_789_H41_03.CNG.swc'
+    syn_loc = (60, 0, 600)
+    cell, cb_LFP_close, cb_LFP_far, multi_dip_LFP_close, multi_dip_LFP_far, db_LFP_close, db_LFP_far, LFP_max_close, LFP_max_far, time_max, multi_dips, multi_dip_locs, single_dip, r_mid, X, Z, X_f, Z_f = make_data(morphology, syn_loc)
+    fig = make_fig_1(cell,
+                     cb_LFP_close, cb_LFP_far,
+                     multi_dip_LFP_close, multi_dip_LFP_far,
+                     db_LFP_close, db_LFP_far,
+                     LFP_max_close, LFP_max_far,
+                     time_max,
+                     multi_dips, multi_dip_locs,
+                     single_dip, r_mid,
+                     X, Z, X_f, Z_f)
+    fig.savefig('./figures/fig_dipole_field_test.pdf', bbox_inches='tight', dpi=300, transparent=True)
