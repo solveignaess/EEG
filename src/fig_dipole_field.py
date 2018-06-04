@@ -148,12 +148,12 @@ def make_fig_1(cell,
 
     # plot neuron morphology in top row
     plot_neuron(ax0, cell, syn=True, lengthbar=True)
-    plot_neuron(ax3, cell, syn=True, lengthbar=False)
-    plot_neuron(ax6, cell, syn=True, lengthbar=False)
+    plot_neuron(ax3, cell, syn=True, lengthbar=True, lb_clr='w')
+    plot_neuron(ax6, cell, syn=True, lengthbar=True, lb_clr='w')
 
     # plot transmembrane currents
     for idx in range(cell.totnsegs):
-        arrowlength = np.abs(cell.imem[idx, time_max])*1.5*1e5
+        arrowlength = np.abs(cell.imem[idx, time_max])*1e5
         # print idx, arrowlength
         wdth = 1.
         if [idx] == cell.synidx:
@@ -188,33 +188,34 @@ def make_fig_1(cell,
     LFP, levels, ep_intervals, ticks = plot_lfp_far(fig, ax8, db_LFP_far, LFP_max_far, time_max, X_f, Z_f, lengthbar=False, colorax=True)
 
     # plot neurons in second row
-    for ax in [ax1, ax4, ax7]:
-        plot_neuron(ax, cell, syn=False)
+    for ax in [ax1, ax4]:
+        plot_neuron(ax, cell, syn=False, clr='w')
 
     # plot multi dipole arrows
     for i in range(len(multi_dips)):
-        p = multi_dips[i, time_max]
+        p = multi_dips[i, time_max]*10
         loc = multi_dip_locs[i]
-        w = np.linalg.norm(p)
-        for ax in [ax3, ax4]:
-            ax.arrow(loc[0] - 0.5*p[0],
-                      loc[2] - 0.5*p[2],
-                      p[0], p[2],
-                      color='green', alpha=0.8, width = w, head_width = 4*w,
-                      length_includes_head = False
-                      )
+        w = np.linalg.norm(p)*2
+        ax3.arrow(loc[0] - 0.5*p[0],
+                  loc[2] - 0.5*p[2],
+                  p[0], p[2],
+                  color='green', alpha=0.8, width = w, head_width = 4*w,
+                  length_includes_head = False
+                  )
 
     # plot single dipole arrow
     # if l23:
     arrow = single_dip[time_max]*30  # np.sum(P, axis = 0)*0.12
     # else:
         # arrow = single_dip[time_max]*50  # np.sum(P, axis = 0)*0.12
-    for ax in [ax6, ax7]:
-        ax.arrow(r_mid[0] - 2*arrow[0],
-                 r_mid[2] - 2*arrow[2],
-                 arrow[0]*4, arrow[2]*4, #fc = 'k',ec = 'k',
-                 color='gray', alpha=0.8, width = 7, #head_width = 60.,
-                 length_includes_head = True)#,
+    arrow_colors = ['gray', 'w']
+    arrow_axes = [ax6, ax7]
+    for i in range(2):
+        arrow_axes[i].arrow(r_mid[0] - 2*arrow[0],
+                            r_mid[2] - 2*arrow[2],
+                            arrow[0]*4, arrow[2]*4, #fc = 'k',ec = 'k',
+                            color=arrow_colors[i], alpha=0.8, width = 10, #head_width = 60.,
+                            length_includes_head = True)#,
 
 
 
@@ -238,45 +239,16 @@ def make_fig_1(cell,
     ax3.set_title('multi-dipole', fontsize='x-small')
     ax6.set_title('single dipole', fontsize='x-small')
 
-    #
-    # fig.text(0.1, .93, 'A',
-    #         horizontalalignment='center',
-    #         verticalalignment='center',
-    #         fontweight='demibold',
-    #         fontsize=12)
-    # fig.text(0.53, .93, 'B',
-    #         horizontalalignment='center',
-    #         verticalalignment='center',
-    #         fontweight='demibold',
-    #         fontsize=12)
-    # fig.text(0.1, .65, 'C',
-    #         horizontalalignment='center',
-    #         verticalalignment='center',
-    #         fontweight='demibold',
-    #         fontsize=12)
-    # fig.text(0.53, .65, 'D',
-    #         horizontalalignment='center',
-    #         verticalalignment='center',
-    #         fontweight='demibold',
-    #         fontsize=12)
-    # fig.text(0.1, .33, 'E',
-    #         horizontalalignment='center',
-    #         verticalalignment='center',
-    #         fontweight='demibold',
-    #         fontsize=12)
-    # fig.text(0.53, .33, 'F',
-    #         horizontalalignment='center',
-    #         verticalalignment='center',
-    #         fontweight='demibold',
-    #         fontsize=12)
-    #
 
 
     fig.set_size_inches(8, 8)
     # plt.tight_layout()
 
-    plotting_convention.simplify_axes(fig.axes)
-    for ax in [ax0, ax3, ax1, ax2, ax4, ax5, ax6, ax7, ax8]:
+    # plotting_convention.simplify_axes(fig.axes)
+    plotting_convention.mark_subplots([ax0, ax3, ax6], letters='ABC', xpos=-0.02, ypos=1.0)
+    plotting_convention.mark_subplots([ax1, ax4, ax7], letters='DEF', xpos=-0.02, ypos=1.05)
+    plotting_convention.mark_subplots([ax2, ax5, ax8], letters='GHI', xpos=-0.02, ypos=0.94)
+    for ax in [ax1, ax2, ax4, ax5, ax7, ax8, ax0, ax3, ax6]:
         ax.set_aspect('equal', 'datalim')
     plt.subplots_adjust(wspace=0.05, hspace=0.05, left=0.1, bottom=0.05, right=0.96, top=0.93)
     return fig
@@ -355,19 +327,19 @@ def plot_lfp_far(fig, ax, LFP_measurements, max_LFP, timestep, X_f, Z_f, colorax
 
     return LFP, levels, ep_intervals, ticks
 
-def plot_neuron(axis, cell, syn=False, lengthbar=False):
+def plot_neuron(axis, cell, syn=False, lengthbar=False, clr='k', lb_clr='k'):
     zips = []
     for x, z in cell.get_idx_polygons():
         zips.append(zip(x, z))
 
     # faster way to plot points:
-    polycol = PolyCollection(zips, edgecolors = 'none', facecolors = 'gray')
+    polycol = PolyCollection(zips, edgecolors = 'none', facecolors = clr)
     axis.add_collection(polycol)
 
     # small length reference bar
     if lengthbar:
-        axis.plot([-500, -500], [-100, 900], 'k', lw=2, clip_on=False)
-        axis.text(-430, 400, r'$1 \mathsf{mm}$', size = 8, va='center', ha='center', rotation = 'vertical')
+        axis.plot([-400, -400], [-200, 800], lb_clr, lw=2, clip_on=False)
+        axis.text(-330, 400, r'$1 \mathsf{mm}$', color=lb_clr, size = 8, va='center', ha='center', rotation = 'vertical')
     # axis.plot([100, 200], [-400, -400], 'k', lw=1, clip_on=False)
     # axis.text(150, -470, r'100$\mu$m', va='center', ha='center')
 
@@ -393,4 +365,4 @@ if __name__ == '__main__':
                      multi_dips, multi_dip_locs,
                      single_dip, r_mid,
                      X, Z, X_f, Z_f)
-    fig.savefig('./figures/fig_dipole_field_test.pdf', bbox_inches='tight', dpi=300, transparent=True)
+    fig.savefig('./figures/fig_dipole_field.pdf', bbox_inches='tight', dpi=300, transparent=True)
