@@ -157,7 +157,7 @@ if __name__ == '__main__':
     ax1 = plt.subplot2grid((2,4),(0,2), colspan=2)
     ax2 = plt.subplot2grid((2,4),(1,2), colspan=2)
 
-    radii_tweaked = [radii[0]] + [r + 1000 for r in radii[1:]]
+    radii_tweaked = [radii[0]] + [r + 500 for r in radii[1:]]
     # plot 4s-model
     for i in range(4):
         ax0.add_patch(plt.Circle((0, 0), radius = radii_tweaked[-1-i], color = head_colors[-1-i], fill=True, ec = 'k', lw = .1))
@@ -169,6 +169,7 @@ if __name__ == '__main__':
     # zoom in on neuron:
     zoom_ax = zoomed_inset_axes(ax0, 150, loc=5, bbox_to_anchor=(1100, 620)) # zoom = 6
     x1, x2, y1, y2 = -1000, 1000, 56000, 59200
+    zoom_ax.set_facecolor(head_colors[0])
     zoom_ax.set_xlim(x1, x2)
     zoom_ax.set_ylim(y1, y2)
     zoom_ax.xaxis.set_visible('True')
@@ -197,56 +198,43 @@ if __name__ == '__main__':
 
     for i in range(num_syns):
         # plot lfps
-        lfp_single_dip = lfp_single_dip_list[i].reshape(electrode_locs_z.shape)
-        lfp_multi_dip = lfp_multi_dip_list[i].reshape(electrode_locs_z.shape)
+        k = 1e3 # from mV to µV
+        lfp_single_dip = lfp_single_dip_list[i].reshape(electrode_locs_z.shape)*k
+        lfp_multi_dip = lfp_multi_dip_list[i].reshape(electrode_locs_z.shape)*k
         ax1.loglog(electrode_locs_z, np.abs(lfp_single_dip), color=clrs[i], label=str(i))
         ax1.loglog(electrode_locs_z, np.abs(lfp_multi_dip), '--', color=clrs[i], label=str(i))
 
 
         # plot relative errors
-        RE = RE_list[i].reshape(electrode_locs_z.shape)
-        ax2.loglog(electrode_locs_z, RE_list[i], color = clrs[i], label=str(i))
+        k_100 = 100 # convert to percentage
+        RE = RE_list[i].reshape(electrode_locs_z.shape)*k_100
+        ax2.semilogx(electrode_locs_z, RE, color = clrs[i], label=str(i))
         # show synapse locations
         zoom_ax.plot(syn_locs[i][0], syn_locs[i][2]+77500., 'o', color=clrs[i], ms = 2)
-    ax2.loglog(electrode_locs_z, np.ones(num_electrodes)*0.01, '--k', lw = 0.4)
-    ax2.loglog(electrode_locs_z, np.ones(num_electrodes)*0.05, '--k', lw = 0.4)
-    ax2.text(np.max(electrode_locs_z) + 800, 0.01*0.75, '0.01', fontsize='6')
-    ax2.text(np.max(electrode_locs_z) + 800, 0.05*0.75, '0.05', fontsize='6')
+
     # fix axes
     layer_dist_from_neuron = [r - np.max(cell.zend) for r in radii]
     for ax in [ax1, ax2]:
-        ax.set_xticks(list(ax.get_xticks()) + layer_dist_from_neuron)
+        ax.set_xticks(list(ax.get_xticks()) + [500, 2000, 5000])
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.set_xlim([np.min(electrode_locs_z), np.max(electrode_locs_z)])
-    ax1.set_xticklabels(['', '', '1', '10', '', ''],
-                        #'brain', 'CSF', 'skull', 'scalp'],
-                        rotation=30, fontsize='xx-small')
-    ax1.get_xticklines()[12].set_color(head_colors[0])
-    ax1.get_xticklines()[12].set_markeredgewidth(2)
-    ax1.get_xticklines()[14].set_color(head_colors[1])
-    ax1.get_xticklines()[14].set_markeredgewidth(2)
-    ax1.get_xticklines()[16].set_color(head_colors[2])
-    ax1.get_xticklines()[16].set_markeredgewidth(2)
-    ax1.get_xticklines()[18].set_color(head_colors[3])
-    ax1.get_xticklines()[18].set_markeredgewidth(2)
+        ax.axvspan(0, layer_dist_from_neuron[0], facecolor=head_colors[0])
+        ax.axvspan(layer_dist_from_neuron[0], layer_dist_from_neuron[1], facecolor=head_colors[1])
+        ax.axvspan(layer_dist_from_neuron[1], layer_dist_from_neuron[2], facecolor=head_colors[2])
+        ax.axvspan(layer_dist_from_neuron[2], layer_dist_from_neuron[3], facecolor=head_colors[3])
+    ax1.set_xticklabels([])
+    ax1.set_ylim([1e-6, 1e-2])
 
-    ax2.set_xticklabels(['', '', '', '', '', '', '1', '10', 'brain', 'CSF', 'skull', 'scalp'], rotation=30, fontsize='xx-small')
-    ax2.get_xticklines()[16].set_color(head_colors[0])
-    ax2.get_xticklines()[16].set_markeredgewidth(2)
-    ax2.get_xticklines()[18].set_color(head_colors[1])
-    ax2.get_xticklines()[18].set_markeredgewidth(2)
-    ax2.get_xticklines()[20].set_color(head_colors[2])
-    ax2.get_xticklines()[20].set_markeredgewidth(2)
-    ax2.get_xticklines()[22].set_color(head_colors[3])
-    ax2.get_xticklines()[22].set_markeredgewidth(2)
-
-    # ax2.set_yticks([10**i for i in np.linspace(-3,1,num=5)])
-    ax2.set_xlabel('electrode distance (mm) from top of neuron', fontsize = 'x-small')
-    # ax2.get_xticklines()[1].set_xticklabels('dfdfds')
-    ax2.set_ylim([10**-6, 10])
-    ax1.set_ylabel('Extracellular potential (mV)', fontsize=8)
-    ax2.set_ylabel('Relative error', fontsize=8)
+    ax2.set_xticklabels(['', '', '', '', '', '', '1', '10', '0.5', '2', '5'],
+                         # , 'brain', 'CSF', 'skull', 'scalp'],
+                         rotation=30, fontsize='xx-small')
+    ax2.set_xlabel('electrode distance from top of neuron (mm)', fontsize = 'xx-small')
+    ax2.set_ylim([0, 80])
+    ax2.set_yticks([10, 20, 30, 40, 50, 60, 70, 80])
+    ax2.set_yticklabels(['', '20', '', '40', '', '60', '', '80'])
+    ax1.set_ylabel(r'Extracellular potential ($\mu$V)', fontsize=8)
+    ax2.set_ylabel(r'Relative error (%)', fontsize=8)
     fig.set_size_inches(10,4)
     fig.subplots_adjust(bottom=.2)#wspace = 0.02, right = 0.84, left = 0.05)
     plotting_convention.mark_subplots([ax0, ax1, ax2], xpos=-0.25)
