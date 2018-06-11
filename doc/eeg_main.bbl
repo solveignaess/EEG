@@ -1,0 +1,68 @@
+\begin{thebibliography}{12}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+
+\bibitem[{Carnevale and Hines(2006)}]{CARNEVALE2006}
+Carnevale, N.~T., Hines, M.~L., 2006. The {NEURON} Book. Cambridge University
+  Press, Cambridge.
+
+\bibitem[{Geselowitz(1970)}]{GESELOWITZ1970}
+Geselowitz, D., 1970. On the magnetic field generated outside an inhomogeneous
+  volume conductor by internal current sources. IEEE Transactions on Magnetics
+  6~(2), 346--347.
+
+\bibitem[{Griffiths(1999)}]{GRIFFITHS1999}
+Griffiths, D.~J., 1999. Introduction to electromagnetism. Prentice-Hall,
+  Englewood Cliffths, NJ, 1989) Section 10, P429.
+
+\bibitem[{Hagen et~al.(2017)Hagen, N{\ae}ss, Ness, and Einevoll}]{HAGEN2017}
+Hagen, E., N{\ae}ss, S., Ness, T.~V., Einevoll, G.~T., 2017. Cbrapy. Frontiers
+  in Neuroinformatics.
+
+\bibitem[{H{\"a}m{\"a}l{\"a}inen et~al.(1993)H{\"a}m{\"a}l{\"a}inen, Haari,
+  Ilmoniemi, Knuutila, and Lounasmaa}]{HAMALAINEN1993}
+H{\"a}m{\"a}l{\"a}inen, M., Haari, R., Ilmoniemi, R.~J., Knuutila, J.,
+  Lounasmaa, O.~V., 1993. Magnetoencephalography — theory, instrumentation,
+  and application to noninvasive studies of the working human brain. Reviews of
+  Modern Physics 65.
+
+\bibitem[{Nunez and Srinivasan(2006)}]{NUNEZ2006}
+Nunez, P.~L., Srinivasan, R., 2006. Electric Fields of the Brain, 2nd Edition.
+  Oxford University Press, New York.
+
+\bibitem[{Næss et~al.(2017)Næss, Chintaluri, Ness, M.Dale, Einevoll, and
+  W{\'o}jcik}]{NAESS2017}
+Næss, S., Chintaluri, C., Ness, T.~V., M.Dale, A., Einevoll, G.~T.,
+  W{\'o}jcik, D., 2017. Four-sphere head model for {EEG} signals revisited.
+  Frontiers in Human Neuroscience.
+
+\bibitem[{Pettersen et~al.(2014)Pettersen, Lind\'{e}n, Tetzlaff, and
+  Einevoll}]{PETTERSEN2014}
+Pettersen, K., Lind\'{e}n, H., Tetzlaff, T., Einevoll, G.~T., 2014. Power laws
+  from linear neuronal cable theory: Power spectral densities of the soma
+  potential, soma membrane current and single-neuron contribution to the {EEG}.
+  PLoS Comput Biol 10.
+
+\bibitem[{Pettersen and Einevoll(2008)}]{PETTERSEN&EINEVOLL2008}
+Pettersen, K.~H., Einevoll, G.~T., 2008. Amplitude variability and
+  extracellular low-pass filtering of neuronal spikes. Biophysical Journal 94.
+
+\bibitem[{Sarvas(1987)}]{SARVAS1987}
+Sarvas, J., 1987. Basic mathematical and electromagnetic concepts of the
+  biomagnetic inverse problem. Physics in Medicine \& Biology 32~(1), 11.
+
+\bibitem[{Srinivasan et~al.(1998)Srinivasan, Nunez, and
+  Silberstein}]{SRINIVASAN1998}
+Srinivasan, R., Nunez, P.~L., Silberstein, R.~B., 1998. Spatial filtering and
+  neocortical dynamics: estimates of {EEG} coherence. IEEE Transactions on
+  Biomedical Engineering.
+
+\bibitem[{Sterratt et~al.(2011)Sterratt, Graham, Gillies, and
+  Willshaw}]{STERRATT2011}
+Sterratt, D., Graham, B., Gillies, A., Willshaw, D., 2011. Principles of
+  Computational Modeling in Neuroscience. Cambridge University Press,
+  Cambridge.
+
+\end{thebibliography}

@@ -198,7 +198,11 @@ In an infinitely large volume conductor, only primary current sources will contr
 \end{equation}
 where we assume the distance $R$ to be much larger than the dipole length.
 
-For magnetic signal calculations in the four-sphere model, we can still use Equation~\eqref{eq:ampere_laplace_dipole} due to spherical symmetry \citep{HAMALAINEN1993,NUNEZ2006}.
+When computing the magnetic field outside a spherical symmetric head model, such as the four-sphere model, the theory is in fact a bit more complicated~\cite{SARVAS1987, HAMALAINEN1993}. Because of inhomogeneities on the boundaries, there will be non-zero contributions from secondary currents to the tangential component of the magnetic field \cite{SARVAS1987,HAMALAINEN1993}. This means that both terms in Equation~\eqref{eq:ampere-laplace_2terms} should be concerned when computing the magnetic field outside the four-sphere model. However, since traditional MEG-sensors only measure the radial component of the magnetic field, we will here solely compute the radial component of $\mathbf{B}$. Due to spherical symmetry, only primary currents give rise to the radial component of the magnetic field $\mathbf{B}_r$ outside a spherical symmetric model \citep{HAMALAINEN1993,NUNEZ2006}. This means that Equation~\eqref{eq:ampere_laplace_dipole} can be applied for magnetic signal calculations outside the four-sphere model:
+
+\begin{equation}\label{eq:ampere_laplace_dipole_rad}
+\mathbf{B}_r = \frac{\mu_0}{4 \pi}\frac{\mathbf{p \times R}}{R^3} \cdot \mathbf{\hat{r}}.
+\end{equation}
 
 \subsubsection{Magnetic fields with Boundary Element Method}
 Rewriting Equation~\eqref{eq:ampere-laplace_2terms} we obtain a boundary integral equation, see \cite{GESELOWITZ1970,HAMALAINEN1993}. The magnetic field can then be found by discretizing the boundaries, and inserting the solution for the electric potential $\phi$ into the boundary integral version of the Ampère-Laplace equation.
