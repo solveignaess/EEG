@@ -157,7 +157,7 @@ where $\mathbf{d}$ denotes the distance between the two compartments, and $I$ is
 \begin{equation}\label{eq:dip_sum_axial}
 \mathbf{p}(t) = \sum_{i=1}^{N-1} I_i^{axial}(t) \mathbf{d}_i~.
 \end{equation}
-Equations~\eqref{eq:dip_sum_trans}-\eqref{eq:dip_sum_axial} apply the point-source approximation. For the proof of equality between point-source and line-source approximation when computing the current dipole moment from neuron simulation, see~\ref{subsec:point_line_cdm}.
+Equations~\eqref{eq:dip_sum_trans}-\eqref{eq:dip_sum_axial} apply the point-source approximation. For proof of equality between the point-source and the line-source approximation when computing the current dipole moment from neuron simulation, see~\ref{sec:point_line_cdm}.
 
 \subsubsection{Inhomogeneous four-sphere model}
 We can incorporate a simplified head geometry and different medium conductivities into our calculations by applying the four-sphere model. This head model consists of four concentric shells: brain tissue, cerebrospinal (CSF) fluid, skull and scalp, where the conductivity can be set individually for each shell, \citep{SRINIVASAN1998,NUNEZ2006}. The model solution is given in \citep{NAESS2017} and is found by solving the Poisson equation subject to boundary conditions ensuring continuity of current and electric potentials over the boundaries, as well as no current escaping the outer shell. This model is based on the current dipole approximation.
@@ -223,6 +223,23 @@ Rewriting Equation~\eqref{eq:ampere-laplace_2terms} we obtain a boundary integra
 	\item Extend figure 1 so that it shows CB, mini-dip and DNB in infinite homogeneous space
 \end{itemize}
 }
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=1.0\textwidth]{fig_dipole_field}
+	\caption{\textbf{Extracellular potential from neuron simulation computed with multicompartment (left column), multi-dipole (middle column) and single dipole model (right column)}. 
+	\textbf{A} 	
+	Illustration of layer-23 pyramidal cell where the red dot marks the location of an excitatory synapse. Simulating neural activity with the multicompartmental model result in transmembrane currents in each compartment illustrated by blue and red arrows.
+	\textbf{B} The green arrows represent the current dipole moments between neighboring neural compartments, and the gray arrow in panel \textbf{C} illustrates the total current dipole moment, i.e. the sum of the dipoles in \textbf{B}.
+	\textbf{D} Extracellular potentials in immediate proximity of the neuron, here computed with the multicompartmental model.
+	\textbf{E} Extracellular potentials computed with multi-dipole model.
+	\textbf{F} Extracellular potentials computed with single dipole model.
+	\textbf{G, H, I} Shows zoomed-out versions of panel \textbf{D}, \textbf{E} and \textbf{F}. See $1$~mm scalebar in panel \textbf{D} and \textbf{G}.
+	}
+	\label{fig:dipole_field}
+\end{figure}
+
+
 \subsection{Comparison of CB and DB model in inhomogeneous four-sphere head model}\label{subsec:cb_db_comp_4s}
 \sntxt{
 New fig with 4 panels, showing how DB works in 4S (compared to mini-dip in 4S)
@@ -234,6 +251,20 @@ New fig with 4 panels, showing how DB works in 4S (compared to mini-dip in 4S)
 \end{enumerate}
 Mark location of all 4S-layers in C and D
 }
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=1.0\textwidth]{fig_compare_multi_single_dipole.png}
+	\caption{\textbf{Comparison of multi- and single-dipole modeling of extracellular potentials in four-sphere head model}. 
+	\textbf{A} Illustration of four-sphere head model, where the pink, blue, green and purple spherical shells represent the brain, CSF, skull and scalp respectively. The inset shows a layer-23 neuron. Three simulations, one for each synapse location (green, blue and purple dot) was carried out, giving current dipole moments illustrated by arrows in corresponding colors.
+	\textbf{B} Extracellular potential as function of distance from the top of the neuron, for the three simulations with green, blue and purple synapse locations and current dipole moments as shown in \textbf{A}. Dashed lines show extracellular potentials computed with multiple dipoles, and full lines show single dipole calculations.
+	\textbf{C} Comparing the single dipole model to the multi-dipole model gives the relative error shown in this panel.
+	}
+	\label{fig:compare_multi_single_dipole}
+\end{figure}
+
+
+
 \subsection{ECoG and EEG (and MEG?) predictions from 3 human cell types}
 \sntxt{
 \begin{itemize}
@@ -244,12 +275,7 @@ Mark location of all 4S-layers in C and D
 	
 \end{itemize}
 	}
-\subsection{How does single-neuron contributions to EEG and MEG signals, depend on neuron rotation}
-\sntxt{
-\begin{itemize}
-	\item L23 human cell
-\end{itemize}
-	}
+
 
 \subsection{EEG with inhomogeneous four-sphere model}
 \sntxt{
@@ -270,7 +296,44 @@ Mark location of all 4S-layers in C and D
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%DISCUSSION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion}\label{sec:discussion}
+\appendix
+\section{Point-Source vs. Line-Source Dipole Moment} \label{sec:point_line_cdm}
+Considering the CB model, the line-source approximation gives a more accurate estimate than the point-source approximation. This section goes into the question of whether the choice of point-source or line-source approximation has an effect on the calculation of current dipole moments.
 
+Transmembrane currents can be expressed as the spatial integral over the linear current density $i$. Following, the current dipole moment equation from transmembrane currents \eqref{eq:ptrans} is split into x-, y- and z- components, so that $\mathbf{p}(t) = p_x(t)\mathbf{\hat{x}} + p_y(t)\mathbf{\hat{y}} + p_z(t)\mathbf{\hat{z}}$, and each direction component is written as a function of $i$:
+
+\begin{align}\label{eq:pxpypz}
+p_x(t) &= \sum_{n=1}^N\int x_n i_n(x,t) dx, \nonumber\\
+p_y(t) &= \sum_{n=1}^N\int y_n i_n(y,t) dy, \\
+p_z(t) &= \sum_{n=1}^N\int z_n i_n(z,t) dz, \nonumber
+\end{align}
+where $N$ is the total number of compartments.
+
+Next, an example for applying the point-source approximation to calculate the current dipole moment from a dendritic stick is outlined. We assume a straight multicompartmental dendrite model with $N$ compartments, each of length $\Delta L$, elongated in the z-direction only. Its linear current density for the point-source approximation can be expressed as follows
+
+\begin{equation}
+i_n(z,t) = I_n(t) \delta(z - z_n),
+\end{equation}
+where $I_n(t)$ is the space-independent current component and $z_n$ is the middle position of compartment $n$, i.e., where current can leave or enter. Plugging this into Equation \eqref{eq:pxpypz}, and integrating over the length of each compartment, $\Delta L$, the following expression for $p_z$ appears:
+
+\begin{equation}
+p_z = \sum_{n=1}^N \int_{z_n - \frac{\Delta{L}}{2}}^{z_n + \frac{\Delta L}{2}} z_n I_n(t) \delta(z - z_n)dz = \sum_{n=1}^N z_n I_n(t).
+\end{equation}
+
+When calculating the current dipole moment using the line-source approximation, the linear current density takes the following form:
+\begin{equation}
+i_n(z,t) = \frac{I_n(t)}{\Delta L}.
+\end{equation}
+Inserting this into Equation \eqref{eq:pxpypz} gives
+
+\begin{align}
+p_z
+& = \sum_{n=1}^N \int_{z_n - \frac{\Delta L}{2}}^{z_n + \frac{\Delta L}{2}} z \frac{I_n(t)}{\Delta L}dz \nonumber \\
+& = \sum_{n=1}^N \frac{I_n(t)}{\Delta L} \big[\frac{1}{2} z^2\big]_{z_n - \frac{\Delta L}{2}}^{z_n + \frac{\Delta L}{2}} \\
+& = \sum_{n=1}^N z_n I_n(t). \nonumber
+\end{align}
+
+Hence, we have found that the point-source and the line-source approximations will give the exact same results when calculating current dipole moments. The simpler point-source approximation is therefore preferable.
 
 \bibliography{eeg_main}
 \end{document}
