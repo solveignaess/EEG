@@ -11,7 +11,7 @@ from fig_dipole_field import make_data, make_fig_1
 
 def set_parameters():
     """set cell, synapse and electrode parameters"""
-    cell_parameters = {'morphology': './cell_models/segev/CNG_version/2013_03_06_cell03_789_H41_03.CNG.swc', #'./patdemo/cells/j4a.hoc',# only mandatory parameter
+    cell_parameters = {'morphology': './cell_models/hay/L5bPCmodelsEH/morphologies/cell1.asc',# only mandatory parameter # './cell_models/segev/CNG_version/2013_03_06_cell03_789_H41_03.CNG.swc', #
                    'tstart': 0., # simulation start time
                    'tstop': 100 # simulation stop time [ms]
                    }
@@ -58,14 +58,24 @@ def get_dipole_loc(rz, syn_loc):
     dip_loc = rz + mid_pos
     return dip_loc
 
-def plot_neuron(axis, syn=False, lengthbar=False):
+def plot_neuron(axis, cell, syn=False, lengthbar=False):
     zips = []
     for x, z in cell.get_idx_polygons():
-        zips.append(zip(x, z))
-
+        zips.append(list(zip(x, z)))
     # faster way to plot points:
-    polycol = PolyCollection(zips, edgecolors = 'none', facecolors = 'k')
+    polycol = PolyCollection(list(zips), edgecolors = 'none', facecolors = 'k')
     axis.add_collection(polycol)
+
+
+    #
+    # axis.plot(cell.xmid[0], cell.zmid[0], 'o', c="k", ms=0.001)
+    # [axis.plot([cell.xstart[idx], cell.xend[idx]],
+    #                [cell.zstart[idx], cell.zend[idx]], c='k',
+    #                clip_on=False, linewidths=)
+    #                for idx in range(cell.totnsegs)]
+    plt.axis('tight')
+    # axis.axis('off')
+    # axis.set_aspect('equal')
 
     # small length reference bar
     if lengthbar:
@@ -81,13 +91,20 @@ if __name__ == '__main__':
     # set soma position
     rz = np.array([0., 0., 77500.]) #NB!!!!!!
     # make array of synapse positions
-    num_syns = 3
+    num_syns = 30
     max_ind = 216
-    syn_locs = [(0., 0., z) for z in np.linspace(-100., 500., num_syns)]
+    syn_loc_zs = np.linspace(0, 1000, num_syns)
+    syn_locs = [(0., 0., z) for z in syn_loc_zs]
     # make electrode array params
     num_electrodes = 40
+    electrode_loc_zs = list(np.linspace(78700., radii[-1], num_electrodes))
+    electrode_loc_zs.insert(1, radii[0])
+    electrode_loc_zs.sort()
+    num_electrodes += 1
     electrode_locs = np.zeros((num_electrodes, 3))
-    electrode_locs[:,2] = np.linspace(78600., radii[-1], num_electrodes) #[4000, 5150, 5450, 60000] #
+
+    electrode_locs[:,2] = np.array(electrode_loc_zs)
+
     electrodeParams = {'sigma': 0.3,
                         'x': electrode_locs[:,0],
                         'y': electrode_locs[:,1],
@@ -95,7 +112,7 @@ if __name__ == '__main__':
                         }
 
     # set cell and synapse parameters
-    celltype = 'l23'
+    celltype = 'l5'
     cell_parameters, synapse_parameters = set_parameters()
     # create four-sphere class instance
     fs = LFPy.FourSphereVolumeConductor(radii, sigmas, electrode_locs)
@@ -107,8 +124,10 @@ if __name__ == '__main__':
     RE_list = []
     # get data from num_syns simulations
     for i in range(num_syns):
+        print('syn number:', i)
         syn_loc = syn_locs[i]
         cell, synapse, electrode_array = simulate()
+        print('cell simulated')
         cell.set_pos(x=rz[0], y=rz[1], z=rz[2])
 
         # compute timepoint with biggest dipole
@@ -118,8 +137,10 @@ if __name__ == '__main__':
         # compute LFP with single dipole
         dip_loc = get_dipole_loc(rz, syn_loc)
         lfp_single_dip = fs.calc_potential(p, dip_loc)
+        print('pot from single dip computed')
         # compute LFP with multi-dipole
         lfp_multi_dip = fs.calc_potential_from_multi_dipoles(cell, timemax)
+        print('pot from multi dip computed')
         # compute relative errors
         RE = np.abs((lfp_single_dip - lfp_multi_dip)/lfp_multi_dip)
 
@@ -141,10 +162,38 @@ if __name__ == '__main__':
         #                  X, Z, X_f, Z_f)
         # fig1_title = './figures/test_figs/fig_dipole_field' + str(i) + '.png'
         # fig.savefig(fig1_title, bbox_inches='tight', dpi=300, transparent=True)
+    k_100 = 100 # convert to percentage
+    RE_EEG = np.array(RE_list).reshape(num_syns, num_electrodes)[:,-1]*k_100
+    dip_strength = np.linalg.norm(np.array(p_list).reshape(num_syns,3), axis=1)
+
+    np.savez('./data/compare_multi_single_dipole_hay_40syns',
+             lfp_multi = lfp_multi_dip_list,
+             lfp_single = lfp_single_dip_list,
+             re_eeg = RE_EEG,
+             re = RE_list,
+             dipoles = p_list,
+             dip_locs = p_loc_list,
+             sigmas = sigmas,
+             radii = radii,
+             syn_locs = syn_locs)
 
     ################################################################################
     ######################################plot######################################
     ################################################################################
+
+    data = np.load('./data/compare_multi_single_dipole_hay_30syns.npz')
+    lfp_multi_dip_list = data['lfp_multi']
+    lfp_single_dip_list = data['lfp_single']
+    RE_EEG = data['re_eeg']
+    p_list = data['dipoles']
+    p_loc_list = data['dip_locs']
+    sigmas = data['sigmas']
+    radii = data['radii']
+    syn_locs = data['syn_locs']
+    dip_strength = np.linalg.norm(np.array(p_list).reshape(num_syns,3), axis=1)
+
+    RE_list = np.abs((lfp_single_dip_list - lfp_multi_dip_list)/lfp_multi_dip_list)
+
     plt.close('all')
     fig = plt.figure()
     # line colors
@@ -152,37 +201,66 @@ if __name__ == '__main__':
     # head color
     head_colors = plt.cm.Pastel1([0,1,2,3])
 
+    # define axes
+    ax_setup = plt.subplot2grid((3,4),(0,0))
+    ax_pot = plt.subplot2grid((3,4),(1,0), colspan=2)
+    ax_pot_RE = plt.subplot2grid((3,4),(2,0), colspan=2)
+    ax_p = plt.subplot2grid((3,4),(0,2), colspan=2)
+    ax_RE_EEG = plt.subplot2grid((3,4),(1,2), colspan=2)
+    ax_RE_EEG_p = plt.subplot2grid((3,4),(2,2), colspan=2)
 
-    ax0 = plt.subplot2grid((2,4),(0,0), rowspan=2)
-    ax1 = plt.subplot2grid((2,4),(0,2), colspan=2)
-    ax2 = plt.subplot2grid((2,4),(1,2), colspan=2)
+    # plot dipole strength as function of synapse distance from soma
+    ax_p.scatter(syn_loc_zs, dip_strength, s = 5., c = clrs)
+    ax_p.set_xlabel(r'synapse distance from soma', fontsize=7, labelpad=0.5)
+    ax_p.set_ylabel(r'dipole strength $|p|$ (nA$\mu$m)', fontsize=7)
+    # ax_p.set_xticklabels([])
 
+    # plot RE at EEG distance as function of synapse distance from soma
+    ax_RE_EEG.scatter(syn_loc_zs, RE_EEG, s = 5., c = clrs)
+    ax_RE_EEG.set_xlabel(r'synapse distance from soma', fontsize=7, labelpad=0.5)
+    ax_RE_EEG.set_ylabel(r'RE at EEG distance (%)', fontsize=7)
+
+    # plot RE at EEG distance as function of dipole strength
+    ax_RE_EEG_p.scatter(dip_strength, RE_EEG, s = 5., c = clrs)
+    ax_RE_EEG_p.set_xlabel(r'dipole strength $|p|$ (nA$\mu$m)', fontsize=7)
+    ax_RE_EEG_p.set_ylabel(r'RE at EEG distance (%)', fontsize=7)
+    ax_RE_EEG_p.set_xlim([0, 25])
+
+
+
+    for ax in [ax_p, ax_RE_EEG]:
+        ax.set_xlim([-20, 1002])
+
+    for ax in [ax_p, ax_RE_EEG, ax_RE_EEG_p]:
+        ax.set_ylim([0,25])
+    # plot setup, potentials and RE as function of distance to electrode
     radii_tweaked = [radii[0]] + [r + 500 for r in radii[1:]]
     # plot 4s-model
     for i in range(4):
-        ax0.add_patch(plt.Circle((0, 0), radius = radii_tweaked[-1-i], color = head_colors[-1-i], fill=True, ec = 'k', lw = .1))
+        ax_setup.add_patch(plt.Circle((0, 0), radius = radii_tweaked[-1-i], color = head_colors[-1-i], fill=True, ec = 'k', lw = .1))
 
-    # plot morphology with synapses
+    # # plot morphology with synapses
     neuron_offset = 57000.
-    plot_neuron(ax0)
-    ax0.plot(0,0,'o', ms = 1e-4)
+    plot_neuron(ax_setup, cell)
+    ax_setup.plot(0,0,'o', ms = 1e-4)
     # zoom in on neuron:
-    zoom_ax = zoomed_inset_axes(ax0, 150, loc=5, bbox_to_anchor=(1100, 620)) # zoom = 6
-    x1, x2, y1, y2 = -1000, 1000, 56000, 59200
+    zoom_ax = zoomed_inset_axes(ax_setup, 200, loc=9, bbox_to_anchor=(900, 1800)) # zoom = 6
+    x1, x2, y1, y2 = -1000, 1000, 76000, 79200
     zoom_ax.set_facecolor(head_colors[0])
     zoom_ax.set_xlim(x1, x2)
     zoom_ax.set_ylim(y1, y2)
     zoom_ax.xaxis.set_visible('True')
-    plot_neuron(zoom_ax, syn=True)
-    mark_inset(ax0, zoom_ax, loc1=2, loc2=3, fc="None", ec=".5", lw=.4)
-    [i.set_linewidth(.6) for i in zoom_ax.spines.itervalues()]
-    for i in range(len(syn_locs)):
-        arrow = p_list[i][0]*5  # np.sum(P, axis = 0)*0.12
-        zoom_ax.arrow(p_loc_list[i][0] - 2*arrow[0],
-                      p_loc_list[i][2] - 2*arrow[2],
-                      arrow[0]*4, arrow[2]*4, #fc = 'k',ec = 'k',
-                      color=clrs[i], alpha=0.8, width = 7, #head_width = 60.,
-                      length_includes_head = True)#,
+    plot_neuron(zoom_ax, cell, syn=True)
+    mark_inset(ax_setup, zoom_ax, loc1=2, loc2=3, fc="None", ec=".5", lw=.4)
+    [i.set_linewidth(.6) for i in zoom_ax.spines.values()]
+    # plot single dip arrow
+    # for i in range(len(syn_locs)):
+    #     arrow = p_list[i][0]*5  # np.sum(P, axis = 0)*0.12
+    #     zoom_ax.arrow(p_loc_list[i][0] - 2*arrow[0],
+    #                   p_loc_list[i][2] - 2*arrow[2],
+    #                   arrow[0]*4, arrow[2]*4, #fc = 'k',ec = 'k',
+    #                   color=clrs[i], alpha=0.8, width = 7, #head_width = 60.,
+    #                   length_includes_head = True)#,
 
     zoom_ax.xaxis.set_ticks_position('none')
     zoom_ax.xaxis.set_ticklabels([])
@@ -190,52 +268,60 @@ if __name__ == '__main__':
     zoom_ax.yaxis.set_ticklabels([])
 
     plt.axis('tight')
-    ax0.axis('off')
-    ax0.set_aspect('equal')
+    ax_setup.axis('off')
+    ax_setup.set_aspect('equal')
 
-    # plot LFP-signals
     electrode_locs_z = electrode_locs[:,2] - np.max(cell.zend)
+    # syns_to_plot = np.arange(0, num_syns, 5)
+    syns_to_plot = np.array([5, 25])
+    k = 1e3 # from mV to uV
+    k1 = 1e-3 # from mum to mm
+    electrode_locs_z = electrode_locs_z*k1
 
-    for i in range(num_syns):
+    for syn in range(num_syns):
+        zoom_ax.plot(syn_locs[syn][0], syn_locs[syn][2]+77500., 'o', color=clrs[syn], ms = .5)
+
+    for i in syns_to_plot:
         # plot lfps
-        k = 1e3 # from mV to µV
         lfp_single_dip = lfp_single_dip_list[i].reshape(electrode_locs_z.shape)*k
         lfp_multi_dip = lfp_multi_dip_list[i].reshape(electrode_locs_z.shape)*k
-        ax1.loglog(electrode_locs_z, np.abs(lfp_single_dip), color=clrs[i], label=str(i))
-        ax1.loglog(electrode_locs_z, np.abs(lfp_multi_dip), '--', color=clrs[i], label=str(i))
-
+        ax_pot.loglog(electrode_locs_z, np.abs(lfp_single_dip), color=clrs[i], label=str(i), linewidth=1.)
+        ax_pot.loglog(electrode_locs_z, np.abs(lfp_multi_dip), '--', color=clrs[i], label=str(i), linewidth=1.)
 
         # plot relative errors
-        k_100 = 100 # convert to percentage
         RE = RE_list[i].reshape(electrode_locs_z.shape)*k_100
-        ax2.semilogx(electrode_locs_z, RE, color = clrs[i], label=str(i))
+        ax_pot_RE.semilogx(electrode_locs_z, RE, color = clrs[i], label=str(i), linewidth=1.)
+        zoom_ax.plot(syn_locs[i][0], syn_locs[i][2]+77500., 'o', color=clrs[i], ms = 3)
         # show synapse locations
-        zoom_ax.plot(syn_locs[i][0], syn_locs[i][2]+77500., 'o', color=clrs[i], ms = 2)
+
 
     # fix axes
-    layer_dist_from_neuron = [r - np.max(cell.zend) for r in radii]
-    for ax in [ax1, ax2]:
-        ax.set_xticks(list(ax.get_xticks()) + [500, 2000, 5000])
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
+    layer_dist_from_neuron = [(r - np.max(cell.zend))*k1 for r in radii]
+    for ax in [ax_pot, ax_pot_RE]:
+        # ax.set_xticks(list(ax.get_xticks()) + [500, 2000, 5000])
         ax.set_xlim([np.min(electrode_locs_z), np.max(electrode_locs_z)])
         ax.axvspan(0, layer_dist_from_neuron[0], facecolor=head_colors[0])
         ax.axvspan(layer_dist_from_neuron[0], layer_dist_from_neuron[1], facecolor=head_colors[1])
         ax.axvspan(layer_dist_from_neuron[1], layer_dist_from_neuron[2], facecolor=head_colors[2])
         ax.axvspan(layer_dist_from_neuron[2], layer_dist_from_neuron[3], facecolor=head_colors[3])
-    ax1.set_xticklabels([])
-    ax1.set_ylim([1e-6, 1e-2])
+        ax.axvline(layer_dist_from_neuron[0], linestyle='--', linewidth=0.6, color='gray')
+        ax.axvline(layer_dist_from_neuron[3]-0.13, linestyle='--', linewidth=0.6, color='gray')
+    # ax_pot.set_xticklabels([])
+    ax_pot.set_ylim([1e-6, 1e-2])
+    ax_pot_RE.set_ylim([0, 100])
+    ax_pot.set_ylabel(r'electric potential $|\Phi|$ ($\mu$V)', fontsize=7)
+    ax_pot_RE.set_ylabel(r'RE (%)', fontsize=7)
+    ax_pot_RE.set_xlabel(r'distance from top of neuron to electrode (cm)', fontsize=7)
+    # mark ECoG and EEG locations
+    plt.text(0.24, 0.68, 'ECoG', fontsize=8, transform=plt.gcf().transFigure)
+    plt.text(0.46, 0.68, 'EEG', fontsize=8, transform=plt.gcf().transFigure)
 
-    ax2.set_xticklabels(['', '', '', '', '', '', '1', '10', '0.5', '2', '5'],
-                         # , 'brain', 'CSF', 'skull', 'scalp'],
-                         rotation=30, fontsize='xx-small')
-    ax2.set_xlabel('electrode distance from top of neuron (mm)', fontsize = 'xx-small')
-    ax2.set_ylim([0, 80])
-    ax2.set_yticks([10, 20, 30, 40, 50, 60, 70, 80])
-    ax2.set_yticklabels(['', '20', '', '40', '', '60', '', '80'])
-    ax1.set_ylabel(r'Extracellular potential ($\mu$V)', fontsize=8)
-    ax2.set_ylabel(r'Relative error (%)', fontsize=8)
-    fig.set_size_inches(10,4)
-    fig.subplots_adjust(bottom=.2)#wspace = 0.02, right = 0.84, left = 0.05)
-    plotting_convention.mark_subplots([ax0, ax1, ax2], xpos=-0.25)
-    plt.savefig('./figures/fig_compare_multi_single_dipole.png', dpi=300)
+    for ax in [ax_pot, ax_pot_RE, ax_p, ax_RE_EEG, ax_RE_EEG_p]:
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+
+    fig.tight_layout(pad=0.5, h_pad=-0.5, w_pad=.7)
+    fig.set_size_inches(8., 6.)
+    fig.subplots_adjust(bottom=.2)
+    plotting_convention.mark_subplots(fig.axes, xpos=-0.25)
+    plt.savefig('./figures/fig_compare_multi_single_dipole_30_2.png', dpi=300)

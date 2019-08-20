@@ -53,7 +53,7 @@ def make_data(morphology, syn_loc):
     time_max = 334  # np.mod(max_ind, len(cell.tvec))
     LFP_max_close = 100.  #np.round(np.max(np.abs(grid_electrode_LFP[:, time_max])))
     LFP_max_far = 100.
-    print '-'*200
+    print('-'*200)
     return cell, cb_LFP_close, cb_LFP_far, multi_dip_LFP_close, multi_dip_LFP_far, db_LFP_close, db_LFP_far, LFP_max_close, LFP_max_far, time_max, multi_dips, multi_dip_locs, single_dip, r_mid, X, Z, X_f, Z_f
     # print max_ind, time_max, LFP_max
 
@@ -157,7 +157,7 @@ def make_fig_1(cell,
         # print idx, arrowlength
         wdth = 1.
         if [idx] == cell.synidx:
-            print idx, arrowlength
+            print(idx, arrowlength)
             arrowlength = -700.
             wdth = 2.
             ax0.arrow(cell.xmid[idx]-arrowlength, cell.zmid[idx],
@@ -255,23 +255,26 @@ def make_fig_1(cell,
 
 def plot_lfp(fig, ax, LFP_measurements, max_LFP, timestep, X, Z, colorax = False,
              lengthbar = False):
-
+    print('plot_lfp called')
     if LFP_measurements.size > X.size:
+        print('timestep:', timestep)
         LFP_measurements = LFP_measurements[:,timestep]
     LFP = np.array(LFP_measurements).reshape(X.shape)
+    print('LFP:', LFP)
     LFP_norm = LFP/max_LFP
+    print('LFP_norm:', LFP_norm)
     # print LFP_norm
     # scalp levels:
     # num = 5
     num = 9
     levels = np.logspace(-4, 0, num = num)
+    print('levels:', levels)
     # levels = np.linspace(0.1,1,num)
     levels_norm = np.concatenate((-levels[::-1], levels))
     rainbow_cmap = plt.cm.get_cmap('PRGn') # rainbow, spectral, RdYlBu
     colors_from_map = [rainbow_cmap(i*np.int(255/(len(levels_norm) - 2))) for i in range(len(levels_norm) -1)]
     colors_from_map[num - 1] = (1.0, 1.0, 1.0, 1.0)
-    ticks = [levels_norm[2*i] for i in range(num/2 + 1)] + [levels_norm[num + 2*i] for i in range(num/2 + 1)]
-
+    ticks = [levels_norm[2*i] for i in range(int(num/2 + 1))] + [levels_norm[int(num + 2*i)] for i in range(int(num/2 + 1))]
     ep_intervals = ax.contourf(X, Z, LFP_norm,# vmin=-200, vmax=200,
                                zorder=-2, colors = colors_from_map,
                                levels=levels_norm, extend = 'both') #norm = LogNorm())#,
@@ -307,7 +310,7 @@ def plot_lfp_far(fig, ax, LFP_measurements, max_LFP, timestep, X_f, Z_f, colorax
     rainbow_cmap = plt.cm.get_cmap('PRGn') # rainbow, spectral, RdYlBu
     colors_from_map = [rainbow_cmap(i*np.int(255/(len(levels_norm) - 2))) for i in range(len(levels_norm) -1)]
     colors_from_map[num - 1] = (1.0, 1.0, 1.0, 1.0)
-    ticks = [levels_norm[2*i] for i in range(num/2 + 1)] + [levels_norm[num + 2*i] for i in range(num/2 + 1)]
+    ticks = [levels_norm[2*i] for i in range(int(num/2 + 1))] + [levels_norm[int(num + 2*i)] for i in range(int(num/2 + 1))]
 
     ep_intervals = ax.contourf(X_f, Z_f, LFP_norm,# vmin=-200, vmax=200,
                                zorder=-2, colors = colors_from_map,
@@ -319,7 +322,7 @@ def plot_lfp_far(fig, ax, LFP_measurements, max_LFP, timestep, X_f, Z_f, colorax
 
     plt.axis('tight')
     if lengthbar:
-        print 'lengthbar true'
+        print('lengthbar true')
         ax.plot([-14000, -14000], [-14000, -13000], 'k', lw=2, clip_on=False)
         ax.text(-11700, -13600, r'$1 \mathsf{mm}$', size = 8, va='center', ha='center')
 
