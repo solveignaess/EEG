@@ -300,8 +300,12 @@ This demonstrates that the relative error of the single-dipole approximation is 
 \subsection{Compact description of EEG contribution simplifies analysis}\label{subsec:compact}
 In the previous section we found that the single-dipole approximation was applicable for calculation of EEG signals from a single synaptic input to a human cortical Layer 2/3 cell model, and we now expand to three different cell types (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{A}), each receiving a large number of synaptic inputs arriving in four separate waves with specific target regions on the cells (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{B}).
 
-We found that for all cases the components of the current dipole moment ($\mathbf{p}$) that was orthogonal ($p_x$ and $p_y$) to the depth axis of cortex ($z$)
-was negligible compared to the $p_z$-component, as expected from radial symmetry \citep{HAGEN2018}.
+Pyramidal cells has a preferred orientation along the depth axis of the cortex, and the direction of the current dipole moment, and therefore the polarity of the EEG signal will be determined by the synaptic input, with apical and basal synaptic input giving opposite current dipoles (cite). In contrast, interneurons are less geometrically aligned (cite).
+
+For all cases the components of the current dipole moment ($\mathbf{p}$) that was orthogonal ($p_x$ and $p_y$) to the depth axis of cortex ($z$)
+was negligible compared to the $p_z$-component (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{C}), as expected from radial symmetry \citep{HAGEN2018}. This means that we can describe the single-cell EEG contribution fully in terms of a single time-dependent array, instead of in terms of the same number of current sources/sinks as the number of compartments (typically ~ 1000 for a large pyramidal cell).
+
+For the two cortical pyramidal cell models that we considered, that is the human layer 2/3 cell models previously considered and a layer 5 pyramidal cell from \cite{HAY2011}
 
 %We found in the previous section that the single-dipole approximation was applicable for calculation of EEG signals, but we have not yet demonstrated its usefulness for modelling and understanding the EEG.
 
