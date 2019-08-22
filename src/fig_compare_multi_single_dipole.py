@@ -163,13 +163,17 @@ if __name__ == '__main__':
         # fig1_title = './figures/test_figs/fig_dipole_field' + str(i) + '.png'
         # fig.savefig(fig1_title, bbox_inches='tight', dpi=300, transparent=True)
     k_100 = 100 # convert to percentage
-    RE_EEG = np.array(RE_list).reshape(num_syns, num_electrodes)[:,-1]*k_100
+    eeg_ind = -1
+    ecog_ind = 2
+    RE_EEG = np.array(RE_list).reshape(num_syns, num_electrodes)[:,eeg_ind]*k_100
+    RE_ECoG = np.array(RE_list).reshape(num_syns, num_electrodes)[:,ecog_ind]*k_100
     dip_strength = np.linalg.norm(np.array(p_list).reshape(num_syns,3), axis=1)
 
     np.savez('./data/compare_multi_single_dipole_hay_40syns',
              lfp_multi = lfp_multi_dip_list,
              lfp_single = lfp_single_dip_list,
              re_eeg = RE_EEG,
+             re_ecog = RE_ECoG,
              re = RE_list,
              dipoles = p_list,
              dip_locs = p_loc_list,
@@ -181,10 +185,11 @@ if __name__ == '__main__':
     ######################################plot######################################
     ################################################################################
 
-    data = np.load('./data/compare_multi_single_dipole_hay_30syns.npz')
+    data = np.load('./data/compare_multi_single_dipole_hay_40syns.npz')
     lfp_multi_dip_list = data['lfp_multi']
     lfp_single_dip_list = data['lfp_single']
     RE_EEG = data['re_eeg']
+    RE_ECoG = data['re_ecog']
     p_list = data['dipoles']
     p_loc_list = data['dip_locs']
     sigmas = data['sigmas']
@@ -202,12 +207,13 @@ if __name__ == '__main__':
     head_colors = plt.cm.Pastel1([0,1,2,3])
 
     # define axes
-    ax_setup = plt.subplot2grid((3,4),(0,0))
-    ax_pot = plt.subplot2grid((3,4),(1,0), colspan=2)
-    ax_pot_RE = plt.subplot2grid((3,4),(2,0), colspan=2)
-    ax_p = plt.subplot2grid((3,4),(0,2), colspan=2)
-    ax_RE_EEG = plt.subplot2grid((3,4),(1,2), colspan=2)
-    ax_RE_EEG_p = plt.subplot2grid((3,4),(2,2), colspan=2)
+    ax_setup = plt.subplot2grid((4,4),(0,0), rowspan=2)
+    ax_pot = plt.subplot2grid((4,4),(2,0), colspan=2)
+    ax_pot_RE = plt.subplot2grid((4,4),(3,0), colspan=2)
+    ax_RE_EEG = plt.subplot2grid((4,4),(0,2), colspan=2)
+    ax_p = plt.subplot2grid((4,4),(1,2), colspan=2)
+    ax_RE_EEG_p = plt.subplot2grid((4,4),(2,2), colspan=2)
+    ax_RE_ECoG_p = plt.subplot2grid((4,4),(3,2), colspan=2)
 
     # plot dipole strength as function of synapse distance from soma
     ax_p.scatter(syn_loc_zs, dip_strength, s = 5., c = clrs)
@@ -226,6 +232,12 @@ if __name__ == '__main__':
     ax_RE_EEG_p.set_ylabel(r'RE at EEG distance (%)', fontsize=7)
     ax_RE_EEG_p.set_xlim([0, 25])
 
+    # plot RE at ECoG distance as function of dipole strength
+    ax_RE_ECoG_p.scatter(dip_strength, RE_ECoG, s = 5., c = clrs)
+    ax_RE_ECoG_p.set_xlabel(r'dipole strength $|p|$ (nA$\mu$m)', fontsize=7)
+    ax_RE_ECoG_p.set_ylabel(r'RE at ECoG distance (%)', fontsize=7)
+    ax_RE_ECoG_p.set_xlim([0, 25])
+    ax_RE_ECoG_p.set_ylim([0, 100])
 
 
     for ax in [ax_p, ax_RE_EEG]:
@@ -244,7 +256,7 @@ if __name__ == '__main__':
     plot_neuron(ax_setup, cell)
     ax_setup.plot(0,0,'o', ms = 1e-4)
     # zoom in on neuron:
-    zoom_ax = zoomed_inset_axes(ax_setup, 200, loc=9, bbox_to_anchor=(900, 1800)) # zoom = 6
+    zoom_ax = zoomed_inset_axes(ax_setup, 200, loc=9, bbox_to_anchor=(900, 2100)) # zoom = 6
     x1, x2, y1, y2 = -1000, 1000, 76000, 79200
     zoom_ax.set_facecolor(head_colors[0])
     zoom_ax.set_xlim(x1, x2)
@@ -313,15 +325,15 @@ if __name__ == '__main__':
     ax_pot_RE.set_ylabel(r'RE (%)', fontsize=7)
     ax_pot_RE.set_xlabel(r'distance from top of neuron to electrode (cm)', fontsize=7)
     # mark ECoG and EEG locations
-    plt.text(0.24, 0.68, 'ECoG', fontsize=8, transform=plt.gcf().transFigure)
-    plt.text(0.46, 0.68, 'EEG', fontsize=8, transform=plt.gcf().transFigure)
+    plt.text(0.24, 0.52, 'ECoG', fontsize=8, transform=plt.gcf().transFigure)
+    plt.text(0.46, 0.52, 'EEG', fontsize=8, transform=plt.gcf().transFigure)
 
-    for ax in [ax_pot, ax_pot_RE, ax_p, ax_RE_EEG, ax_RE_EEG_p]:
+    for ax in [ax_pot, ax_pot_RE, ax_p, ax_RE_EEG, ax_RE_EEG_p, ax_RE_ECoG_p]:
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
 
     fig.tight_layout(pad=0.5, h_pad=-0.5, w_pad=.7)
-    fig.set_size_inches(8., 6.)
+    fig.set_size_inches(8., 8.)
     fig.subplots_adjust(bottom=.2)
-    plotting_convention.mark_subplots(fig.axes, xpos=-0.25)
-    plt.savefig('./figures/fig_compare_multi_single_dipole_30_2.png', dpi=300)
+    plotting_convention.mark_subplots(fig.axes[:-1], xpos=-0.25)
+    plt.savefig('./figures/fig_compare_multi_single_dipole.png', dpi=300)
