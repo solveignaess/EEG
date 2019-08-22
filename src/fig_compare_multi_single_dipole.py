@@ -230,14 +230,12 @@ if __name__ == '__main__':
     ax_RE_EEG_p.scatter(dip_strength, RE_EEG, s = 5., c = clrs)
     ax_RE_EEG_p.set_xlabel(r'dipole strength $|p|$ (nA$\mu$m)', fontsize=7)
     ax_RE_EEG_p.set_ylabel(r'RE at EEG distance (%)', fontsize=7)
-    ax_RE_EEG_p.set_xlim([0, 25])
+
 
     # plot RE at ECoG distance as function of dipole strength
     ax_RE_ECoG_p.scatter(dip_strength, RE_ECoG, s = 5., c = clrs)
     ax_RE_ECoG_p.set_xlabel(r'dipole strength $|p|$ (nA$\mu$m)', fontsize=7)
     ax_RE_ECoG_p.set_ylabel(r'RE at ECoG distance (%)', fontsize=7)
-    ax_RE_ECoG_p.set_xlim([0, 25])
-    ax_RE_ECoG_p.set_ylim([0, 100])
 
 
     for ax in [ax_p, ax_RE_EEG]:
@@ -327,6 +325,10 @@ if __name__ == '__main__':
     # mark ECoG and EEG locations
     plt.text(0.24, 0.52, 'ECoG', fontsize=8, transform=plt.gcf().transFigure)
     plt.text(0.46, 0.52, 'EEG', fontsize=8, transform=plt.gcf().transFigure)
+
+    ax_RE_EEG_p.set_xlim([0, 25])
+    ax_RE_ECoG_p.set_xlim([0, 25])
+    ax_RE_ECoG_p.set_ylim([0, 100])
 
     for ax in [ax_pot, ax_pot_RE, ax_p, ax_RE_EEG, ax_RE_EEG_p, ax_RE_ECoG_p]:
         ax.spines['right'].set_visible(False)
