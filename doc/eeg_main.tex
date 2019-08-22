@@ -298,14 +298,24 @@ This demonstrates that the relative error of the single-dipole approximation is 
 \end{figure}
 
 \subsection{Compact description of EEG contribution simplifies analysis}\label{subsec:compact}
-In the previous section we found that the single-dipole approximation was applicable for calculation of EEG signals from a single synaptic input to a human cortical Layer 2/3 cell model, and we now expand to three different cell types (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{A}), each receiving a large number of synaptic inputs arriving in four separate waves with specific target regions on the cells (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{B}).
+%In the previous section we showed that the single-dipole approximation was applicable for calculation of EEG signals from a single synaptic input to a human cortical Layer 2/3 cell model, and we now expand this to three different cell types (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{A}), each receiving a large number of synaptic inputs arriving in waves with specific target regions on the cells (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{B}).
 
-Pyramidal cells has a preferred orientation along the depth axis of the cortex, and the direction of the current dipole moment, and therefore the polarity of the EEG signal will be determined by the synaptic input, with apical and basal synaptic input giving opposite current dipoles (cite). In contrast, interneurons are less geometrically aligned (cite).
+Pyramidal cells have a preferred orientation along the depth axis of the cortex (here the $z$-axis), and the direction of the current dipole moment can be expected to align with this axis since
+radial symmetry will tend to make the orthogonal components of the current dipole moment cancel \citep{HAGEN2018}. 
+In contrast, interneurons show much less of a preferred orientation
+(cite), and are therefore not expected to give any meaningful contribution to the EEG signal (cite) (except indirectly, by giving synaptic input to pyramidal cells). 
 
-For all cases the components of the current dipole moment ($\mathbf{p}$) that was orthogonal ($p_x$ and $p_y$) to the depth axis of cortex ($z$)
-was negligible compared to the $p_z$-component (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{C}), as expected from radial symmetry \citep{HAGEN2018}. This means that we can describe the single-cell EEG contribution fully in terms of a single time-dependent array, instead of in terms of the same number of current sources/sinks as the number of compartments (typically ~ 1000 for a large pyramidal cell).
+We illustrated this by applying the single-dipole approximation to three different cell types (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{A}), each receiving a large number of synaptic inputs arriving in waves with specific target regions on the cells (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{B}).
 
-For the two cortical pyramidal cell models that we considered, that is the human layer 2/3 cell models previously considered and a layer 5 pyramidal cell from \cite{HAY2011}
+We used two different cortical pyramidal cell models, that is, the previously used passive human layer 2/3 cell from \cite{EYAL2016}, and in addition a rat layer 5 cell model from \cite{HAY2011}, which has 10 different active conductances and capability for both somatic and dendritic spikes (but note that for now, all synaptic input was kept subthreshold) \tvnnote{Need good way to refer to the specific morphology in Figure 3}. 
+
+%The models received different waves of synaptic input, the first was excitatory input to the distal apical dendrite, the second to the basal dendrite, the third uniformly distributed across the cell, and the fourth
+
+%(and therefore the polarity of the EEG signal) will be determined by the synaptic input, with apical and basal synaptic input giving current dipoles of opposite orientation (cite). 
+
+%For all cases the components of the current dipole moment ($\mathbf{p}$) that was orthogonal ($p_x$ and $p_y$) to the depth axis of cortex ($z$) was negligible compared to the $p_z$-component (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{C}), as expected from  This means that we can describe the single-cell EEG contribution fully in terms of a single time-dependent array, instead of in terms of the same number of current sources/sinks as the number of compartments (typically ~ 1000 for a large pyramidal cell).
+
+
 
 %We found in the previous section that the single-dipole approximation was applicable for calculation of EEG signals, but we have not yet demonstrated its usefulness for modelling and understanding the EEG.
 
@@ -313,7 +323,6 @@ For the two cortical pyramidal cell models that we considered, that is the human
 \tvnnote{Solveig: Could you perhaps run the simulations in Figure 3 with the multi-dipole approach as well, so we can look at the error for the different waves and cells? I'm not sure it needs to be in the figure, but it would be good to give a maximum relative error I think ('relative' with respect to the maximum signal: error / max(abs(sig))). When writing this, it feels like our verification is a bit weak still.
 Maybe it would make sense to add the multi-dipole EEG as dashed lines in panel D as well?
 }
-
 
 \begin{figure}[H]
 	\centering
@@ -327,6 +336,7 @@ Maybe it would make sense to add the multi-dipole EEG as dashed lines in panel D
 	\tvnnote{I suggest to add thin dotted vertical lines in the center of each wave,
 	and writing ``apical input'', ``basal input'', ``uniform input'', 
 	``uniform + perisomatic inhibitory input''.}
+	\tvnnote{I also suggest to move the center of the waves to locations that has ticks: 50, 100, 150, 200}
 	\textbf{C}: The x-, y- and z-components of the current dipole moment $\mathbf{p}$ for the three different cell types.
 	\textbf{D}: EEG signals, $\phi$ from the three cell types computed with the four-sphere model.
 	}
