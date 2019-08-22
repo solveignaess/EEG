@@ -15,6 +15,7 @@
 \usepackage{float}
 \usepackage{array}
 \usepackage{graphicx}
+\usepackage{siunitx}
 \graphicspath{{../src/figures/}}
 \usepackage{rotating}
 \usepackage[labelfont={bf,up}, font={small}]{caption}
@@ -126,10 +127,10 @@ This scheme is referred to as the multicompartment neuron model, and can easily 
 
 \subsubsection{Current dipole approximation}\label{subsec:cda}
 Analogous to how electric charges can create charge multipoles, a combination of current sinks and sources can set up current multipoles \citep{NUNEZ2006}. From electrodynamics we know that extracellular potentials at a distance $R$ from the source can be precisely described by a multipole expansion
-\begin{equation*}
+\begin{equation}
 \phi(R) = \frac{C_{monopole}}{R} + \frac{C_{dipole}}{R^2} + \frac{C_{quadrupole}}{R^3} + \frac{C_{octupole}}{R^4} + ...~.
 \label{eq:dipole_expansion}
-\end{equation*}
+\end{equation}
 Since current monopoles are unphysical due to current conservation, and the quadrupole, octupole and higher order terms are negligible to the current dipole contribution when $R$ is sufficiently large, the extracellular potential from a neuron simulation can be estimated with the \textit{current dipole approximation} \citep{PETTERSEN&EINEVOLL2008,PETTERSEN2014,NUNEZ2006}:
 \begin{equation}
 \phi(\mathbf{r}) = \frac{1}{4 \pi \sigma} \frac{|\mathbf{p}| \cos \theta}{R^2}~.
@@ -239,11 +240,14 @@ Until now, we have focused on analytical solutions of the forward problem, and h
 \subsection{At sufficiently large distances, extracellular potentials become dipolar}\label{subsec:cb_db_comp_inf}
 \tvnnote{I rewrote this section to emphasize that it is an illustration, and removed some technical details that I think wasn't needed here.}
 \tvntxt{
-Excitatory synaptic input initiates a negative current at the synaptic input site (positive ions going into the cell), and due to current conservation \citep{NUNEZ2006} this negative current is exactly balanced by spatially distributed positive currents along the cellular membrane, as illustrated in Fig. \ref{fig:dipole_field}A for a single apical excitatory synaptic input to a human cortical layer 2/3 pyramidal cell model. In the standard approach to modelling extracellular potentials, here referred to as the {\it compartment-based approach}, the transmembrane currents of each of the cellular compartments correspond to a point current source/sink, but a mathematically equivalent formulation would be to instead consider the axial current of each cellular compartment as a small current dipole, which we will here refer to as the {\it multi-dipole approach} (Fig. \ref{fig:dipole_field}B). By summing all these dipoles into a single dipole at a specific position, we obtain the {\it single-dipole approximation} (Fig. \ref{fig:dipole_field}B).
+Excitatory synaptic input initiates a negative current at the synaptic input site (positive ions going into the cell), and due to current conservation \citep{NUNEZ2006} this negative current is exactly balanced by spatially distributed positive currents along the cellular membrane, as illustrated in Fig.~\ref{fig:dipole_field}\textbf{A} for a single apical excitatory synaptic input to a human cortical layer 2/3 pyramidal cell model. In the standard approach to modelling extracellular potentials, here referred to as the {\it compartment-based approach}, the transmembrane currents of each of the cellular compartments correspond to a point current source/sink, but a mathematically equivalent formulation would be to instead consider the axial current of each cellular compartment as a small current dipole, which we will here refer to as the {\it multi-dipole approach} (Fig.~\ref{fig:dipole_field}\textbf{B}). By summing all these dipoles into a single dipole at a specific position, we obtain the {\it single-dipole approximation} (Fig.~\ref{fig:dipole_field}\textbf{B}).
 
-If we for illustrative purposes first assume that the cell is positioned in an infinite homogeneous medium, the extracellular potential can be easily calculated from either the transmembrane currents (eq. \ref{eq:point_source}) or from the multi-dipole or single-dipole approximation (eq. \ref{eq:multi_dipole}). Very close to the cell the extracellular potential will strongly depend on the exact distribution of transmembrane currents across the cellular morphology, and it will therefore typically not have the shape of a single dipole (Fig. \ref{fig:dipole_field} D,E versus F). However, since the extracellular potential
-can be expressed as a multipole expansion (eq. \ref{eq:dipole_expansion}) and all higher order terms will decay faster with distance than the dipole term, the extracellular potential becomes increasingly dipolar with distance from the cell \citep{LINDEN2010}, meaning that for the purpose of calculating extracellular potentials far away from the cell, the single-dipole approximation might be well justified (Fig. \ref{fig:dipole_field}G-I).
+If we for illustrative purposes first assume that the cell is positioned in an infinite homogeneous medium, the extracellular potential can be easily calculated from either the transmembrane currents (eq.~\ref{eq:point_source}) or from the multi-dipole or single-dipole approximation (eq.~\ref{eq:multi_dipole}). Very close to the cell the extracellular potential will strongly depend on the exact distribution of transmembrane currents across the cellular morphology, and it will therefore typically not have the shape of a single dipole (Fig.~\ref{fig:dipole_field} \textbf{D,E} versus \textbf{F}). However, since the extracellular potential
+can be expressed as a multipole expansion (eq.~\ref{eq:dipole_expansion}) and all higher order terms will decay faster with distance than the dipole term, the extracellular potential becomes increasingly dipolar with distance from the cell \citep{LINDEN2010}, meaning that for the purpose of calculating extracellular potentials far away from the cell, the single-dipole approximation might be well justified (Fig.~\ref{fig:dipole_field}\textbf{G-I}).
 }
+
+\tvnnote{Here, I have used compartment-based \textbf{approach}, multi-dipole \textbf{approach} and single-dipole \textbf{approximation}, but I'm not sure about that.}
+
 %The applicability of the single-dipole model, as compared to the multicompartmental model, was tested in the simplest volume conductor possible, i.e. an infinite 3D volume conductor with constant conductivity. The extracellular medium conductivity was set to $0.3$~S/m \cite{HAMALAINEN1993,LOGOTHETIS2007,NUNEZ2006} and we used the Segev cell for the neuron simulation, as described in Section \ref{subsec:neuron_models}. A single excitatory synapse was placed on an apical dendrite, generating an exponential synaptic input current. Figure~\ref{fig:dipole_field} illustrates the difference in electric potential modeled with the multicompartmental, multi-dipole and single-dipole models, but also how the models give interchangeable results in the far-field limit.
 
 
@@ -251,28 +255,45 @@ can be expressed as a multipole expansion (eq. \ref{eq:dipole_expansion}) and al
 	\centering
 	\includegraphics[width=1.0\textwidth]{fig_dipole_field}
 	\caption{\textbf{Extracellular potentials becomes dipolar in the far field limit.}. 
-	\textbf{A}: Layer 2/3 pyramidal cell from human \citep{EYAL2016} with excitatory synapse, illustrated by red dot, placed on apical dendrite. Transmembrane currents modeled for each compartment illustrated by blue and red arrows.
+	\textbf{A}: Layer 2/3 pyramidal cell from human \citep{EYAL2016} with an excitatory synapse placed on apical dendrite (red dot), and the resulting transmembrane currents for each compartment (blue and red arrows for negative and positive currents respectively).
 	\textbf{B}: Green arrows represent the current dipole moments between neighboring neural compartments.
-	\textbf{C}: Gray arrow illustrates the total current dipole moment, i.e. the sum of the dipoles in B.
-	\textbf{D-F}: Extracellular potential in immediate proximity of the neuron, computed with the multicompartmental approach, multi-dipole approach and single-dipole approximation, respectively.
-	\textbf{G, H, I}: Same as D-F, but on a larger spatial scale. See $1$~mm scalebar in panel A, D and G.
+	\textbf{C}: Gray arrow illustrates the total current dipole moment, that is, the sum of the dipoles in B.
+	\textbf{D-F}: Extracellular potential in immediate proximity of the neuron, computed with the compartment-based approach, multi-dipole approach and single-dipole approximation, respectively.
+	\textbf{G-I}: Same as D-F, but at a larger spatial scale (zoomed out). See $1$~mm scalebar in panel A, D and G.
 	}
 	\label{fig:dipole_field}
 \end{figure}
 
 
-\subsection{Single-dipole model is justified for EEG signals, but not ECoG signals}\label{subsec:cb_db_comp_4s}
-\snnote{change headline..}
-We tested the applicability of the single-dipole model for computing ECoG and EEG signals, using the inhomogeneous four-sphere head-model. Since the four-sphere model takes current dipole moments as input, the multi-dipole model was used as ground truth. The Hay cell with conductance-based exponential synaptic input was modeled with $30$ different input locations. Panel \textbf{D} of Figure~\ref{fig:compare_multi_single_dipole} show that apical synaptic input gives the largest current dipole moments. Moreover, panel \textbf{E} and \textbf{F} illustrate how relative errors for single-dipole model decay as function of dipole strength for ECoG and EEG signals. From panel \textbf{B} and \textbf{C} we can see how electric potential and relative error of single-dipole model fall as a function of distance from top of neuron to measurement electrode. The relative errors of the single-dipole model are higher for ECoG than for EEG signals. \snnote{give some example here!}
+\subsection{Single-dipole approximation is justified for EEG, but not ECoG signals}\label{subsec:cb_db_comp_4s}
+%\snnote{change headline..}
+\tvnnote{L23 from human or Hay? If Hay, what was the motivation for change?}
+\tvntxt{The ECoG and EEG signals are strongly affected by the inhomogeneities of the CSF, skull and scalp \citep{NUNEZ2006}, and therefore, to test the applicability of the single-dipole approximation for computing ECoG and EEG signals, we used the four-sphere head-model \citep{NAESS2017, HAGEN2018, HAGEN2019}. 
 
+For different positions of a single conductance-based excitatory synaptic input to the rat cortical layer 5 pyramidal cell model from \cite{HAY2011} 
+(Fig.~\ref{fig:compare_multi_single_dipole}\textbf{A}), we calculated the electric potential from the top of the cell to the top of the head, using both the multi-dipole approach and the single-dipole approximation (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}). As expected we found that synaptic input to the distal apical dendrite gave larger potentials than synaptic input to the proximal apical dendrite due to the larger current dipole moment \citep{LINDEN2010, AHLFORS2015}, and that in both cases the potential was strongly attenuated by crossing the different layers of the head model, most strongly across the low-conducting skull (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}). 
+We also observed a only small differences between the multi-dipole approach and the single-dipole approximation at all positions for the distal synaptic input, while for the proximal synaptic input we observed a substantial difference directly above the cell model, that was substantially decreased along the path towards the top of the head (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}). We quantified these differences by looking at the relative error, and found that for the distal synaptic input the relative error was 20.0 \% and 1.0 \% at the position of the ECoG and EEG electrodes respectively, while for the proximal synaptic input the relative error was 80.0 \% and 20.0 \% at the position of the ECoG and EEG electrodes respectively
+\tvnnote{Solveig: Can you find exact numbers here?}. 
+In other worlds, the single-dipole approximation results in substantial errors at the position of the ECoG electrodes in both cases, but appears well-justified at the position of the EEG electrodes for some synaptic locations. 
+We found that the relative errors of the single-dipole approximation are from synaptic locations $\sim$ 300~$\si{\um}$ above the soma (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{D}). This point can be considered a 'center-of-gravity' for the cells transmembrane currents, meaning that for a synaptic input here, equally much current will go upwards towards the apical dendrite and downwards toward the some, resulting in a very weak dipole moment \citep{LINDEN2010, AHLFORS2015}. 
+
+
+Note however that the synaptic location has a strong effect on the amplitude of the current dipole (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{D}), and that the biggest relative errors of the single-dipole approximation are from synaptic locations that are associated the smallest current dipole moments (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{D}).
+This means that 
+meaning that the relative error of the single-dipole approximation will small for strong dipoles, and large for weak dipoles. 
+}
+
+We tested the applicability of the single-dipole model for computing ECoG and EEG signals, using the inhomogeneous four-sphere head-model. Since the four-sphere model takes current dipole moments as input, the multi-dipole model was used as ground truth. The Hay cell with conductance-based  exponential synaptic input was modeled with $30$ different input locations. Panel \textbf{D} of Figure~\ref{fig:compare_multi_single_dipole} show that apical synaptic input gives the largest current dipole moments. Moreover, panel \textbf{E} and \textbf{F} illustrate how relative errors for single-dipole model decay as function of dipole strength for ECoG and EEG signals. From panel \textbf{B} and \textbf{C} we can see how electric potential and relative error of single-dipole model fall as a function of distance from top of neuron to measurement electrode. The relative errors of the single-dipole model are higher for ECoG than for EEG signals. \snnote{give some example here!}
+\tvnnote{Did we also try current-based synapse? I think we should, so we can say it didn't matter.}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{fig_compare_multi_single_dipole.png}
 	\caption{\textbf{Comparison of multi- and single-dipole modeling of extracellular potentials in four-sphere head model}. 
-	\textbf{A}: Illustration of four-sphere head model, where the pink, blue, green and purple spherical shells represent the brain, CSF, skull and scalp respectively. The inset shows a layer-23 neuron. $30$ simulations with a single synaptic input were performed for varying input locations, see colored dots.
-	\textbf{B}: Magnitude of extracellular potential, $|\phi|$, as function of distance from the top of the neuron, shown for two simulations with synaptic input locations marked by large colored dots in inset of A. Dashed lines show extracellular potentials computed with multiple dipoles, and full lines show single-dipole calculations.
+	\textbf{A}: Illustration of four-sphere head model, where the pink, blue, green and purple spherical shells represent the brain, CSF, skull and scalp respectively. The inset shows a Layer 2/3 neuron \tvnnote{is it not Hay?}. $30$ simulations with a single synaptic input were performed for varying input locations, see colored dots.
+	\tvnnote{Wouldn't it make sense for the dots to follow the morphology?}
+	\textbf{B}: Magnitude of extracellular potential, $|\phi|$, as function of distance from the top of the neuron, shown for two simulations with synaptic input locations marked by large colored dots in inset of A. Dashed lines show extracellular potentials computed with multiple dipoles, and full lines show single-dipole calculations. \tvnnote{Make figure legend for full and dashed lines?} \tvnnote{Is the potential at a given timestep, or is it max? Should be mentioned here I think.}
 	\textbf{C}: Relative error, RE, comparing the single-dipole model to the multi-dipole model, as function of distance from top of neuron to measurement point.
-	\textbf{D}: Magnitude of current dipole moment, $|\mathbf{p}|$, as function of distance from soma to synaptic input location.
+	\textbf{D}: Magnitude of current dipole moment, $|\mathbf{p}|$, as function of distance from soma to synaptic input location. \tvnnote{perhaps not have ``strength'' on y-label}.
 	\textbf{E}: Relative error, RE, showing how single-dipole model deviates from multi-dipole model results as function of distance from soma to synapse location.
 	\textbf{F}: Relative error, RE, showing how single-dipole model deviates from multi-dipole model results as function of magnitude of current dipole moment, $|\mathbf{p}|$.
 	}
