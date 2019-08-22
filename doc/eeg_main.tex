@@ -284,7 +284,7 @@ This demonstrates that the relative error of the single-dipole approximation is 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{fig_compare_multi_single_dipole.png}
-	\caption{\textbf{Comparison of multi- and single-dipole modeling of extracellular potentials in four-sphere head model}. 
+	\caption{\textbf{Single-dipole approximation is justified for EEG but not ECoG signals}. 
 	\textbf{A}: Illustration of four-sphere head model, where the pink, blue, green and purple spherical shells represent the brain, CSF, skull and scalp respectively. The inset shows a Layer 2/3 neuron \tvnnote{is it not Hay?}. $30$ simulations with a single synaptic input were performed for varying input locations, see colored dots.
 	\tvnnote{Wouldn't it make sense for the dots to follow the morphology?}
 	\textbf{B}: Magnitude of extracellular potential, $|\phi|$, as function of distance from the top of the neuron, shown for two simulations with synaptic input locations marked by large colored dots in inset of A. Dashed lines show extracellular potentials computed with multiple dipoles, and full lines show single-dipole calculations. \tvnnote{Make figure legend for full and dashed lines?} \tvnnote{Is the potential at a given timestep, or is it max? Should be mentioned here I think.}
@@ -298,6 +298,36 @@ This demonstrates that the relative error of the single-dipole approximation is 
 \end{figure}
 
 \subsection{Compact description of EEG contribution simplifies analysis}\label{subsec:compact}
+In the previous section we found that the single-dipole approximation was applicable for calculation of EEG signals from a single synaptic input to a human cortical Layer 2/3 cell model, and we now expand to three different cell types (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{A}), each receiving a large number of synaptic inputs arriving in four separate waves with specific target regions on the cells (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{B}).
+
+We found that for all cases the components of the current dipole moment ($\mathbf{p}$) that was orthogonal ($p_x$ and $p_y$) to the depth axis of cortex ($z$)
+was negligible compared to the $p_z$-component, as expected from radial symmetry \citep{HAGEN2018}.
+
+%We found in the previous section that the single-dipole approximation was applicable for calculation of EEG signals, but we have not yet demonstrated its usefulness for modelling and understanding the EEG.
+
+
+\tvnnote{Solveig: Could you perhaps run the simulations in Figure 3 with the multi-dipole approach as well, so we can look at the error for the different waves and cells? I'm not sure it needs to be in the figure, but it would be good to give a maximum relative error I think ('relative' with respect to the maximum signal: error / max(abs(sig))). When writing this, it feels like our verification is a bit weak still.
+Maybe it would make sense to add the multi-dipole EEG as dashed lines in panel D as well?
+}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{fig_compare_neurons_l5ChC.png}
+	\caption{\textbf{EEG signals and current dipole moment from three different cell types with various synaptic input}.
+	\textbf{A}: 2D plots of the morphologies of the Hay cell (blue), the Segev cell (purple) and the \sntxt{!interneuron!} (green). All panels use the same colors for data from each cell type.
+	\tvnnote{If we use the human L2/3 cell for Fig 1 and 2, I think it should come first (be the leftmost cell in panel A) here.}
+	\tvnnote{Could we have names under each cell in panel A? For example ``rat L5 PC'',
+	``human L2/3 PC'', and ``rat L5(?) IN''}
+	\textbf{B}: Each dot represents an excitatory synaptic input at a specific time (x-axis) at a specific height of the neuron (z-axis, corresponding to panel A) for a specific cell type (color). The crosses mark inhibitory synaptic input. The four input bulks represent 1) apical excitatory input, 2) basal excitatory input, 3) homogeneously spread-out excitatory input and 4) homogeneously spread-out excitatory input and inhibitory basal input.
+	\tvnnote{I suggest to add thin dotted vertical lines in the center of each wave,
+	and writing ``apical input'', ``basal input'', ``uniform input'', 
+	``uniform + perisomatic inhibitory input''.}
+	\textbf{C}: The x-, y- and z-components of the current dipole moment $\mathbf{p}$ for the three different cell types.
+	\textbf{D}: EEG signals, $\phi$ from the three cell types computed with the four-sphere model.
+	}
+	\label{fig:eeg_compare_cell_types}
+\end{figure}
 
 \subsubsection{Current dipole moment predicts EEG signals from different cell types with various synaptic input patterns}
 \sntxt{
@@ -316,17 +346,7 @@ This demonstrates that the relative error of the single-dipole approximation is 
 	
 }
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\textwidth]{fig_compare_neurons_l5ChC.png}
-	\caption{\textbf{EEG signals and current dipole moment from three different cell types with various synaptic input}.
-	\textbf{A}: 2D plots of the morphologies of the Hay cell (blue), the Segev cell (purple) and the \sntxt{!interneuron!} (green). All panels use the same colors for data from each cell type.
-	\textbf{B}: Each dot represents an excitatory synaptic input at a specific time (x-axis) at a specific height of the neuron (z-axis, corresponding to panel A) for a specific cell type (color). The crosses mark inhibitory synaptic input. The four input bulks represent 1) apical excitatory input, 2) basal excitatory input, 3) homogeneously spread-out excitatory input and 4) homogeneously spread-out excitatory input and inhibitory basal input.
-	\textbf{C}: The x-, y- and z-components of the current dipole moment $\mathbf{p}$ for the three different cell types.
-	\textbf{D}: EEG signals, $\phi$ from the three cell types computed with the four-sphere model.
-	}
-	\label{fig:eeg_compare_cell_types}
-\end{figure}
+
 
 \subsection{Dipole approximation for populations of cells}
 \sntxt{
