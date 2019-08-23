@@ -355,7 +355,7 @@ if __name__ == '__main__':
     ax_pot_RE.set_ylabel(r'RE (%)', fontsize=7)
     ax_pot_RE.set_xlabel(r'distance from top of neuron to electrode (mm)', fontsize=7)
     # mark ECoG and EEG locations
-    plt.text(0.245, 0.61, 'ECoG', fontsize=8, transform=plt.gcf().transFigure)
+    plt.text(0.16, 0.61, 'ECoG', fontsize=8, transform=plt.gcf().transFigure)
     plt.text(0.467, 0.61, 'EEG', fontsize=8, transform=plt.gcf().transFigure)
 
     for ax in [ax_p, ax_RE_EEG]:
