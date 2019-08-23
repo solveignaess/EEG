@@ -301,19 +301,29 @@ This demonstrates that the relative error of the single-dipole approximation is 
 %In the previous section we showed that the single-dipole approximation was applicable for calculation of EEG signals from a single synaptic input to a human cortical Layer 2/3 cell model, and we now expand this to three different cell types (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{A}), each receiving a large number of synaptic inputs arriving in waves with specific target regions on the cells (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{B}).
 
 Pyramidal cells have a preferred orientation along the depth axis of the cortex (here the $z$-axis), and the direction of the current dipole moment can be expected to align with this axis since
-radial symmetry will tend to make the orthogonal components of the current dipole moment cancel \citep{HAGEN2018}. 
+radial symmetry will tend to make the orthogonal components cancel \citep{HAGEN2018}. 
 In contrast, interneurons show much less of a preferred orientation
-(cite), and are therefore not expected to give any meaningful contribution to the EEG signal (cite) (except indirectly, by giving synaptic input to pyramidal cells). 
+(cite), and are therefore not expected to give any meaningful contribution to the EEG signal (cite) (except indirectly through input to pyramidal cells). 
 
 We illustrated this by applying the single-dipole approximation to three different cell types (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{A}), each receiving a large number of synaptic inputs arriving in waves with specific target regions on the cells (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{B}).
 
-We used two different cortical pyramidal cell models, that is, the previously used passive human layer 2/3 cell from \cite{EYAL2016}, and in addition a rat layer 5 cell model from \cite{HAY2011}, which has 10 different active conductances and capability for both somatic and dendritic spikes (but note that for now, all synaptic input was kept subthreshold) \tvnnote{Need good way to refer to the specific morphology in Figure 3}. 
+For the previously used human layer 2/3 cell from \cite{EYAL2016},
+receiving a wave of 1'000 excitatory synaptic inputs that were restricted to the uppermost 250(?)~$\si{\um}$ of the cell (time=?; name=?, Fig.~\ref{fig:eeg_compare_cell_types}\textbf{B}), we observed a negative deviation of the $p_z$-component (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{C}). For basal synaptic input, the polarity of $p_z$ was instead positive, but of slightly lower amplitude than for apical input. 
+This can be explained by more local return currents
+
+
+that were relatively similar in shape, but had a somewhat higher amplitude for the larger \tvnnote{How does the diameters of the main apical dendrites compare?} layer 5 model
+
+We used two different cortical pyramidal cell models, that is, the previously used passive human layer 2/3 cell from \cite{EYAL2016}, and in addition a rat layer 5 cell model from \cite{HAY2011} with 10 different active conductances and capability for both somatic and dendritic spikes (but note that for now, all synaptic input was subthreshold) \tvnnote{Need good way to refer to the specific morphology in Figure 3}. 
+%For a wave of 1'000 excitatory synaptic inputs that were restricted to the uppermost 250(?)~$\si{\um}$ of the cells (time=?; name=?, Fig.~\ref{fig:eeg_compare_cell_types}\textbf{B}), we observed negative deviation of the $p_z$-component, that were relatively similar in shape, but had a somewhat higher amplitude for the larger \tvnnote{How does the diameters of the main apical dendrites compare?} layer 5 model Fig.~\ref{fig:eeg_compare_cell_types}\textbf{C}. For basal synaptic input, the polarity of $p_z$ was instead positive, but of slightly lower amplitude than for apical input. 
+%This can be explained by more local return currents
+
 
 %The models received different waves of synaptic input, the first was excitatory input to the distal apical dendrite, the second to the basal dendrite, the third uniformly distributed across the cell, and the fourth
 
 %(and therefore the polarity of the EEG signal) will be determined by the synaptic input, with apical and basal synaptic input giving current dipoles of opposite orientation (cite). 
 
-%For all cases the components of the current dipole moment ($\mathbf{p}$) that was orthogonal ($p_x$ and $p_y$) to the depth axis of cortex ($z$) was negligible compared to the $p_z$-component (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{C}), as expected from  This means that we can describe the single-cell EEG contribution fully in terms of a single time-dependent array, instead of in terms of the same number of current sources/sinks as the number of compartments (typically ~ 1000 for a large pyramidal cell).
+%For all cases the components of the current dipole moment ($\mathbf{p}$) that was orthogonal ($p_x$ and $p_y$) to the depth axis of cortex ($z$) was negligible compared to the $p_z$-component (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{C}), as expected from radial symmetry. This means that we can describe the single-cell EEG contribution fully in terms of a single time-dependent array, instead of in terms of the same number of current sources/sinks as the number of compartments (typically ~ 1000 for a large pyramidal cell).
 
 
 
