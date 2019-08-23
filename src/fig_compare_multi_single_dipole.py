@@ -11,7 +11,7 @@ from fig_dipole_field import make_data, make_fig_1
 
 def set_parameters():
     """set cell, synapse and electrode parameters"""
-    cell_parameters = {'morphology': './cell_models/hay/L5bPCmodelsEH/morphologies/cell1.asc',# only mandatory parameter # './cell_models/segev/CNG_version/2013_03_06_cell03_789_H41_03.CNG.swc', #
+    cell_parameters = {'morphology': './cell_models/segev/CNG_version/2013_03_06_cell03_789_H41_03.CNG.swc', #'./cell_models/hay/L5bPCmodelsEH/morphologies/cell1.asc',# only mandatory parameter #
                    'tstart': 0., # simulation start time
                    'tstop': 100 # simulation stop time [ms]
                    }
@@ -25,7 +25,7 @@ def set_parameters():
                       }
     return cell_parameters, synapse_parameters
 
-def simulate(celltype='l23'):
+def simulate(celltype='l23', syn_pos=[(0., 0., 0.)]):
     """set synapse location. simulate cell, synapse and electrodes for input synapse location"""
 
     # create cell with parameters in dictionary
@@ -33,14 +33,13 @@ def simulate(celltype='l23'):
     if celltype == 'l23':
         cell.set_rotation(x=np.pi/2)
 
-    pos = syn_loc
-   # set synapse location
-    synapse_parameters['idx'] = cell.get_closest_idx(x=pos[0], y=pos[1], z=pos[2])
-    # create synapse with parameters in dictionary
-    synapse = LFPy.Synapse(cell, **synapse_parameters)
-    synapse.set_spike_times(np.array([20.]))
-    #  simulation goes from t: 0-100 in ms. spike_time = 20ms
-    # timeres = 0.1 --> 801 measurements!
+    for pos in syn_locs:
+        synapse_parameters['idx'] = cell.get_closest_idx(x=pos[0], y=pos[1], z=pos[2])
+        # create synapse with parameters in dictionary
+        synapse = LFPy.Synapse(cell, **synapse_parameters)
+        synapse.set_spike_times(np.array([20.]))
+        #  simulation goes from t: 0-100 in ms. spike_time = 20ms
+        # timeres = 0.1 --> 801 measurements!
 
     cell.simulate(rec_imem = True,
                   rec_vmem = True,
@@ -93,7 +92,7 @@ if __name__ == '__main__':
     # make array of synapse positions
     num_syns = 30
     max_ind = 216
-    syn_loc_zs = np.linspace(0, 1000, num_syns)
+    syn_loc_zs = np.linspace(0, 775, num_syns)
     syn_locs = [(0., 0., z) for z in syn_loc_zs]
     # make electrode array params
     num_electrodes = 40
@@ -122,11 +121,12 @@ if __name__ == '__main__':
     lfp_single_dip_list = []
     lfp_multi_dip_list = []
     RE_list = []
+    actual_synlocs = []
     # get data from num_syns simulations
     for i in range(num_syns):
         print('syn number:', i)
         syn_loc = syn_locs[i]
-        cell, synapse, electrode_array = simulate()
+        cell, synapse, electrode_array = simulate(syn_pos = [syn_loc])
         print('cell simulated')
         cell.set_pos(x=rz[0], y=rz[1], z=rz[2])
 
@@ -144,6 +144,7 @@ if __name__ == '__main__':
         # compute relative errors
         RE = np.abs((lfp_single_dip - lfp_multi_dip)/lfp_multi_dip)
 
+        actual_synlocs.append([cell.xmid[cell.synidx[0]], cell.zmid[cell.synidx[0]]])
         p_list.append(p)
         p_loc_list.append(dip_loc)
         lfp_single_dip_list.append(lfp_single_dip)
@@ -169,7 +170,35 @@ if __name__ == '__main__':
     RE_ECoG = np.array(RE_list).reshape(num_syns, num_electrodes)[:,ecog_ind]*k_100
     dip_strength = np.linalg.norm(np.array(p_list).reshape(num_syns,3), axis=1)
 
-    np.savez('./data/compare_multi_single_dipole_hay_40syns',
+    zips = []
+    for x, z in cell.get_idx_polygons():
+        zips.append(list(zip(x, z)))
+    zmax = np.max(cell.zend)
+
+    # compute RE_EEG for simulation where all 30 synapses are active at once:
+    cell, synapse, electrode_array = simulate(syn_pos = syn_locs)
+    cell.set_pos(x=rz[0], y=rz[1], z=rz[2])
+    # compute timepoint with biggest dipole
+    dipoles = cell.current_dipole_moment
+    timemax = [np.argmax(np.linalg.norm(np.abs(dipoles),axis=1))]
+    p = dipoles[timemax]
+    # compute LFP with single dipole
+    dip_loc = get_dipole_loc(rz, syn_loc)
+    lfp_single_dip = fs.calc_potential(p, dip_loc)
+    print('pot from single dip computed')
+    # compute LFP with multi-dipole
+    lfp_multi_dip = fs.calc_potential_from_multi_dipoles(cell, timemax)
+    print('pot from multi dip computed')
+    # compute relative errors
+    RE_30syns = np.abs((lfp_single_dip - lfp_multi_dip)/lfp_multi_dip)
+    RE_EEG_30syns = RE_30syns[-1][0]
+    # RE_EEG = np.array(RE_list).reshape(num_syns, num_electrodes)[:,eeg_ind]*k_100
+    # RE_ECoG = np.array(RE_list).reshape(num_syns, num_electrodes)[:,ecog_ind]*k_100
+    # dip_strength = np.linalg.norm(np.array(p_list).reshape(num_syns,3), axis=1)
+
+
+
+    np.savez('./data/compare_multi_single_dipole_segev_40syns',
              lfp_multi = lfp_multi_dip_list,
              lfp_single = lfp_single_dip_list,
              re_eeg = RE_EEG,
@@ -179,13 +208,17 @@ if __name__ == '__main__':
              dip_locs = p_loc_list,
              sigmas = sigmas,
              radii = radii,
-             syn_locs = syn_locs)
+             syn_locs = syn_locs,
+             actual_synlocs = actual_synlocs,
+             zips = zips,
+             zmax = zmax,
+             RE_EEG_30syns = RE_EEG_30syns)
 
     ################################################################################
     ######################################plot######################################
     ################################################################################
 
-    data = np.load('./data/compare_multi_single_dipole_hay_40syns.npz')
+    data = np.load('./data/compare_multi_single_dipole_segev_40syns.npz')
     lfp_multi_dip_list = data['lfp_multi']
     lfp_single_dip_list = data['lfp_single']
     RE_EEG = data['re_eeg']
@@ -194,7 +227,8 @@ if __name__ == '__main__':
     p_loc_list = data['dip_locs']
     sigmas = data['sigmas']
     radii = data['radii']
-    syn_locs = data['syn_locs']
+    syn_locs = data['actual_synlocs']
+    RE_EEG_30syns = data['RE_EEG_30syns']
     dip_strength = np.linalg.norm(np.array(p_list).reshape(num_syns,3), axis=1)
 
     RE_list = np.abs((lfp_single_dip_list - lfp_multi_dip_list)/lfp_multi_dip_list)
@@ -207,42 +241,38 @@ if __name__ == '__main__':
     head_colors = plt.cm.Pastel1([0,1,2,3])
 
     # define axes
-    ax_setup = plt.subplot2grid((4,4),(0,0), rowspan=2)
-    ax_pot = plt.subplot2grid((4,4),(2,0), colspan=2)
-    ax_pot_RE = plt.subplot2grid((4,4),(3,0), colspan=2)
-    ax_RE_EEG = plt.subplot2grid((4,4),(0,2), colspan=2)
-    ax_p = plt.subplot2grid((4,4),(1,2), colspan=2)
-    ax_RE_EEG_p = plt.subplot2grid((4,4),(2,2), colspan=2)
-    ax_RE_ECoG_p = plt.subplot2grid((4,4),(3,2), colspan=2)
+    ax_setup = plt.subplot2grid((3,4),(0,0))
+    ax_pot = plt.subplot2grid((3,4),(1,0), colspan=2)
+    ax_pot_RE = plt.subplot2grid((3,4),(2,0), colspan=2)
+    ax_RE_EEG = plt.subplot2grid((3,4),(0,2), colspan=2)
+    ax_p = plt.subplot2grid((3,4),(1,2), colspan=2)
+    ax_RE_EEG_p = plt.subplot2grid((3,4),(2,2), colspan=2)
+    # ax_RE_ECoG_p = plt.subplot2grid((4,4),(3,2), colspan=2)
 
     # plot dipole strength as function of synapse distance from soma
     ax_p.scatter(syn_loc_zs, dip_strength, s = 5., c = clrs)
-    ax_p.set_xlabel(r'synapse distance from soma', fontsize=7, labelpad=0.5)
-    ax_p.set_ylabel(r'dipole strength $|p|$ (nA$\mu$m)', fontsize=7)
+    ax_p.set_xlabel(r'synapse distance from soma ($\mu$m)', fontsize=7, labelpad=0.5)
+    ax_p.set_ylabel(r'current dipole moment $|p|$ (nA$\mu$m)', fontsize=7)
     # ax_p.set_xticklabels([])
 
     # plot RE at EEG distance as function of synapse distance from soma
     ax_RE_EEG.scatter(syn_loc_zs, RE_EEG, s = 5., c = clrs)
     ax_RE_EEG.set_xlabel(r'synapse distance from soma', fontsize=7, labelpad=0.5)
-    ax_RE_EEG.set_ylabel(r'RE at EEG distance (%)', fontsize=7)
+    ax_RE_EEG.set_ylabel(r'RE for EEG (%)', fontsize=7)
 
     # plot RE at EEG distance as function of dipole strength
+    ax_RE_EEG_p.plot(np.arange(16), np.ones(16)*RE_EEG_30syns, 'k--', label="30 synapses active simultaneously")
     ax_RE_EEG_p.scatter(dip_strength, RE_EEG, s = 5., c = clrs)
-    ax_RE_EEG_p.set_xlabel(r'dipole strength $|p|$ (nA$\mu$m)', fontsize=7)
-    ax_RE_EEG_p.set_ylabel(r'RE at EEG distance (%)', fontsize=7)
+    ax_RE_EEG_p.set_xlabel(r'current dipole moment $|p|$ (nA$\mu$m)', fontsize=7)
+    ax_RE_EEG_p.set_ylabel(r'RE for EEG (%)', fontsize=7)
+    ax_RE_EEG_p.legend(loc=1, fontsize=6, frameon=False)
 
 
-    # plot RE at ECoG distance as function of dipole strength
-    ax_RE_ECoG_p.scatter(dip_strength, RE_ECoG, s = 5., c = clrs)
-    ax_RE_ECoG_p.set_xlabel(r'dipole strength $|p|$ (nA$\mu$m)', fontsize=7)
-    ax_RE_ECoG_p.set_ylabel(r'RE at ECoG distance (%)', fontsize=7)
+    # # plot RE at ECoG distance as function of dipole strength
+    # ax_RE_ECoG_p.scatter(dip_strength, RE_ECoG, s = 5., c = clrs)
+    # ax_RE_ECoG_p.set_xlabel(r'dipole strength $|p|$ (nA$\mu$m)', fontsize=7)
+    # ax_RE_ECoG_p.set_ylabel(r'RE at ECoG distance (%)', fontsize=7)
 
-
-    for ax in [ax_p, ax_RE_EEG]:
-        ax.set_xlim([-20, 1002])
-
-    for ax in [ax_p, ax_RE_EEG, ax_RE_EEG_p]:
-        ax.set_ylim([0,25])
     # plot setup, potentials and RE as function of distance to electrode
     radii_tweaked = [radii[0]] + [r + 500 for r in radii[1:]]
     # plot 4s-model
@@ -254,7 +284,7 @@ if __name__ == '__main__':
     plot_neuron(ax_setup, cell)
     ax_setup.plot(0,0,'o', ms = 1e-4)
     # zoom in on neuron:
-    zoom_ax = zoomed_inset_axes(ax_setup, 200, loc=9, bbox_to_anchor=(900, 2100)) # zoom = 6
+    zoom_ax = zoomed_inset_axes(ax_setup, 200, loc=9, bbox_to_anchor=(900, 1800)) # zoom = 6
     x1, x2, y1, y2 = -1000, 1000, 76000, 79200
     zoom_ax.set_facecolor(head_colors[0])
     zoom_ax.set_xlim(x1, x2)
@@ -289,20 +319,22 @@ if __name__ == '__main__':
     electrode_locs_z = electrode_locs_z*k1
 
     for syn in range(num_syns):
-        zoom_ax.plot(syn_locs[syn][0], syn_locs[syn][2]+77500., 'o', color=clrs[syn], ms = .5)
+        zoom_ax.plot(actual_synlocs[syn][0], actual_synlocs[syn][1], 'o', color=clrs[syn], ms = .5)
 
     for i in syns_to_plot:
         # plot lfps
         lfp_single_dip = lfp_single_dip_list[i].reshape(electrode_locs_z.shape)*k
         lfp_multi_dip = lfp_multi_dip_list[i].reshape(electrode_locs_z.shape)*k
-        ax_pot.loglog(electrode_locs_z, np.abs(lfp_single_dip), color=clrs[i], label=str(i), linewidth=1.)
-        ax_pot.loglog(electrode_locs_z, np.abs(lfp_multi_dip), '--', color=clrs[i], label=str(i), linewidth=1.)
+        ax_pot.loglog(electrode_locs_z, np.abs(lfp_single_dip), color=clrs[i], linewidth=1.)
+        ax_pot.loglog(electrode_locs_z, np.abs(lfp_multi_dip), '--', color=clrs[i], linewidth=1.)
 
         # plot relative errors
         RE = RE_list[i].reshape(electrode_locs_z.shape)*k_100
         ax_pot_RE.semilogx(electrode_locs_z, RE, color = clrs[i], label=str(i), linewidth=1.)
         zoom_ax.plot(syn_locs[i][0], syn_locs[i][2]+77500., 'o', color=clrs[i], ms = 3)
-        # show synapse locations
+    ax_pot.plot(100, 0, 'k--', label='multi-dipole')
+    ax_pot.plot(100, 0, 'k-', label='single-dipole')
+    ax_pot.legend(loc=1, fontsize=6, frameon=False)
 
 
     # fix axes
@@ -321,21 +353,26 @@ if __name__ == '__main__':
     ax_pot_RE.set_ylim([0, 100])
     ax_pot.set_ylabel(r'electric potential $|\Phi|$ ($\mu$V)', fontsize=7)
     ax_pot_RE.set_ylabel(r'RE (%)', fontsize=7)
-    ax_pot_RE.set_xlabel(r'distance from top of neuron to electrode (cm)', fontsize=7)
+    ax_pot_RE.set_xlabel(r'distance from top of neuron to electrode (mm)', fontsize=7)
     # mark ECoG and EEG locations
-    plt.text(0.24, 0.52, 'ECoG', fontsize=8, transform=plt.gcf().transFigure)
-    plt.text(0.46, 0.52, 'EEG', fontsize=8, transform=plt.gcf().transFigure)
+    plt.text(0.245, 0.61, 'ECoG', fontsize=8, transform=plt.gcf().transFigure)
+    plt.text(0.467, 0.61, 'EEG', fontsize=8, transform=plt.gcf().transFigure)
 
-    ax_RE_EEG_p.set_xlim([0, 25])
-    ax_RE_ECoG_p.set_xlim([0, 25])
-    ax_RE_ECoG_p.set_ylim([0, 100])
+    for ax in [ax_p, ax_RE_EEG]:
+        ax.set_xlim([-20, 800])
 
-    for ax in [ax_pot, ax_pot_RE, ax_p, ax_RE_EEG, ax_RE_EEG_p, ax_RE_ECoG_p]:
+    for ax in [ax_RE_EEG, ax_RE_EEG_p]:
+        ax.set_ylim([0, 10])
+    ax_p.set_ylim([0, 15])
+
+    ax_RE_EEG_p.set_xlim([0, 15])
+
+    for ax in [ax_pot, ax_pot_RE, ax_p, ax_RE_EEG, ax_RE_EEG_p]:
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
 
-    fig.tight_layout(pad=0.5, h_pad=-0.5, w_pad=.7)
-    fig.set_size_inches(8., 8.)
-    fig.subplots_adjust(bottom=.2)
+    fig.tight_layout(pad=0.5, h_pad=-1.2, w_pad=1.1)
+    fig.set_size_inches(8., 6.)
+    fig.subplots_adjust(bottom=.08, top=.91)
     plotting_convention.mark_subplots(fig.axes[:-1], xpos=-0.25)
-    plt.savefig('./figures/fig_compare_multi_single_dipole.png', dpi=300)
+    plt.savefig('./figures/fig_compare_multi_single_dipole_segev.png', dpi=300)
