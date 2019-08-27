@@ -10,7 +10,7 @@ np.random.seed(1234)
 
 def run_cell_simulation_distributed_input(dt, cell_name):
 
-    T = 100
+    T = 200
 
     if cell_name == 'almog':
         model_folder = join('cell_models', 'almog')
@@ -60,14 +60,14 @@ def run_cell_simulation_distributed_input(dt, cell_name):
     cell.set_rotation(z=np.random.rand() * np.pi * 2)
     cell.set_pos(x=np.random.uniform(-250, 250), y=np.random.uniform(-250, 250))
 
-    idx_basal = cell.get_rand_idx_area_norm(section=["dend"], nidx=100)
+    idx_basal = cell.get_rand_idx_area_norm(section=["dend"], nidx=500)
     delay_basal = np.random.normal(20 + np.random.normal(0, 2), 5, size=len(idx_basal))
     idx_apic = cell.get_rand_idx_area_norm(section="apic", z_min=400, z_max=700, nidx=100)
     delay_apic = np.random.normal(20 + np.random.normal(0, 2), 5, size=len(idx_apic))
     #
     for num in range(len(idx_basal)):
         synapse_s = LFPy.Synapse(cell, idx=idx_basal[num],
-                                 syntype='Exp2Syn', weight=0.0005, tau1=0.1, tau2=2.)
+                                 syntype='Exp2Syn', weight=0.0002, tau1=0.1, tau2=2.)
         synapse_s.set_spike_times(np.array([delay_basal[num]]))
 
     for num in range(len(idx_apic)):
@@ -267,7 +267,7 @@ def simulate_laminar_LFP():
 
     elec_clr = lambda idx: plt.cm.viridis(idx / len(elec_z))
 
-    num_sims = 50
+    num_sims = 1
 
     cells = []
 
