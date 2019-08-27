@@ -1,0 +1,74 @@
+
+celsius = 34
+Vrest = -62				// resting potential in mV
+
+cm_myelin = 0.04
+g_pas_node = 0.02
+v_init    = -62
+Ek = -100
+Ena = 60
+Eca = 130
+
+//passive
+ra  = 120.438
+rm  = 25812.2
+c_m  = 0.602042
+epas_sim  = -47.8446
+
+//gih
+gih_end  = 118.437
+gih_x2 = 351.814
+gih_alpha=-0.0137979
+gih_start=2.5117
+ih_q10=1.44732
+
+gkslow_start= 3.78767
+gkslow_alpha= -0.0915783
+gkslow_beta=205.886
+gka_start= 28.2824
+gka_alpha= -0.0117721
+gka_beta= 331.65
+gna_soma = 352.142
+gna_api =56.4519
+dist_na = 480.929
+na_shift1 = -10.9975
+na_shift2 = -9.60842
+
+na_taum_scale=1
+na_tauh_scale=1
+
+//Ca
+
+pcah_soma = 9.27521e-05
+pcah_api = 0.000155847
+dist_cah = 10.3458
+
+cah_qm =2
+ca_qh=2
+
+cah_shift=-4.49601
+cah_shifth=-7.11157
+
+pcar_soma = 0.00314901
+pcar_api = 0.000488401
+dist_car = 924.858
+
+car_qh=1
+
+car_shift=-9.67845
+car_shifth=-2.1308
+car_qm=1.15288
+
+//axon parameters
+gkslow_node=1500
+gka_node=1000
+gna_node=30000
+shift_na_act_axon=7
+shift_na_inact_axon=3
+
+gsk_soma=3.18076
+gsk_dend=0.524016
+dist_sk=238.75
+gbk_soma=0.638741
+gbk_dend=1.22971
+dist_bk=27.5943
