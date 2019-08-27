@@ -170,7 +170,6 @@ Equations~\eqref{eq:dip_sum_trans}-\eqref{eq:dip_sum_axial} apply the point-sour
 
 \snnote{Explain multi/ single/ population dipole!}
 
-
 \subsubsection{Inhomogeneous four-sphere model}
 We can incorporate a simplified head geometry and different medium conductivities into our calculations by applying the four-sphere model. This head model consists of four concentric shells: brain tissue, cerebrospinal (CSF) fluid, skull and scalp, where the conductivity can be set individually for each shell, \citep{SRINIVASAN1998,NUNEZ2006}. The model solution is given in \citep{NAESS2017} and is found by solving the Poisson equation subject to boundary conditions ensuring continuity of current and electric potentials over the boundaries, as well as no current escaping the outer shell. This model is based on the current dipole approximation.
 
@@ -241,7 +240,7 @@ We introduce an approach for detailed biophysical modelling of ECoG, EEG and MEG
 
 \subsection{At sufficiently large distances, extracellular potentials become dipolar}\label{subsec:cb_db_comp_inf}
 
-Excitatory synaptic input initiates a negative current at the synaptic input site (positive ions going into the cell), and due to current conservation \citep{NUNEZ2006} this negative current is exactly balanced by spatially distributed positive currents along the cellular membrane, as illustrated in Fig.~\ref{fig:dipole_field}\textbf{A} for a single apical excitatory synaptic input to a human cortical layer 2/3 pyramidal cell model. In the standard approach to modelling extracellular potentials, here referred to as the {\it compartment-based approach}, the transmembrane currents of each of the cellular compartments correspond to a point current source/sink, but a mathematically equivalent formulation would be to instead consider the axial current of each cellular compartment as a small current dipole, which we will here refer to as the {\it multi-dipole approach} (Fig.~\ref{fig:dipole_field}\textbf{B}). By summing all these dipoles into a single dipole at a specific position, we obtain the {\it single-dipole approximation} (Fig.~\ref{fig:dipole_field}\textbf{C}).
+Excitatory synaptic input initiates a negative current at the synaptic input site (positive ions going into the cell), and due to current conservation \citep{NUNEZ2006} this negative current is exactly balanced by spatially distributed positive currents along the cellular membrane, as illustrated in Fig.~\ref{fig:dipole_field}\textbf{A} for a single apical excitatory synaptic input to a human cortical layer 2/3 pyramidal cell model \citep{EYAL2016}. In the standard approach to modelling extracellular potentials, here referred to as the {\it compartment-based approach}, the transmembrane currents of each of the cellular compartments correspond to a point current source/sink, but a mathematically equivalent formulation would be to instead consider the axial current of each cellular compartment as a small current dipole, which we will here refer to as the {\it multi-dipole approach} (Fig.~\ref{fig:dipole_field}\textbf{B}). By summing all these dipoles into a single dipole at a specific position, we obtain the {\it single-dipole approximation} (Fig.~\ref{fig:dipole_field}\textbf{C}).
 
 For illustration we first assume that the cell is positioned in an infinite homogeneous medium, in which case the extracellular potential can be easily calculated by the compartment-based approach (eq.~\ref{eq:point_source}) or from the multi-dipole or single-dipole approximation (eq.~\ref{eq:dipole}). Very close to the cell the extracellular potential will strongly depend on the exact distribution of transmembrane currents across the cellular morphology, and it will therefore typically not have the shape of a single dipole (Fig.~\ref{fig:dipole_field} \textbf{D,E} versus \textbf{F}). However, since the extracellular potential
 can be expressed as a multipole expansion (eq.~\ref{eq:dipole_expansion}) and all higher order terms will decay faster with distance than the dipole term, the extracellular potential becomes increasingly dipolar with distance from the cell \citep{LINDEN2010}, meaning that for the purpose of calculating extracellular potentials far away from the cell, the single-dipole approximation might be well justified (Fig.~\ref{fig:dipole_field}\textbf{G-I}).
@@ -269,7 +268,7 @@ can be expressed as a multipole expansion (eq.~\ref{eq:dipole_expansion}) and al
 \subsection{Single-dipole approximation is justified for EEG, but not ECoG signals}\label{subsec:cb_db_comp_4s}
 The ECoG and EEG signals are strongly affected by the very different conductivities of the CSF, skull and scalp \citep{NUNEZ2006}, and therefore, to test the applicability of the single-dipole approximation for computing ECoG and EEG signals, we used the four-sphere head-model \citep{NAESS2017, HAGEN2018, HAGEN2019}. 
 
-For different positions of a single conductance-based excitatory synaptic input to the rat cortical layer 5 pyramidal cell model from \cite{HAY2011} 
+For different positions of a single conductance-based excitatory synaptic input to the human cortical layer 2/3 pyramidal cell model \citep{EYAL2016}
 (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{A}), we calculated the electric potential from the top of the cell to the top of the head, using both the multi-dipole approach and the single-dipole approximation (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}). As expected we found that synaptic input to the distal apical dendrite gave larger potentials than synaptic input to the proximal apical dendrite due to the larger current dipole moment \citep{LINDEN2010, AHLFORS2015}, and that in both cases the potential was strongly attenuated by crossing the different layers of the head model, most strongly across the low-conducting skull (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}). 
 
 We observed only small differences between the multi-dipole approach and the single-dipole approximation for the distal synaptic input, while for the proximal synaptic input we observed a substantial difference directly above the cell model, that was decreased along the path towards the top of the head (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}). We quantified these differences by looking at the relative error, and found that for the distal synaptic input the relative error was 20.0(?) \% and 1.0(?) \% at the position of the ECoG and EEG electrodes respectively, while for the proximal synaptic input the relative error was 80.0(?) \% and 20.0(?) \% at the position of the ECoG and EEG electrodes respectively (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{C})
@@ -285,11 +284,10 @@ This demonstrates that the relative error of the single-dipole approximation is 
 	\centering
 	\includegraphics[width=1.0\textwidth]{fig_compare_multi_single_dipole_segev.png}
 	\caption{\textbf{Single-dipole approximation is justified for EEG but not ECoG signals}. 
-	\textbf{A}: Illustration of four-sphere head model, where the pink, blue, green and purple spherical shells represent the brain, CSF, skull and scalp respectively. The inset shows a Layer 2/3 neuron \tvnnote{is it not Hay?}. $30$ simulations with a single synaptic input were performed for varying input locations, see colored dots.
-	\tvnnote{Wouldn't it make sense for the dots to follow the morphology?}
-	\textbf{B}: Magnitude of extracellular potential, $|\phi|$, as function of distance from the top of the neuron, shown for two simulations with synaptic input locations marked by large colored dots in inset of A. Dashed lines show extracellular potentials computed with multiple dipoles, and full lines show single-dipole calculations. \tvnnote{Make figure legend for full and dashed lines?} \tvnnote{Is the potential at a given timestep, or is it max? Should be mentioned here I think.}
+	\textbf{A}: Illustration of four-sphere head model, where the pink, blue, green and purple spherical shells represent the brain, CSF, skull and scalp respectively, and the inset shows the human layer 2/3 neuron \citep{EYAL2016}. $30$ simulations with a single synaptic input were performed for varying input locations, see colored dots.
+	\textbf{B}: Magnitude of extracellular potential, $|\phi|$, as function of distance from the top of the neuron, shown for two simulations with synaptic input locations marked by large colored dots in inset of A. Dashed lines show extracellular potentials computed with multiple dipoles, and full lines show single-dipole calculations. \tvnnote{Is the potential at a given timestep, or is it max? Should be mentioned here I think.}
 	\textbf{C}: Relative error, RE, comparing the single-dipole model to the multi-dipole model, as function of distance from top of neuron to measurement point.
-	\textbf{D}: Magnitude of current dipole moment, $|\mathbf{p}|$, as function of distance from soma to synaptic input location. \tvnnote{perhaps not have ``strength'' on y-label}.
+	\textbf{D}: Magnitude of current dipole moment, $|\mathbf{p}|$, as function of distance from soma to synaptic input location.
 	\textbf{E}: Relative error, RE, showing how single-dipole model deviates from multi-dipole model results as function of distance from soma to synapse location.
 	\textbf{F}: Relative error, RE, showing how single-dipole model deviates from multi-dipole model results as function of magnitude of current dipole moment, $|\mathbf{p}|$.
 	\tvnnote{Suggestion: How about running another simulation with all synapses active simulataneously, calculate the relative error, and add it to this panel (F) as a horizontal line? We would expect this to give a small error, helping to illustrate our point of the EEG being dominated by low-error dipoles.}
@@ -301,13 +299,7 @@ This demonstrates that the relative error of the single-dipole approximation is 
 %In the previous section we showed that the single-dipole approximation was applicable for calculation of EEG signals from a single synaptic input to a human cortical Layer 2/3 cell model, and we now expand this to three different cell types (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{A}), each receiving a large number of synaptic inputs arriving in waves with specific target regions on the cells (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{B}).
 In the previous section we showed that the single-dipole approximation was applicable for calculation of EEG signals, and in this section we demonstrate that the single-dipole approximation can substantially simplify the analysis of the biophysical origin of the EEG signal.
 
-\subsubsection{Current dipole moment predicts EEG signals from different cell types with various synaptic input patterns}
-\sntxt{
-\begin{itemize}
-	\item In this formalism it easy to investigate the contribution to the EEG signal from, e.g., different cell types, from somatic spikes, or from dendritic spikes, by only comparing the z-component of the resulting current dipoles, without the need for the added complexity of head models etc. 
-	
-\end{itemize}
-}
+\subsubsection{Single-dipole approximation simplifies estimate of EEG contribution}
 
 Pyramidal cells have a preferred orientation along the depth axis of cortex (here the $z$-axis), and the direction of the current dipole moment, $\mathbf{p}$, can be expected to align with this axis since
 radial symmetry will tend to make the orthogonal components ($p_x$, $p_y$) cancel \citep{HAGEN2018}. 
@@ -322,7 +314,7 @@ A 1'000 synaptic inputs that were uniformly distributed across the cell membrane
 
 For a rat cortical layer 5 pyramidal cell model \citep{HAY2011} with 10 active conductances and capability for both somatic and dendritic spikes (note that for now the synaptic input was subthreshold), the resulting current dipole moment was very similar in shape, but larger in amplitude, which was expected because the longer apical dendrite will tend to give larger current dipole moments. 
 
-Lastly, we used a rat cortical layer X? interneuron model (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{A}; \cite{MARKRAM2015}), but since the dendrites of interneurons are not structured into the same distinctive sones as pyramidal cells, all synaptic input was uniformly distributed, and therefore caused very small net current dipole moments.
+Lastly, we used a rat cortical layer 5 interneuron model (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{A}; \cite{MARKRAM2015}), but since the dendrites of interneurons are not structured into the same distinctive sones as pyramidal cells, all synaptic input was uniformly distributed, and therefore caused very small net current dipole moments.
 
 Note that in all cases, the EEG signal is nearly fully described by the single-dipole $p_z$, that is, a single time-dependent array, which corresponds to a massive simplification in understanding the biophysical origin of the EEG signal, compared to considering the transmembrane currents and position of each cellular compartment. 
 
@@ -355,6 +347,11 @@ Maybe it would make sense to add the multi-dipole EEG as dashed lines in panel D
 
 
 \subsubsection{Current dipole moment reveals dendritic calcium spike}
+
+\cite{SUZUKI2017} recently demonstrated that dendritic calcium spikes could be recorded at the cortical surface with amplitudes of similar magnitude as the contribution from synaptic inputs. This demonstrates that active conductances may play an important role in shaping ECoG and EEG signals, and also suggests that information might be present in such signals which can be used in new ways to study the learning mechanisms associated with dendritic calcium spikes (cite).
+
+The rat layer 5 cortical pyramidal cell model from \cite{HAY2011} has the capability for dendritic calcium spikes when receiving dendritic excitation in combination with somatic spiking. 
+
 \sntxt{
 \begin{itemize}
 	\item Dendritic calcium spike introduces a large, slow component to the current dipole.
@@ -366,7 +363,7 @@ Maybe it would make sense to add the multi-dipole EEG as dashed lines in panel D
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.6\textwidth]{hay_ca_spike}
+	\includegraphics[width=0.6\textwidth]{ca_spike_hay}
 	\caption{\textbf{Dendritic calcium spike introduces a large, slow component to the current dipole.}
 	\textbf{A}: Layer 5 pyramidal cell from rat (Hay et al., 2011), receiving either a single synaptic input to the soma (first column), or in addition a synaptic input to the apical dendrite, which evokes a Calcium spike (second column).  Current dipole moment without (left) and with (right) calcium spike. Jittered sum shows very different signals, indicating potentially large EEG contribution from dendritic Ca spike
 	}
@@ -397,6 +394,18 @@ In this formalism it easy to investigate the contribution to the EEG signal from
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%DISCUSSION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion}\label{sec:discussion}
+
+\begin{itemize}
+
+\item Discuss value of results to ongoing large-scale simulation projects.
+\item Discuss value of decoupling current dipole moments and head model
+\item Discuss kernel from population firing rates to current dipole moment?
+ \item Discuss potential impact of I$_{\rm h}$ on human EEG \citep{NESS2016, NESS2018, KALMBACH2018}.
+ \item Compare to other projects like HNN (Human Neocortical Neurosolver) (\url{https://hnn.brown.edu/})
+ 
+\end{itemize}
+
+
 \appendix
 \section{Point-Source vs. Line-Source Dipole Moment} \label{sec:point_line_cdm}
 \tvnnote{I don't think we need to go into this.}
