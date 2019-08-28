@@ -5,8 +5,36 @@ from plotting_convention import mark_subplots, simplify_axes
 import matplotlib.pyplot as plt
 import neuron
 import LFPy
-
+from neuron import h
 np.random.seed(1234)
+
+almog_remove_lists = {'active': [],
+            'passive': ["iA", "kslow", "na", "iH", "cah", "car", "cad", "bk", "sk"],
+            'na_block': ["na"],
+            "Ih_block": ["iH"],
+            "Ih_only": ["iA", "kslow", "na", "cah", "car", "cad", "bk", "sk"],
+            'calcium_block': ["cah", "car", "cad"]}
+
+hay_remove_lists = {'active': [],
+                'passive': ["Ca_LVAst", "Ca_HVA", "SKv3_1", "SK_E2", "K_Tst", "K_Pst",
+                            "Nap_Et2", "NaTa_t",  "CaDynamics_E2", "Ih", "Im"],
+                'na_block': ["Nap_Et2", "NaTa_t"],
+                "Ih_block": ["Ih"],
+                "Ih_only": ["Ca_LVAst", "Ca_HVA", "SKv3_1", "SK_E2", "K_Tst", "K_Pst",
+                            "Nap_Et2", "NaTa_t",  "CaDynamics_E2", "Im"],
+                'calcium_block': ["Ca_LVAst", "Ca_HVA"]}
+
+
+def remove_mechanisms(remove_list):
+    """ Removes all active mechanisms in remove_list from cell model
+    """
+    mt = h.MechanismType(0)
+    for sec in h.allsec():
+        for seg in sec:
+            for mech in remove_list:
+                mt.select(mech)
+                mt.remove()
+
 
 def run_cell_simulation_distributed_input(dt, cell_name):
 
@@ -60,20 +88,22 @@ def run_cell_simulation_distributed_input(dt, cell_name):
     cell.set_rotation(z=np.random.rand() * np.pi * 2)
     cell.set_pos(x=np.random.uniform(-250, 250), y=np.random.uniform(-250, 250))
 
-    idx_basal = cell.get_rand_idx_area_norm(section=["dend"], nidx=500)
+    # idx_basal = cell.get_rand_idx_area_norm(section=["dend"], nidx=500)
+    idx_basal = cell.get_rand_idx_area_norm(section=["soma"], nidx=1)
     delay_basal = np.random.normal(20 + np.random.normal(0, 2), 5, size=len(idx_basal))
-    idx_apic = cell.get_rand_idx_area_norm(section="apic", z_min=400, z_max=700, nidx=100)
-    delay_apic = np.random.normal(20 + np.random.normal(0, 2), 5, size=len(idx_apic))
+    # idx_apic = cell.get_rand_idx_area_norm(section="apic", z_min=400, z_max=700, nidx=100)
+    # delay_apic = np.random.normal(20 + np.random.normal(0, 2), 5, size=len(idx_apic))
     #
     for num in range(len(idx_basal)):
         synapse_s = LFPy.Synapse(cell, idx=idx_basal[num],
-                                 syntype='Exp2Syn', weight=0.0002, tau1=0.1, tau2=2.)
-        synapse_s.set_spike_times(np.array([delay_basal[num]]))
+                                 syntype='Exp2Syn', weight=0.1, tau1=0.1, tau2=1.)
+        # synapse_s.set_spike_times(np.array([delay_basal[num]]))
+        synapse_s.set_spike_times(np.array([delay_basal[0]] * 3 + np.arange(3) * 5))
 
-    for num in range(len(idx_apic)):
-        synapse_a = LFPy.Synapse(cell, idx=idx_apic[num],
-                                 syntype='Exp2Syn', weight=0.001, tau1=0.1, tau2=10.)
-        synapse_a.set_spike_times(np.array([delay_apic[num]]))
+    # for num in range(len(idx_apic)):
+    #     synapse_a = LFPy.Synapse(cell, idx=idx_apic[num],
+    #                              syntype='Exp2Syn', weight=0.001, tau1=0.1, tau2=10.)
+    #     synapse_a.set_spike_times(np.array([delay_apic[num]]))
 
     # plot_idxs = [idx_basal[0], idx_apic[0]]
     plot_idxs = [cell.somaidx[0], cell.get_closest_idx(z=500)]
@@ -150,6 +180,7 @@ def run_cell_simulation(make_ca_spike, dt, cell_name="hay"):
                                  syntype='Exp2Syn', weight=weights[1], tau1=0.1, tau2=10.)
         synapse_a.set_spike_times(np.array([delay]))
     cell.simulate(rec_imem=True, rec_vmem=True, rec_current_dipole_moment=True)
+    print("MAX |I_mem(soma, apic)|: ", np.max(np.abs(cell.imem[plot_idxs]), axis=1))
 
     return cell, idx_clr, plot_idxs
 
@@ -197,6 +228,7 @@ def simulate_spike_current_dipole_moment():
     ax_w = 0.2
     ax_left = 0.42
 
+    summed_cdm_max = np.zeros(2)
     for plot_row, cell in enumerate([cell_woca, cell_wca]):
         ax_left += plot_row * 0.3
 
@@ -209,14 +241,19 @@ def simulate_spike_current_dipole_moment():
         sum_tvec, summed_cdm = sum_jittered_cdm(cell.current_dipole_moment[:, 2],
                                             dt, jitter_std, num_trials)
 
-        ax_vm = fig.add_axes([ax_left, ax_top - ax_h, ax_w, ax_h],
-                           ylim=[-80, 50], xlim=[0, 100],xlabel="Time (ms)")
+        summed_cdm_max[plot_row] = np.max(np.abs(summed_cdm))
 
+        ax_vm = fig.add_axes([ax_left, ax_top - ax_h, ax_w, ax_h],
+                           ylim=[-80, 50], xlim=[0, 100], #xlabel="Time (ms)"
+                             )
 
         ax_eap = fig.add_axes([ax_left, ax_top - 2 * ax_h - h_space, ax_w, ax_h],
-                           ylim=[-120, 40], xlim=[0, 100],xlabel="Time (ms)")
+                           ylim=[-120, 40], xlim=[0, 100],
+                              #xlabel="Time (ms)"
+                              )
         ax_cdm = fig.add_axes([ax_left, ax_top - 3 * ax_h - 2*h_space, ax_w, ax_h],
-                              xlabel="Time (ms)", ylim=[-0.5, 1],
+                              #xlabel="Time (ms)",
+                              ylim=[-0.5, 1],
                               xlim=[0, 100],)
 
         ax_cdm_sum = fig.add_axes([ax_left, ax_top - 4 * ax_h - 3*h_space, ax_w, ax_h],
@@ -227,7 +264,14 @@ def simulate_spike_current_dipole_moment():
             ax_eap.set_ylabel("Extracellular\npotential\n($\mu$V)", labelpad=-3)
             ax_cdm.set_ylabel("Curent dipole\nmoment\n($\mu$A$\cdot \mu$m)", labelpad=-3)
             ax_cdm_sum.set_ylabel("Jittered sum\n($\mu$A$\cdot \mu$m)", labelpad=-3)
-        mark_subplots(ax_vm, "BC"[plot_row], xpos=-0.3, ypos=0.93)
+        elif plot_row == 1:
+            ax_vm.text(65, -5, "Ca$^{2+}$ spike", fontsize=11, color='orange')
+            ax_vm.arrow(80, -10, -10, -18, color='orange', head_width=4)
+
+        mark_subplots(ax_vm, [["B1"], ["C1"]][plot_row], xpos=-0.3, ypos=0.93)
+        mark_subplots(ax_eap, [["B2"], ["C2"]][plot_row], xpos=-0.3, ypos=0.93)
+        mark_subplots(ax_cdm, [["B3"], ["C3"]][plot_row], xpos=-0.35, ypos=0.97)
+        mark_subplots(ax_cdm_sum, [["B4"], ["C4"]][plot_row], xpos=-0.3, ypos=0.93)
         [ax_vm.plot(cell.tvec, cell.vmem[idx], c=idx_clr[idx]) for idx in plot_idxs]
         # ax_cdm_sum = fig.add_subplot(524, ylim=[-1.1, 1.1], xlim=[0, 80],
         #                       ylabel="Membrane\ncurrents\n(normalized)")
@@ -240,6 +284,8 @@ def simulate_spike_current_dipole_moment():
         ax_cdm.plot(cell.tvec, 1e-3 * cell.current_dipole_moment[:, 2], c='k')
         ax_cdm_sum.plot(sum_tvec, 1e-3 * summed_cdm, c='k')
 
+    print("Summed CDM max (abs), ratio", summed_cdm_max * 1e-3, )
+
     mark_subplots([ax_m], xpos=0.1, ypos=0.95)
     simplify_axes(fig.axes)
 
@@ -250,7 +296,7 @@ def simulate_spike_current_dipole_moment():
 def simulate_laminar_LFP():
 
     dt = 2**-5
-    cell_name = 'almog'
+    cell_name = 'hay'
 
     elec_z = np.linspace(-200, 1200, 15)
     elec_x = np.ones(len(elec_z)) * 50
@@ -350,7 +396,7 @@ def simulate_laminar_LFP():
     plt.plot(cell.tvec, summed_cdm[:, 2])
 
     plt.savefig(join("figures", 'summed_LFP_CDM_{}_num:{}.png'.format(cell_name, num_sims)))
-    plt.show()
+    # plt.show()
 
 def sum_jittered_cdm(cdm, dt, jitter_std, num_trials):
 
@@ -372,5 +418,5 @@ def sum_jittered_cdm(cdm, dt, jitter_std, num_trials):
 
 if __name__ == '__main__':
 
-    # simulate_spike_current_dipole_moment()
-    simulate_laminar_LFP()
+    simulate_spike_current_dipole_moment()
+    # simulate_laminar_LFP()

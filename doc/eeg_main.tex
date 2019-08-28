@@ -328,7 +328,7 @@ Maybe it would make sense to add the multi-dipole EEG as dashed lines in panel D
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1.0\textwidth]{fig_compare_neurons_l5ChC.png}
+	\includegraphics[width=0.8\textwidth]{fig_compare_neurons_l5ChC.png}
 	\caption{\textbf{EEG signals and current dipole moment from three different cell types with various synaptic input}.
 	\textbf{A}: 2D plots of the morphologies of the Hay cell (blue), the Segev cell (purple) and the \sntxt{!interneuron!} (green). All panels use the same colors for data from each cell type.
 	\tvnnote{If we use the human L2/3 cell for Fig 1 and 2, I think it should come first (be the leftmost cell in panel A) here.}
@@ -346,31 +346,35 @@ Maybe it would make sense to add the multi-dipole EEG as dashed lines in panel D
 \end{figure}
 
 
-\subsubsection{Current dipole moment reveals dendritic calcium spike}
+\subsubsection{Current dipole moment expose dendritic calcium spikes}
 
-\cite{SUZUKI2017} recently demonstrated that dendritic calcium spikes could be recorded at the cortical surface with amplitudes of similar magnitude as the contribution from synaptic inputs. This demonstrates that active conductances may play an important role in shaping ECoG and EEG signals, and also suggests that information might be present in such signals which can be used in new ways to study the learning mechanisms associated with dendritic calcium spikes (cite).
+\cite{SUZUKI2017} recently demonstrated that dendritic calcium spikes could be recorded at the cortical surface with amplitudes of similar magnitude as the contribution from synaptic inputs. This demonstrates that active conductances may play an important role in shaping ECoG and EEG signals, and also suggests that information might be present in such signals which can be used in new ways to study the learning mechanisms associated with dendritic calcium spikes (cite). We found that the single-dipole approximation provides a convenient way of investigating the EEG-contribution of such dendritic calcium spikes.
 
-The rat layer 5 cortical pyramidal cell model from \cite{HAY2011} has the capability for dendritic calcium spikes when receiving dendritic excitation in combination with somatic spiking. 
+The previously introduced rat layer 5 cortical pyramidal cell model from \cite{HAY2011} can exhibit dendritic calcium spikes.
+When this cell model received a single excitatory synaptic input to the soma (Fig.~\ref{fig:ca_spike}\textbf{A}, blue dot) strong enough to elicit a somatic action potential (Fig.~\ref{fig:ca_spike}\textbf{B1}, blue), a small depolarization was also visible in the apical dendrite but no dendritic calcium spike was initiated (Fig.~\ref{fig:ca_spike}\textbf{B1}, orange). If instead the same somatic synaptic input was combined with an additional excitatory synaptic input to the apical dendrite 400~$\si{\um}$ away from the soma (Fig.~\ref{fig:ca_spike}\textbf{A}, orange dot), a dendritic calcium spike was initiated, which also induced two additional somatic spikes (Fig.~\ref{fig:ca_spike}\textbf{C1}).
 
-\sntxt{
-\begin{itemize}
-	\item Dendritic calcium spike introduces a large, slow component to the current dipole.
-	\item Two factors contribute to the size of the current dipole moment: the current amplitude and the dipole length.
-\end{itemize}
-}
+The simulated extracellular potential 30~$\si{\um}$ away from the soma had the shape of stereotypical extracellular action potentials in both cases, that is, a sharp negative peak followed by a broader and weaker positive peak (Fig.~\ref{fig:ca_spike}\textbf{B2, C2}), and the slow dendritic calcium spike was not reflected in the extracellular potential close to the soma (Fig.~\ref{fig:ca_spike}\textbf{C2}).
+We found that for the case with only a somatic spike and no calcium spike, the single-cell current dipole moment resembled the inverse of the extracellular potential (Fig.~\ref{fig:ca_spike}\textbf{B3}), while for the case with both somatic and dendritic spiking, a pronounced slow component was also present in the single-cell current dipole moment (Fig.~\ref{fig:ca_spike}\textbf{C3}).
+Note that somatic action potentials are typically not expected to contribute significantly to EEG signals (cite), because the very short duration of spikes with both a positive and a negative phase implies that extreme synchrony is needed for spikes to sum constructively. Indeed, we found that when we calculated the sum of 1'000 instanced of the single-cell current dipole moment that was jittered (shifted) in time (normally distributed, standard deviation=10~ms), the case with the dendritic calcium spike has a $6.6$-fold larger maximum amplitude than the case with
+only the somatic spike (Fig.~\ref{fig:ca_spike} \textbf{B4} versus \textbf{C4}, 
+$\mathrm{max}|\mathbf{p}$| = 30.8~$\si{\uA}\cdot\si{\um}$ and 204.2~$\si{\uA}\cdot\si{\um}$ respectively). This demonstrates that dendritic calcium spikes are much more capable of summing constructively for a population of cells, and substantiates the role of dendritic calcium spikes in affecting ECoG/EEG/MEG recordings. 
+\tvnnote{Although our Ca-spikes appear quite different in shape to the ones demonstrated by Suzuki and Larkum (2017), who (in defence of our results) reported an 'unexpected shape'}
 
-
+It might initially seem surprising that the dendritic calcium spike is so strongly reflected in the single-cell current dipole moment, given that the transmembrane currents associated with the somatic action potential are much larger than those associated with the dendritic calcium spike: the maximum amplitude of the transmembrane currents of the somatic compartment was 45.1~$\si{\nA}$, compared to just 0.30~$\si{\nA}$ for the compartment with the apical synaptic input (Fig.~\ref{fig:ca_spike}A, blue and orange dots). However, the current dipole moment is given as the product between the amplitude of the current and the separation between the source and sink ($\mathbf{p}=I\mathbf{d}$; eq. \ref{eq:dip_trans_to_axial}), and while the currents associated with the somatic action potential will for the most part be contained within the somatic region, giving very small sink/source separations, the currents associated with the dendritic calcium spike will be distributed over a much larger part of the cell membrane (cite?).
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.6\textwidth]{ca_spike_hay}
-	\caption{\textbf{Dendritic calcium spike introduces a large, slow component to the current dipole.}
-	\textbf{A}: Layer 5 pyramidal cell from rat (Hay et al., 2011), receiving either a single synaptic input to the soma (first column), or in addition a synaptic input to the apical dendrite, which evokes a Calcium spike (second column).  Current dipole moment without (left) and with (right) calcium spike. Jittered sum shows very different signals, indicating potentially large EEG contribution from dendritic Ca spike
+	\caption{\textbf{Current dipole moment expose dendritic calcium spikes.}
+	\textbf{A}: Layer 5 cortical pyramidal cell model from rat \citep{HAY2011}, receiving either a single excitatory synaptic input to the soma evoking a single somatic action potential (blue dot, results in \textbf{B1-4}), or in addition an excitatory synaptic input to the apical dendrite, evoking a dendritic calcium spike and two additional somatic spikes (orange dot, results in \textbf{C1-4}). 
+	\textbf{B1, C1}: Membrane potential at the two positions indicated in \textbf{A}.
+	\textbf{B2, C2}: Extracellular potential 30~$\si{\um}$ away from the soma (red diamond in \textbf{A}), assuming for illustration an infinite homogeneous extracellular medium. 
+	\textbf{B3, C3}: Single-cell current dipole moment. 
+	\textbf{B4, C4}: Sum of 1'000 instances of the single-cell current dipole moment (from \textbf{B3, C3}), that has been randomly shifted in time with a normally distributed shift with a standard deviation of 10~ms.
 	}
 	\label{fig:ca_spike}
 \end{figure}
 
-In this formalism it easy to investigate the contribution to the EEG signal from, e.g., different cell types, from somatic spikes, or from dendritic spikes, by only comparing the z-component of the resulting current dipoles, without the need for the added complexity of head models etc.
 
 
 \subsection{Dipole approximation for populations of cells}
@@ -394,6 +398,11 @@ In this formalism it easy to investigate the contribution to the EEG signal from
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%DISCUSSION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion}\label{sec:discussion}
+
+
+We have found that the single-cell current dipole moment is applicable for calculating a neuron's EEG-contribution, and that this approach can be helpful in estimating the relative EEG-contribution of different cell types and different modes of synaptic input, in addition to investigating 
+
+In this formalism it is easy to investigate the contribution to the EEG signal from, e.g., different cell types, from somatic spikes, or from dendritic spikes, by only comparing the z-component of the resulting current dipoles, without the need for the added complexity of head models etc.
 
 \begin{itemize}
 
