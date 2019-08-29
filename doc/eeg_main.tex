@@ -102,7 +102,9 @@ Here we present a framework for reducing complex simulated neural activity to si
 \section{Introduction}\label{sec:introduction}
 \sntxt{Picking up where \cite{LINDEN2010} left off.}
 
-To include references to the relevant literature, we should read through and find appropriate places to cite papers like \cite{BUZSAKI2012, COHEN2017}
+To include references to the relevant literature, we should read through and find appropriate places to cite papers like \cite{BUZSAKI2012,SILVA2013, COHEN2017}
+
+\tvnnote{EEG-people are really into oscillations, should we include that somewhere?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%METHODS%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -389,6 +391,18 @@ We have so far only considered the EEG contributions from single cells, but real
 \end{itemize}
 	
 	}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{hybrid_eeg}
+	\caption{\textbf{Extracellular potentials becomes dipolar in the far field limit.}. 
+	\textbf{A}: Layer 2/3 pyramidal cell from human \citep{EYAL2016} with an excitatory synapse placed on apical dendrite (red dot), and the resulting transmembrane currents for each compartment (blue and red arrows for negative and positive currents respectively).
+	\textbf{B}: Green arrows represent the current dipole moments between neighboring neural compartments.
+	\textbf{C}: Gray arrow illustrates the total current dipole moment, that is, the sum of the dipoles in B.
+	\textbf{D-F}: Extracellular potential in immediate proximity of the neuron, computed with the compartment-based approach, multi-dipole approach and single-dipole approximation, respectively.
+	\textbf{G-I}: Same as D-F, but at a larger spatial scale (zoomed out). See $1$~mm scalebar in panel A, D and G.
+	}
+	\label{fig:dipole_field}
+\end{figure}
 
 	
 \subsection{Dipole approximation in more complex head models}
@@ -408,8 +422,10 @@ We have found that the single-cell current dipole moment is applicable for calcu
 In this formalism it is easy to investigate the contribution to the EEG signal from, e.g., different cell types, from somatic spikes, or from dendritic spikes, by only comparing the z-component of the resulting current dipoles, without the need for the added complexity of head models etc.
 
 \begin{itemize}
-
+\item Good paper for discussion/intro:  \cite{COHEN2017} (``too little is done to understand the origin of the EEG'')
 \item Discuss value of results to ongoing large-scale simulation projects.
+\item ``EEG is hard to enterpret because of large number of neuron contributing''. True, but still basically (probably) just four main sources: apical excitation/inhibition and basal excitation/inhibition to pyramidal cells, and connectivity is to a large degree fixed, meaning that we could probalby map population firing rate to EEG.
+ \item Discuss relevance to \cite{MAKI2019}?
 \item Discuss value of decoupling current dipole moments and head model
 \item Discuss kernel from population firing rates to current dipole moment?
  \item Discuss potential impact of I$_{\rm h}$ on human EEG \citep{NESS2016, NESS2018, KALMBACH2018}.
