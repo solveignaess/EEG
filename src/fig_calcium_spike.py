@@ -1,5 +1,7 @@
 import os
 from os.path import join
+import matplotlib
+matplotlib.use("AGG")
 import numpy as np
 from plotting_convention import mark_subplots, simplify_axes
 import matplotlib.pyplot as plt
@@ -313,7 +315,7 @@ def simulate_laminar_LFP():
 
     elec_clr = lambda idx: plt.cm.viridis(idx / len(elec_z))
 
-    num_sims = 1
+    num_sims = 10
 
     cells = []
 
@@ -418,5 +420,6 @@ def sum_jittered_cdm(cdm, dt, jitter_std, num_trials):
 
 if __name__ == '__main__':
 
-    simulate_spike_current_dipole_moment()
-    # simulate_laminar_LFP()
+    #simulate_spike_current_dipole_moment()
+    simulate_laminar_LFP()
+
