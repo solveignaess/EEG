@@ -382,8 +382,18 @@ It might initially seem surprising that the dendritic calcium spike is so strong
 
 \subsection{Dipole approximation for populations of cells}
 We have so far only considered the EEG contributions from single cells, but real EEG signals are expected to reflect the activity of hundreds of thousands to millions of cells \citep{NUNEZ2006, COHEN2017}. 
+We therefore used the large-scale point-neuron cortical microcircuit model from \cite{POTJANS2014}, in combination with the hybrid scheme for calculating LFPs and EEGs \citep{HAGEN2016}. Breifly, this model has $\sim$80'000 neurons divided into 8 different cortical populations, one excitatory and one inhibitory across four layers (L2/3 - L6), and it can exhibit different network states, including different kinds of oscillations or behaviour similar to an asynchroneous irregular network state \citep{HAGEN2016, BRUNEL2000}.
+The network activity is simulated for point neurons (Fig.~\ref{fig:population}) using NEST \citep{NEST}, and synaptic input to the neurons is saved and used as synaptic input to corresponding biophysically detailed multicompartment neurons, from which the single-cell current dipole moment of each cell is obtained, together with the 
 
-We therefore used the large-scale point-neuron cortical microcircuit model from \cite{POTJANS2014}, in combination with the hybrid scheme for calculating LFPs and EEGs \citep{HAGEN2016}. Breifly, this model has $\sim$80'000 neurons divided into 8 different cortical populations, one excitatory and one inhibitory across four layers (L2/3 - L6). The network activity is simulated for point neurons in NEST \citep{NEST}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{hybrid_eeg}
+	\caption{\textbf{Extracellular potentials becomes dipolar in the far field limit.}. 
+	\textbf{A}:
+	}
+	\label{fig:population}
+\end{figure}
 
 \sntxt{
 \begin{itemize}
@@ -393,20 +403,6 @@ We therefore used the large-scale point-neuron cortical microcircuit model from 
 \end{itemize}
 	
 	}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\textwidth]{hybrid_eeg}
-	\caption{\textbf{Extracellular potentials becomes dipolar in the far field limit.}. 
-	\textbf{A}: Layer 2/3 pyramidal cell from human \citep{EYAL2016} with an excitatory synapse placed on apical dendrite (red dot), and the resulting transmembrane currents for each compartment (blue and red arrows for negative and positive currents respectively).
-	\textbf{B}: Green arrows represent the current dipole moments between neighboring neural compartments.
-	\textbf{C}: Gray arrow illustrates the total current dipole moment, that is, the sum of the dipoles in B.
-	\textbf{D-F}: Extracellular potential in immediate proximity of the neuron, computed with the compartment-based approach, multi-dipole approach and single-dipole approximation, respectively.
-	\textbf{G-I}: Same as D-F, but at a larger spatial scale (zoomed out). See $1$~mm scalebar in panel A, D and G.
-	}
-	\label{fig:dipole_field}
-\end{figure}
-
-	
 \subsection{Dipole approximation in more complex head models}
 \sntxt{
 \begin{itemize}
