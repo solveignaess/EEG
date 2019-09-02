@@ -243,6 +243,8 @@ Hybrid with NEST and NEURON;
 
 We introduce an approach for detailed biophysical modelling of ECoG, EEG and MEG signals by considering a single synaptic input to a biophysically detailed cell model. 
 
+Note that we will for the most part only consider EEG signals, but the general results are equally valid for MEG signals.
+
 \subsection{At sufficiently large distances, extracellular potentials become dipolar}\label{subsec:cb_db_comp_inf}
 
 Excitatory synaptic input initiates a negative current at the synaptic input site (positive ions going into the cell), and due to current conservation \citep{NUNEZ2006} this negative current is exactly balanced by spatially distributed positive currents along the cellular membrane, as illustrated in Fig.~\ref{fig:dipole_field}\textbf{A} for a single apical excitatory synaptic input to a human cortical layer 2/3 pyramidal cell model \citep{EYAL2016}. In the standard approach to modelling extracellular potentials, here referred to as the {\it compartment-based approach}, the transmembrane currents of each of the cellular compartments correspond to a point current source/sink, but a mathematically equivalent formulation would be to instead consider the axial current of each cellular compartment as a small current dipole, which we will here refer to as the {\it multi-dipole approach} (Fig.~\ref{fig:dipole_field}\textbf{B}). By summing all these dipoles into a single dipole at a specific position, we obtain the {\it single-dipole approximation} (Fig.~\ref{fig:dipole_field}\textbf{C}).
@@ -382,9 +384,28 @@ It might initially seem surprising that the dendritic calcium spike is so strong
 
 \subsection{Dipole approximation for populations of cells}
 We have so far only considered the EEG contributions from single cells, but real EEG signals are expected to reflect the activity of hundreds of thousands to millions of cells \citep{NUNEZ2006, COHEN2017}. 
-We therefore used the large-scale point-neuron cortical microcircuit model from \cite{POTJANS2014}, in combination with the hybrid scheme for calculating LFPs and EEGs \citep{HAGEN2016}. Breifly, this model has $\sim$80'000 neurons divided into 8 different cortical populations, one excitatory and one inhibitory across four layers (L2/3 - L6), and it can exhibit different network states, including different kinds of oscillations or behaviour similar to an asynchroneous irregular network state \citep{HAGEN2016, BRUNEL2000}.
-The network activity is simulated for point neurons (Fig.~\ref{fig:population}) using NEST \citep{NEST}, and synaptic input to the neurons is saved and used as synaptic input to corresponding biophysically detailed multicompartment neurons, from which the single-cell current dipole moment of each cell is obtained, together with the 
+%There are several ongoing large-scale modelling efforts that seek to simulate neural activity at different levels of biological detail. 
+Biophysically detailed modelling of large populations is still in its infancy \citep{EINEVOLL2019} and typically include ``only'' a few tens of thousands of biophysically detailed cells which are executed on large supercomputers \citep{MARKRAM2015, BILLEH2019}, while networks of point neurons are regularly used to simulate millions of cells (cite). 
 
+
+
+
+
+To investigate the origin of the EEG signal from large populations of neurons, we used the hybrid scheme \citep{HAGEN2016}, where the network activity is first simulated in a highly computationally efficient manner with point neurons in NEST \citep{NEST} and the spiking activity of each neuron saved to file. Afterwards, the spikes are used as synaptic input to corresponding biophysically detailed multicompartment neurons such that the original connectivity structure of the network is preserved \citep{HAGEN2016}. 
+
+We used the large-scale point-neuron cortical microcircuit model from \cite{POTJANS2014, HAGEN2016}, 
+
+in combination with the hybrid scheme for calculating LFPs and EEGs \citep{HAGEN2016}. In the hybrid scheme ,
+ (Fig.~\ref{fig:population}\textbf{A})
+and synaptic input to the neurons is saved and used as synaptic input to corresponding biophysically detailed multicompartment neurons (Fig.~\ref{fig:population}\textbf{B}).
+
+
+Breifly, this model has $\sim$80'000 neurons divided into 8 different cortical populations, one excitatory and one inhibitory across four layers (L2/3 - L6), and can exhibit a diverse set of spiking dynamics including different oscillations and asynchroneous irregular network states \citep{HAGEN2016, BRUNEL2000}. 
+In the hybrid scheme The network activity was simulated for point neurons using NEST \citep{NEST},
+ (Fig.~\ref{fig:population}\textbf{A})
+ (Fig.~\ref{fig:population}\textbf{B}). This allows for calculation of LFPs, as was done by \cite{HAGEN2016}
+
+from which the single-cell current dipole moment of each cell is obtained together with the single cell's contribution to the LFP and EEG.
 
 \begin{figure}[H]
 	\centering
@@ -427,10 +448,10 @@ In this formalism it is easy to investigate the contribution to the EEG signal f
 \item Discuss value of decoupling current dipole moments and head model
 \item Discuss kernel from population firing rates to current dipole moment?
  \item Discuss potential impact of I$_{\rm h}$ on human EEG \citep{NESS2016, NESS2018, KALMBACH2018}.
- \item Compare to other projects like HNN (Human Neocortical Neurosolver) (\url{https://hnn.brown.edu/})
+ \item Compare to other projects like HNN (Human Neocortical Neurosolver) (\url{https://hnn.brown.edu/}) and TVB \citep{TVB}
  \item Important work on the path towards a real understanding of the biophysical origin of EEGs \cite{BRUYNS2017}
 \end{itemize}
-
+On the other end of the scale are whole-brain simulations with  \citep{TVB}, to 
 
 % \appendix
 % \section{Point-Source vs. Line-Source Dipole Moment} \label{sec:point_line_cdm}
