@@ -110,6 +110,7 @@ To include references to the relevant literature, we should read through and fin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%METHODS%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Methods}\label{sec:methods}
+\footnotesize
 \tvnnote{I think it makes sense to more-or-less finish Results first, and then see how much we need to include here (some of it might fit into results, and figure captions. I like to have Methods in almost bullet-point format}
 Neural activity generates electric currents in the brain, which in turn create electromagnetic fields. In this section, we explain how electric and magnetic brain signals can be modeled in simple and more complex volume conductors.
 
@@ -237,7 +238,7 @@ Hybrid with NEST and NEURON;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%RESULTS%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}\label{sec:results}
-
+\normalsize
 %TVN: I think we can just skip most of this outline, as we might have it in the introduction 
 %In this section, we will present results obtained from the methods described above. We will start by comparing multicompartmental modeling with the current dipole approximation of single-neuron contributions to electric potential simulations in an infinite homogeneous medium, before going on to ECoG and EEG computations with the inhomogeneous four-sphere head model. Finally, we show how the current dipole moment can reveal a calcium spike and predict EEG signals from a neural network.
 
@@ -385,49 +386,47 @@ It might initially seem surprising that the dendritic calcium spike is so strong
 \subsection{Dipole approximation for populations of cells}
 We have so far only considered the EEG contributions from single cells, but real EEG signals are expected to reflect the activity of hundreds of thousands to millions of cells \citep{NUNEZ2006, COHEN2017}. 
 %There are several ongoing large-scale modelling efforts that seek to simulate neural activity at different levels of biological detail. 
-Biophysically detailed modelling of large populations is still in its infancy \citep{EINEVOLL2019} and at present typically include ``only'' a few tens of thousands of biophysically detailed cells \citep{MARKRAM2015, BILLEH2019}. Networks of point neurons on the other hand are regularly used to simulate hundreds of thousands \citep{BILLEH2019} or even millions of cells \citep{SENK2018, SCHMIDT2018}, however, point-neurons in their nature lack the possibility to simulate LFPs, ECoGs, EEGs or MEGs \citep{EINEVOLL2013REVIEW}  
+Biophysically detailed modelling of large populations is still in its infancy \citep{EINEVOLL2019} and at present typically include ``only'' a few tens of thousands of biophysically detailed cells \citep{MARKRAM2015, BILLEH2019}. Networks of point neurons on the other hand are regularly used to simulate hundreds of thousands \citep{BILLEH2019} or even millions of cells \citep{SENK2018, SCHMIDT2018}, however, point-neurons in their nature lack the ability to predict LFP, ECoG, EEG or MEG signals \citep{EINEVOLL2013REVIEW}.  
 
+We therefore used the hybrid scheme \citep{HAGEN2016, SENK2018}, where the network activity is first simulated in a highly computationally efficient manner with point neurons in NEST \citep{NEST} and the spiking activity of each neuron saved to file. Afterwards, each cell is modelled with biophysically detailed multicompartment morphologies, capable of predicting extracellular potentials, and the spikes of the all the presynaptic neurons are used as synaptic input \citep{HAGEN2016, SENK2018}.
 
+We used the large-scale point-neuron cortical microcircuit model from \cite{POTJANS2014, HAGEN2016}, which has $\sim$80'000 neurons divided into 8 different cortical populations, one excitatory and one inhibitory across four layers (L2/3 - L6), and can exhibit a diverse set of spiking dynamics including different oscillations and asynchroneous irregular network states \citep{HAGEN2016, BRUNEL2000}. We simulated transient thalamic synaptic input to layer 4 and 6 (Fig.~\ref{fig:population}\textbf{A}), and after the spikes had been mapped onto the multicompartment cell models (Fig.~\ref{fig:population}\textbf{B}), we calculated the LFP (Fig.~\ref{fig:population}\textbf{B}) similarly to \cite{HAGEN2016} (their Fig.~1), in addition to the current dipole moments of each cell. 
 
-To investigate the origin of the EEG signal from large populations of neurons, we used the hybrid scheme \citep{HAGEN2016}, where the network activity is first simulated in a highly computationally efficient manner with point neurons in NEST \citep{NEST} and the spiking activity of each neuron saved to file. Afterwards, the spikes are used as synaptic input to corresponding biophysically detailed multicompartment neurons such that the original connectivity structure of the network is preserved \citep{HAGEN2016}. 
+We found that for all cell populations the current dipole moment from individual cells could show large transient responses to thalamic input (Fig.~\ref{fig:population}\textbf{D}; gray lines show current dipole moment from individual cells in two example populations: L5 inhibitory (L5I) and L5 exitatory (L5E)), however, for all inhibitory populations the thalamic response was not visible in the average current dipole moment (Fig.~\ref{fig:population}\textbf{D}; black lines, L5I). The same was true for the  current dipole moment components perpendicular to the depth axis for excitatory populations (Fig.~\ref{fig:population}\textbf{D}; L5E, $p_x, p_y$, black lines), but not for the component along the depth axis which had a substantial average response to the thalamic input (Fig.~\ref{fig:population}\textbf{D}; L5E, $p_z$, black line). 
+This implies that, as previously mentioned, only the z-component of the current dipole moment from excitatory populations can be expected to contribute significantly to the EEG signal.
 
-We used the large-scale point-neuron cortical microcircuit model from \cite{POTJANS2014, HAGEN2016}, 
+This suggests a simplified approach to calculate the EEG signal: Instead of calculating all single-cell EEG contributions and summing them (taking into account the position of the individual cells similarly to what is done for the LFP signal), we can calculate one summed $p_z$-component from each of the pyramidal cell populations, locate it in the center of the population, and calculate the resulting simplified EEG signal. This will be a reasonable approximation if the size of the population is small compared to the distance to the EEG electrode, but note that the distance from the top of cortex to the top of the head is typically $\sim$10~mm, while the radius of the simulated population here is only $\sim$0.5~mm (Fig.~\ref{fig:population}; population outline in \textbf{B} is drawn in red in \textbf{E}).
 
-in combination with the hybrid scheme for calculating LFPs and EEGs \citep{HAGEN2016}. In the hybrid scheme ,
- (Fig.~\ref{fig:population}\textbf{A})
-and synaptic input to the neurons is saved and used as synaptic input to corresponding biophysically detailed multicompartment neurons (Fig.~\ref{fig:population}\textbf{B}).
+Indeed, when we combined the current dipole moments with the four-sphere head model (Fig.~\ref{fig:population}\textbf{E}), we found that the full EEG signal that was calculated as the sum of the EEG contribution from each of the $\sim$80'000 cells at their respective positions, was in fact indistinguishable from the simplified EEG signal (Fig.~\ref{fig:population}\textbf{F}). This implies that a full understanding of the EEG signal from simulated cortical activity can be extracted from a single time-dependent array for each pyramidal cell population (see Discussion for limitations).
 
-
-Breifly, this model has $\sim$80'000 neurons divided into 8 different cortical populations, one excitatory and one inhibitory across four layers (L2/3 - L6), and can exhibit a diverse set of spiking dynamics including different oscillations and asynchroneous irregular network states \citep{HAGEN2016, BRUNEL2000}. 
-In the hybrid scheme The network activity was simulated for point neurons using NEST \citep{NEST},
- (Fig.~\ref{fig:population}\textbf{A})
- (Fig.~\ref{fig:population}\textbf{B}). This allows for calculation of LFPs, as was done by \cite{HAGEN2016}
-
-from which the single-cell current dipole moment of each cell is obtained together with the single cell's contribution to the LFP and EEG.
+We also compared the relative amplitude of the EEG signal from each population, and found that in this case, the excitatory population of L2/3 was the dominant source of the EEG signal (Fig.~\ref{fig:population}\textbf{F}), in line with (?)\tvnnote{(cite!)}. Note however, that we expect this observation to be somewhat model dependent, and making strong claims about the contribution of different pyramidal cell populations would require a more through analysis than the scope of this study allows.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{hybrid_eeg}
-	\caption{\textbf{Extracellular potentials becomes dipolar in the far field limit.}. 
-	\textbf{A}:
+	\caption{\textbf{Large-scale neural simulations can be used to probe biophysical origin of EEG signals}. 
+	\textbf{A}: Stimulus-evoked spiking activity from thalamic input (time $t= $ 900~ms, denoted by thin vertical line) in the cortical microcircuit model from \cite{POTJANS2014}. Dots indicate spike times of individual neurons, and populations are represented in different colors (I=inhibitory, E=excitatory).
+	\textbf{B}: Multicompartment model neurons used to produce the measurable signals, with colors corresponding to panel \textbf{A}, showing one example morphology per population. Layer boundaries are marked at depths relative to cortical surface, z = 0. A laminar recording electrode with 16 contacts separated by
+    100 μm (black dots) is positioned in the center of the population.
+    \textbf{C}: LFPs calculated at depths corresponding to black dots in \textbf{B}.
+    \textbf{D}: For the two L5 populations (L5I and L5E), the three components of the current dipole moment is shown for all individual cells (gray), together with the population average (black).
+    \textbf{E}: Illustration of the four-sphere head model, with the red column corresponding the the outline of the population in panel \textbf{B}.
+    \textbf{F}: The EEG signal from each population found by summing the single-cell EEG contribution of all individual cells (different colors), together with the total summed EEG signal (black). The simplified EEG signal was found by first summing the z-component of the current dipole moments for all pyramidal cells, that is L2/3E, L5E and L6E, and calculating the EEG from this single current dipole (gray dashed).
+    \tvnnote{Ensure EEG used same colors as in A,B}
+    \tvnnote{Four-sphere should use same colors as in Fig. 2}
 	}
 	\label{fig:population}
 \end{figure}
 
-\sntxt{
-\begin{itemize}
-	\item Because of linearity, the EEG from a neural population is the sum of all the single-cell EEG contributions. However, if the spatial extent of the neural population (~ 1 mm) is small relative to the distance to the EEG electrodes (~ 1 cm), then individual current-dipoles can be summed, e.g., for each neural sub-population, or for the entire neural population, and the EEG signal can be computed based on the summed current dipoles. This could be a very promising approach for decomposing and understanding the EEG in large-scale neural  simulations like the cortical column simulations of the HBP, the Potians-Diesman  simulations of Hagen, or the Allen brain initiative.
-	\item Which populations are important? We found that the EEG calculated as the sum of the single-cell EEG contributions from the current dipoles of all ~80,000 cells, spatially distributed within a cylinder (panel B and E) was indistinguishable from the EEG calculated as the sum of the EEG from 4 population current dipoles in the center of the population. Each of these 4 current dipoles was the sum of the z-components of the current dipoles of the pyramidal cells in the different layers (panel F, L23E, L4E, L5E, L6E). We found that all pyramidal cell populations had a substantial EEG contribution, however, the largest was the L2/3 population. It should however be noted that this is not a very realistic scenario, because of current-based synapses etc.
-	
-\end{itemize}
-	
-	}
+
 \subsection{Dipole approximation in more complex head models}
 \sntxt{
 \begin{itemize}
 	\item Insert population dipole vector into NY head model
 \end{itemize}
 	}
+	
+	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%DISCUSSION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -450,6 +449,14 @@ In this formalism it is easy to investigate the contribution to the EEG signal f
  \item Important work on the path towards a real understanding of the biophysical origin of EEGs \cite{BRUYNS2017}
 \end{itemize}
 On the other end of the scale are whole-brain simulations with  \citep{TVB}, to 
+\sntxt{
+\begin{itemize}
+	\item Because of linearity, the EEG from a neural population is the sum of all the single-cell EEG contributions. However, if the spatial extent of the neural population (~ 1 mm) is small relative to the distance to the EEG electrodes (~ 1 cm), then individual current-dipoles can be summed, e.g., for each neural sub-population, or for the entire neural population, and the EEG signal can be computed based on the summed current dipoles. This could be a very promising approach for decomposing and understanding the EEG in large-scale neural  simulations like the cortical column simulations of the HBP, the Potians-Diesman  simulations of Hagen, or the Allen brain initiative.
+	\item Which populations are important? We found that the EEG calculated as the sum of the single-cell EEG contributions from the current dipoles of all ~80,000 cells, spatially distributed within a cylinder (panel B and E) was indistinguishable from the EEG calculated as the sum of the EEG from 4 population current dipoles in the center of the population. Each of these 4 current dipoles was the sum of the z-components of the current dipoles of the pyramidal cells in the different layers (panel F, L23E, L4E, L5E, L6E). We found that all pyramidal cell populations had a substantial EEG contribution, however, the largest was the L2/3 population. It should however be noted that this is not a very realistic scenario, because of current-based synapses etc.
+	
+\end{itemize}
+	
+	}
 
 % \appendix
 % \section{Point-Source vs. Line-Source Dipole Moment} \label{sec:point_line_cdm}
@@ -491,5 +498,6 @@ On the other end of the scale are whole-brain simulations with  \citep{TVB}, to
 % 
 % Hence, we have found that the point-source and the line-source approximations will give the exact same results when calculating current dipole moments. The simpler point-source approximation is therefore preferable.
 \section*{References}
+\footnotesize
 \bibliography{eeg_main}
 \end{document}
