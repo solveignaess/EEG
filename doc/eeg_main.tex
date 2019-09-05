@@ -172,7 +172,8 @@ where $\mathbf{d}$ denotes the distance between the two compartments, and $I$ is
 			  = \sum_{i=1}^{N-1} \mathbf{p}_i^{multi}(t)  ~.
 \label{eq:multi_dipole}
 \end{equation}
-Equations~\eqref{eq:dip_sum_trans}-\eqref{eq:dip_sum_axial} apply the point-source approximation. For proof of equality between the point-source and the line-source approximation when computing the current dipole moment from neuron simulation, see~\ref{sec:point_line_cdm}.
+
+%Equations~\eqref{eq:dip_sum_trans}-\eqref{eq:dip_sum_axial} apply the point-source approximation. For proof of equality between the point-source and the line-source approximation when computing the current dipole moment from neuron simulation, see~\ref{sec:point_line_cdm}.
 
 \snnote{Explain multi/ single/ population dipole!}
 
@@ -390,7 +391,10 @@ Biophysically detailed modelling of large populations is still in its infancy \c
 
 We therefore used the hybrid scheme \citep{HAGEN2016, SENK2018}, where the network activity is first simulated in a highly computationally efficient manner with point neurons in NEST \citep{NEST} and the spiking activity of each neuron saved to file. Afterwards, each cell is modelled with biophysically detailed multicompartment morphologies, capable of predicting extracellular potentials, and the spikes of the all the presynaptic neurons are used as synaptic input \citep{HAGEN2016, SENK2018}.
 
-We used the large-scale point-neuron cortical microcircuit model from \cite{POTJANS2014, HAGEN2016}, which has $\sim$80'000 neurons divided into 8 different cortical populations, one excitatory and one inhibitory across four layers (L2/3 - L6), and can exhibit a diverse set of spiking dynamics including different oscillations and asynchroneous irregular network states \citep{HAGEN2016, BRUNEL2000}. We simulated transient thalamic synaptic input to layer 4 and 6 (Fig.~\ref{fig:population}\textbf{A}), and after the spikes had been mapped onto the multicompartment cell models (Fig.~\ref{fig:population}\textbf{B}), we calculated the LFP (Fig.~\ref{fig:population}\textbf{B}) similarly to \cite{HAGEN2016} (their Fig.~1), in addition to the current dipole moments of each cell. 
+We used the large-scale point-neuron cortical microcircuit model from \cite{POTJANS2014, HAGEN2016}, which has $\sim$80'000 neurons divided into 8 different cortical populations, one excitatory and one inhibitory across four layers (L2/3 - L6), and can exhibit a diverse set of spiking dynamics including different oscillations and asynchroneous irregular network states \citep{HAGEN2016, BRUNEL2000}. 
+The only difference from the original simulations by \cite{HAGEN2016} was the added calculation of current dipole moments.
+We simulated transient thalamic synaptic input to layer 4 and 6 (Fig.~\ref{fig:population}\textbf{A}), and after the spikes had been mapped onto the multicompartment cell models (Fig.~\ref{fig:population}\textbf{B}), we calculated the LFP (Fig.~\ref{fig:population}\textbf{B}) similarly to \cite{HAGEN2016} (their Fig.~1), in addition to the current dipole moments of each cell.
+
 
 We found that for all cell populations the current dipole moment from individual cells could show large transient responses to thalamic input (Fig.~\ref{fig:population}\textbf{D}; gray lines show current dipole moment from individual cells in two example populations: L5 inhibitory (L5I) and L5 exitatory (L5E)), however, for all inhibitory populations the thalamic response was not visible in the average current dipole moment (Fig.~\ref{fig:population}\textbf{D}; black lines, L5I). The same was true for the  current dipole moment components perpendicular to the depth axis for excitatory populations (Fig.~\ref{fig:population}\textbf{D}; L5E, $p_x, p_y$, black lines), but not for the component along the depth axis which had a substantial average response to the thalamic input (Fig.~\ref{fig:population}\textbf{D}; L5E, $p_z$, black line). 
 This implies that, as previously mentioned, only the z-component of the current dipole moment from excitatory populations can be expected to contribute significantly to the EEG signal.
@@ -421,10 +425,12 @@ We also compared the relative amplitude of the EEG signal from each population, 
 
 \subsection{Dipole approximation in more complex head models}
 The four-sphere head model can be a convenient head model for some generic EEG studies, but for many applications more realistic head models will be needed \citep{DALE1999, VORWERK2014}. 
-The construction of such head models typically require very expensive equpiment, such as magnetic resonance imaging (MRI) to map the electrical conductivity of the entire head, at resolutions of $\sim$0.5~mm$^3$. Afterwards, numerical techniques such as the Finite Element Method (FEM) \citep{LOGG2012} can be used to calculate the signal at the EEG electrodes for arbitrary complex head geometries and arbitrary arrangements of current dipoles in the brain, but at a high computational cost.
+The construction of such head models are typically dependent on very expensive equpiment such as for magnetic resonance imaging (MRI) to map the electrical conductivity of the entire head, at resolutions of $\sim$0.5-1.0~mm$^3$ \citep{HUANG2015, HUANG2016}. Afterwards, numerical techniques such as the Finite Element Method (FEM) \citep{LOGG2012} can be used to calculate the signal at the EEG electrodes for arbitrary complex head geometries and arbitrary arrangements of current dipoles in the brain, but at a high computational cost.
 
-The reciprocity principle of Helmholtz states, in short, that switching the location of a current source and a recording electrode will not affect the measured potential \citep{Malmivuo1995, Ziegler2014, HUANG2016, Dmochowski2017}. This implies that it suffices to use FEM to calculate the lead field in the brain from a virtual current dipole at each of the EEG electrodes, and this will be sufficient to infer the potential at the electrodes, given an arbitrary arangement of current dipoles in the brain. 
+The reciprocity principle of Helmholtz states, in short, that switching the location of a current source and a recording electrode will not affect the measured potential \citep{Malmivuo1995, Ziegler2014, HUANG2016, Dmochowski2017}. This implies that it suffices to use FEM to calculate the lead field in the brain from virtual current dipoles at each of the EEG electrodes consecutively, and this will be sufficient to infer the potential at the EEG electrodes, given an arbitrary arangement of current dipoles in the brain.
 Luckily, several such pre-solved complex head models are freely available, such as the New York Head that we will use here (\cite{HUANG2016}; \url{www.parralab.org/nyhead/}). \tvnnote{Cite others? Freesurfer? Sim4Life? Don Hagler?}
+
+
 
 \tvnnote{When we have a figure with a single current dipole of, say 1 nA/um, and corresponding EEG potentials, of say, 1 uV, we should send it to the New York head model people (Stefan Haufe), and ask for a confirmation that the magnitude of the EEG in relation to the current dipole makes sense}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
