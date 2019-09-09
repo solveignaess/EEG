@@ -1,0 +1,7 @@
+*.png
+*.bbl
+*.log
+*.aux
+*.blg
+*.out
+x86_64/

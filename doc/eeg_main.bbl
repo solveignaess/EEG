@@ -1,17 +1,25 @@
-\begin{thebibliography}{12}
+\begin{thebibliography}{21}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \expandafter\ifx\csname url\endcsname\relax
   \def\url#1{\texttt{#1}}\fi
 \expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
 
+\bibitem[{Ahlfors and {Wreh II}(2015)}]{AHLFORS2015}
+Ahlfors, S.~P., {Wreh II}, C., 2015. Modeling the effect of dendritic input
+  location on meg and eeg source dipoles. Med Biol Eng Comput. 53~(9),
+  879--887.
+
 \bibitem[{Carnevale and Hines(2006)}]{CARNEVALE2006}
 Carnevale, N.~T., Hines, M.~L., 2006. The {NEURON} Book. Cambridge University
   Press, Cambridge.
 
-\bibitem[{Geselowitz(1970)}]{GESELOWITZ1970}
-Geselowitz, D., 1970. On the magnetic field generated outside an inhomogeneous
-  volume conductor by internal current sources. IEEE Transactions on Magnetics
-  6~(2), 346--347.
+\bibitem[{Eyal et~al.(2016)Eyal, Verhoog, Testa-Silva, Deitcher, Lodder,
+  Benavides-Piccione, Morales, DeFelipe, de~Kock, Mansvelder, and
+  Segev}]{EYAL2016}
+Eyal, G., Verhoog, M.~B., Testa-Silva, G., Deitcher, Y., Lodder, J.~C.,
+  Benavides-Piccione, R., Morales, J., DeFelipe, J., de~Kock, C.~P.,
+  Mansvelder, H.~D., Segev, I., 2016. {Unique Membrane Properties and Enhanced
+  Signal Processing in Human Neocortical Neurons}. e-Life.
 
 \bibitem[{Griffiths(1999)}]{GRIFFITHS1999}
 Griffiths, D.~J., 1999. Introduction to electromagnetism. Prentice-Hall,
@@ -21,12 +29,84 @@ Griffiths, D.~J., 1999. Introduction to electromagnetism. Prentice-Hall,
 Hagen, E., N{\ae}ss, S., Ness, T.~V., Einevoll, G.~T., 2017. Cbrapy. Frontiers
   in Neuroinformatics.
 
+\bibitem[{Hagen et~al.(2018)Hagen, N{\ae}ss, Ness, and Einevoll}]{HAGEN2018}
+Hagen, E., N{\ae}ss, S., Ness, T.~V., Einevoll, G.~T., 2018. {Multimodal
+  modeling of neural network activity: computing LFP, ECoG, EEG and MEG signals
+  with LFPy 2.0}. Front Neuroinform 12~(92).
+
+\bibitem[{Hagen et~al.(2019)Hagen, N{\ae}ss, Ness, and Einevoll}]{HAGEN2019}
+Hagen, E., N{\ae}ss, S., Ness, T.~V., Einevoll, G.~T., 2019. Lfpy –
+  multimodal modeling of extracellular neuronal recordings in python.
+\newline\urlprefix\url{http://biorxiv.org/content/early/2019/05/03/620286.abstract}
+
 \bibitem[{H{\"a}m{\"a}l{\"a}inen et~al.(1993)H{\"a}m{\"a}l{\"a}inen, Haari,
   Ilmoniemi, Knuutila, and Lounasmaa}]{HAMALAINEN1993}
 H{\"a}m{\"a}l{\"a}inen, M., Haari, R., Ilmoniemi, R.~J., Knuutila, J.,
   Lounasmaa, O.~V., 1993. Magnetoencephalography — theory, instrumentation,
   and application to noninvasive studies of the working human brain. Reviews of
   Modern Physics 65.
+
+\bibitem[{Hay et~al.(2011)Hay, Hill, Sch{\"u}rmann, Markram, and
+  Segev}]{HAY2011}
+Hay, E., Hill, S., Sch{\"u}rmann, F., Markram, H., Segev, I., 2011. Models of
+  neocortical layer 5b pyramidal cells capturing a wide range of dendritic and
+  perisomatic active properties. PLoS computational biology 7~(7).
+
+\bibitem[{Kalmbach et~al.(2018)Kalmbach, ..., Koch, Anastassiou, and
+  Ting}]{KALMBACH2018}
+Kalmbach, B., ..., Koch, C., Anastassiou, C.~A., Ting, J.~T., 2018. h-channels
+  contribute to divergent electrophysiological properties of supragranular
+  pyramidal neurons in human versus mouse cerebral cortex. bioRxiv.
+
+\bibitem[{Lind\'{e}n et~al.(2010)Lind\'{e}n, Pettersen, and
+  Einevoll}]{LINDEN2010}
+Lind\'{e}n, H., Pettersen, K.~H., Einevoll, G.~T., 2010. Intrinsic dendritic
+  filtering gives low-pass power spectra of local field potentials. Springer
+  Science+Business Media 29.
+
+\bibitem[{Markram et~al.(2015)Markram, Muller, Ramaswamy, Reimann, Abdellah,
+  Sanchez, Ailamaki, Alonso-Nanclares, Antille, Arsever, Kahou, Berger,
+  Bilgili, Buncic, Chalimourda, Chindemi, Courcol, Delalondre, Delattre,
+  Druckmann, Dumusc, Dynes, Eilemann, Gal, Gevaert, Ghobril, Gidon, Graham,
+  Gupta, Haenel, Hay, Heinis, Hernando, Hines, Kanari, Keller, Kenyon, Khazen,
+  Kim, King, Kisvarday, Kumbhar, Lasserre, {Le B{\'{e}}}, Magalh{\~{a}}es,
+  Merch{\'{a}}n-P{\'{e}}rez, Meystre, Morrice, Muller,
+  Mu{\~{n}}oz-C{\'{e}}spedes, Muralidhar, Muthurasa, Nachbaur, Newton, Nolte,
+  Ovcharenko, Palacios, Pastor, Perin, Ranjan, Riachi, Rodr{\'{i}}guez,
+  Riquelme, R{\"{o}}ssert, Sfyrakis, Shi, Shillcock, Silberberg, Silva,
+  Tauheed, Telefont, Toledo-Rodriguez, Tr{\"{a}}nkler, {Van Geit}, D{\'{i}}az,
+  Walker, Wang, Zaninetta, DeFelipe, Hill, Segev, and
+  Sch{\"{u}}rmann}]{MARKRAM2015}
+Markram, H., Muller, E., Ramaswamy, S., Reimann, M., Abdellah, M., Sanchez, C.,
+  Ailamaki, A., Alonso-Nanclares, L., Antille, N., Arsever, S., Kahou, G.,
+  Berger, T., Bilgili, A., Buncic, N., Chalimourda, A., Chindemi, G., Courcol,
+  J.-D., Delalondre, F., Delattre, V., Druckmann, S., Dumusc, R., Dynes, J.,
+  Eilemann, S., Gal, E., Gevaert, M., Ghobril, J.-P., Gidon, A., Graham, J.,
+  Gupta, A., Haenel, V., Hay, E., Heinis, T., Hernando, J., Hines, M., Kanari,
+  L., Keller, D., Kenyon, J., Khazen, G., Kim, Y., King, J., Kisvarday, Z.,
+  Kumbhar, P., Lasserre, S., {Le B{\'{e}}}, J.-V., Magalh{\~{a}}es, B.,
+  Merch{\'{a}}n-P{\'{e}}rez, A., Meystre, J., Morrice, B., Muller, J.,
+  Mu{\~{n}}oz-C{\'{e}}spedes, A., Muralidhar, S., Muthurasa, K., Nachbaur, D.,
+  Newton, T., Nolte, M., Ovcharenko, A., Palacios, J., Pastor, L., Perin, R.,
+  Ranjan, R., Riachi, I., Rodr{\'{i}}guez, J.-R., Riquelme, J., R{\"{o}}ssert,
+  C., Sfyrakis, K., Shi, Y., Shillcock, J., Silberberg, G., Silva, R., Tauheed,
+  F., Telefont, M., Toledo-Rodriguez, M., Tr{\"{a}}nkler, T., {Van Geit}, W.,
+  D{\'{i}}az, J., Walker, R., Wang, Y., Zaninetta, S., DeFelipe, J., Hill, S.,
+  Segev, I., Sch{\"{u}}rmann, F., 2015. Reconstruction and simulation of
+  neocortical microcircuitry. Cell 163~(2), 456--492.
+\newline\urlprefix\url{http://linkinghub.elsevier.com/retrieve/pii/S0092867415011915}
+
+\bibitem[{Ness et~al.(2016)Ness, Remme, and Einevoll}]{NESS2016}
+Ness, T.~V., Remme, M. W.~H., Einevoll, G.~T., 2016. Active subthreshold
+  dendritic conductances shape the local field potential. Journal of Physiology
+  594~(13), 3809--3825.
+\newline\urlprefix\url{http://arxiv.org/abs/1512.04293}
+
+\bibitem[{Ness et~al.(2018)Ness, Remme, and Einevoll}]{NESS2018}
+Ness, T.~V., Remme, M. W.~H., Einevoll, G.~T., 2018. h-type membrane current
+  shapes the local field potential from populations of pyramidal neurons.
+  Journal of Neuroscience 38~(26), 6011--6024.
+\newline\urlprefix\url{http://www.jneurosci.org/lookup/doi/10.1523/JNEUROSCI.3278-17.2018}
 
 \bibitem[{Nunez and Srinivasan(2006)}]{NUNEZ2006}
 Nunez, P.~L., Srinivasan, R., 2006. Electric Fields of the Brain, 2nd Edition.
@@ -49,10 +129,6 @@ Pettersen, K., Lind\'{e}n, H., Tetzlaff, T., Einevoll, G.~T., 2014. Power laws
 Pettersen, K.~H., Einevoll, G.~T., 2008. Amplitude variability and
   extracellular low-pass filtering of neuronal spikes. Biophysical Journal 94.
 
-\bibitem[{Sarvas(1987)}]{SARVAS1987}
-Sarvas, J., 1987. Basic mathematical and electromagnetic concepts of the
-  biomagnetic inverse problem. Physics in Medicine \& Biology 32~(1), 11.
-
 \bibitem[{Srinivasan et~al.(1998)Srinivasan, Nunez, and
   Silberstein}]{SRINIVASAN1998}
 Srinivasan, R., Nunez, P.~L., Silberstein, R.~B., 1998. Spatial filtering and
@@ -64,5 +140,10 @@ Srinivasan, R., Nunez, P.~L., Silberstein, R.~B., 1998. Spatial filtering and
 Sterratt, D., Graham, B., Gillies, A., Willshaw, D., 2011. Principles of
   Computational Modeling in Neuroscience. Cambridge University Press,
   Cambridge.
+
+\bibitem[{Suzuki and Larkum(2017)}]{SUZUKI2017}
+Suzuki, M., Larkum, M.~E., 2017. Dendritic calcium spikes are clearly
+  detectable at the cortical surface. Nature Communications 8~(276), 1--10.
+\newline\urlprefix\url{http://dx.doi.org/10.1038/s41467-017-00282-4}
 
 \end{thebibliography}

@@ -18,58 +18,11 @@ plt.rcParams.update({
 })
 
 elec_color = '#00d2ff'
-res_color = '#0080ff'
-reg_color = '#ff0000'
 pas_color = 'k'
 syn_color = '#00cc00'
 cell_color = '#c4c4c4'
 
 
-
-apic_qa_clr_dict = {-0.5: "pink",
-               0.0: pas_color,
-               2.0: "lightblue"}
-
-qa_clr_dict = {-0.5: reg_color,
-               None: "k",
-               0.0: pas_color,
-               2.0: res_color}
-
-cond_clr = {'active': 'r',
-               'passive': 'k',
-               'Ih': 'b',
-                'Ih_frozen': 'c',
-            'Ih_plateau': 'orange',
-            'Ih_plateau2': 'red',
-            None: "k",
-            -0.5: reg_color,
-            0.0: pas_color,
-            2.0: res_color,
-            }
-
-cond_clr_mm = {'active': 'r',
-               'passive': 'k',
-               'Ih': 'b',
-                'Ih_frozen': 'c',
-
-
-               None: "0.5",
-               -0.5: reg_color,
-               0.0: pas_color,
-               2.0: 'lightblue',
-               }
-
-cond_names = {-0.5: 'passive+regenerative',
-              0.0: 'passive+frozen',
-              2.0: 'passive+restorative',
-              None: "passive",
-                     'active': 'active',
-                     'passive': 'passive',
-                     'Ih': 'passive + I$_h$',
-                     'Ih_frozen': 'passive + frozen I$_h$',
-                    'Ih_plateau': 'passive + I$_h$ early plateau',
-                    'Ih_plateau2': 'passive + I$_h$ late plateau',
-              }
 def mark_subplots(axes, letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ', xpos=-0.12, ypos=1.15):
 
     if not type(axes) is list:
