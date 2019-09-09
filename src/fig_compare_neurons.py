@@ -277,6 +277,9 @@ if __name__ == '__main__':
     ax_morph.set_xticks([])
     ax_morph.set_xticklabels([])
     ax_morph.set_ylabel(r'z ($\mu$m)')
+    ax_morph.text(-150, 77170, 'rat L5 PC', fontsize=5.)
+    ax_morph.text(480, 77170, 'human L23 PC', fontsize=5.)
+    ax_morph.text(1250, 77170, 'rat L5 ChC', fontsize=5.)
 
     for ax in [ax_syns, ax_p, ax_eeg]:
         ax.spines['top'].set_visible(False)
