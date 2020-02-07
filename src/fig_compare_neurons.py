@@ -12,6 +12,9 @@ import time
 import random
 from os.path import join
 
+mod_folder = '../../LFPy/LFPy/LFPy/test'
+neuron.load_mechanisms(join(mod_folder))
+
 s = 6
 random.seed(s)
 
@@ -44,29 +47,28 @@ def make_cell(morphology, morph_type='l23'):
 
     return cell
 
-def make_synapse(cell, weight, input_idx, input_spike_train, e=0.):
+def make_synapse(cell, weight, input_idx, input_spike_train, e=0., syntype='Exp2Syn'):
     synapse_parameters = {
         'idx': input_idx,
         'e': e,
-        'syntype': 'Exp2Syn',
-        # 'tau': 2.,
-        'tau1' : 1.,                #Time constant, rise
-        'tau2' : 3.,                #Time constant, decay
-        # 'tau2': 2,
+        'syntype': syntype,
+        'tau1' : 1.,                   #Time constant, rise
+        'tau2' : 3., #5                #Time constant, decay
         'weight': weight,
         'record_current': False,
     }
+
     synapse = LFPy.Synapse(cell, **synapse_parameters)
     synapse.set_spike_times(input_spike_train)
     return cell, synapse
 
-def make_input(cell, weight=0.005):
+def make_input(cell, weight=0.005, syntype='Exp2Syn'):
     # apical exc input at time=10
     input_idxs = cell.get_rand_idx_area_norm(section='allsec', nidx=100, z_min=np.max(cell.zmid)-200)
     pulse_center = 50 #+ np.random.normal(0, 1)
     for input_idx in input_idxs:
         input_spike_train = np.random.normal(pulse_center, 3, size=1)
-        cell, synapse = make_synapse(cell, weight/100. * np.random.normal(1., 0.2), input_idx, input_spike_train)
+        cell, synapse = make_synapse(cell, weight/100. * np.random.normal(1., 0.2), input_idx, input_spike_train, syntype=syntype)
 
     # basal exc input at time=60
     input_idxs = cell.get_rand_idx_area_norm(section='allsec', nidx=100,
@@ -74,17 +76,22 @@ def make_input(cell, weight=0.005):
     pulse_center = 100 #+ np.random.normal(0, 1)
     for input_idx in input_idxs:
         input_spike_train = np.random.normal(pulse_center, 3, size=1)
-        cell, synapse = make_synapse(cell, weight/100. * np.random.normal(1., 0.2), input_idx, input_spike_train)
+        cell, synapse = make_synapse(cell, weight/100. * np.random.normal(1., 0.2), input_idx, input_spike_train, syntype=syntype)
 
-    # overall exc input at t=150 and t=200
+    # overall exc input at t=150
     input_idxs = cell.get_rand_idx_area_norm(section='allsec', nidx=400)
     pulse_center = 150 #+ np.random.normal(0, 1)
     for input_idx in input_idxs:
         input_spike_train = np.random.normal(pulse_center, 3, size=1)
-        input_spike_train2 = input_spike_train + 50.
         wght = weight/200. * np.random.normal(1., 0.2)
-        cell, synapse = make_synapse(cell, wght, input_idx, input_spike_train)
-        cell2, synapse2 = make_synapse(cell, wght, input_idx, input_spike_train2)
+        cell, synapse = make_synapse(cell, wght, input_idx, input_spike_train, syntype=syntype)
+
+    # overall exc input for t=200, same input_idxs as above
+    pulse_center = 200 #+ np.random.normal(0, 1)
+    for input_idx in input_idxs:
+        input_spike_train = np.random.normal(pulse_center, 3, size=1)
+        wght = weight/200. * np.random.normal(1., 0.2)
+        cell, synapse = make_synapse(cell, wght, input_idx, input_spike_train, syntype=syntype)
 
     # basal inh input at t=200
     input_idxs = cell.get_rand_idx_area_norm(section='allsec', nidx=50,
@@ -93,7 +100,7 @@ def make_input(cell, weight=0.005):
     for input_idx in input_idxs:
         input_spike_train = np.random.normal(pulse_center, 3, size=1)
         cell, synapse = make_synapse(cell, 4*weight/100. * np.random.normal(1., 0.2),
-                                     input_idx, input_spike_train, e=-90.)
+                                     input_idx, input_spike_train, e=-90., syntype=syntype)
     return cell, synapse
 
 def return_head_parameters():
@@ -154,7 +161,7 @@ def return_eeg(cell, radii, sigmas, eeg_coords):
 
 def plot_neuron(axis, cell, clr, lengthbar=False, celltype='l23'):
     shift = 0.
-    if celltype == 'l23':
+    if celltype == 'l5':
         shift = 700.
     elif celltype == 'l5i':
         shift = 1400.
@@ -170,6 +177,7 @@ if __name__ == '__main__':
 
     sim_cells = True
     compute_eegs = True
+    current_based = False
     morphology_dict = {'l23' : './cell_models/segev/CNG_version/2013_03_06_cell03_789_H41_03.CNG.swc',
                        'l5' : './cell_models/hay/L5bPCmodelsEH/morphologies/cell1.asc',
                        'l5i' : './cell_models/L5_ChC_cNAC187_3/morphology/rp110201_L5-1_idA_-_Scale_x1.000_y0.975_z1.000_-_Clone_3_no_axon.asc'} # chandelier cell
@@ -185,13 +193,19 @@ if __name__ == '__main__':
     eegs = []
     eegs_multidip = []
     error_scaled = []
+    if current_based:
+        syntype='ExpSynI'
+        weight=0.5
+    else:
+        syntype='Exp2Syn'
+        weight=0.005
     for m in morphology_dict.keys():
         print('morph_type', m)
         morphology = morphology_dict[m]
         cell = make_cell(morphology, morph_type=m)
         # if m == 'l5i':
         #     forall delete_section('axon')
-        cell,synapse = make_input(cell)
+        cell,synapse = make_input(cell, weight=weight, syntype=syntype)
         cell.simulate(rec_vmem=True, rec_current_dipole_moment=True, rec_imem=True)
         cells.append(cell)
 
@@ -228,13 +242,17 @@ if __name__ == '__main__':
     clrs = plt.cm.viridis(np.linspace(0,0.8,num=num_cells))
     clrs2 = plt.cm.viridis(np.linspace(0.1,0.9,num=num_cells))
 
+    ax_syns.vlines([50, 100, 150, 200], 77500-250, 77500+1150, colors='k', linestyles='-', linewidth=0.5)
     ax_syns.plot(cells[0].sptimeslist[0], cells[0].zmid[cells[0].synapses[0].idx], 'o',
                  ms = 3, markerfacecolor = 'None', markeredgecolor='gray', markeredgewidth=.3, label='excitatory')
     ax_syns.plot(cells[0].sptimeslist[0], cells[0].zmid[cells[0].synapses[0].idx], 'x',
                  ms = 3., markerfacecolor = 'gray', markeredgecolor='gray', markeredgewidth=1., label='inhibitory')
 
+    ax_eeg.vlines([50, 100, 150, 200], -96, 43.44, colors='k', linestyles='-', linewidth=.5)
     ax_eeg.plot([300, 310], [0, 10], 'gray', label='single-dipole')
     ax_eeg.plot([300, 310], [0, 10], 'gray',ls=':', label='multi-dipole')
+
+    ax_p.vlines([50, 100, 150, 200], -110, 301, colors='k', linestyles='-', linewidth=.5)
 
     for cellnum in range(num_cells):
         cell = cells[cellnum]
@@ -250,8 +268,12 @@ if __name__ == '__main__':
         ax_p.plot(cell.tvec, p[:,0] + 300, color=clrs[cellnum])
         ax_p.plot(cell.tvec, p[:,1] + 150, color=clrs[cellnum])
         ax_p.plot(cell.tvec, p[:,2], color=clrs[cellnum])
+        print('morph:', list(morphology_dict.keys())[cellnum])
+        print('min pz:', np.min(p[:,2]))
+        print('max px:', np.max(p[:,0]+300))
         ax_eeg.plot(cell.tvec, eegs[cellnum], color=clrs[cellnum])
         ax_eeg.plot(cell.tvec, eegs_multidip[cellnum], ':', color='gray')#clrs2[cellnum])
+        print('max eeg:', np.max(eegs[cellnum]))
 
     ax_syns.text(38, 78700, 'apical', fontsize=5)
     ax_syns.text(89, 78700, 'basal', fontsize=5)
@@ -265,7 +287,7 @@ if __name__ == '__main__':
         ax_morph.plot(0,0,'o', ms = 1e-4)
     morph_names = ['hay l5', 'segev l23', 'inter l5']
 
-    ax_morph.set_title('morphologies')
+    ax_morph.set_title('morphologies', pad=13.5)
     ax_syns.set_title('synaptic input')
     ax_p.set_title('current dipole moment')
     # ax_px.set_title('current dipole moment')
@@ -309,16 +331,30 @@ if __name__ == '__main__':
     ax_p.text(start_point, 150, r'$p_y$')
     ax_p.text(start_point, 300, r'$p_x$')
     ax_p.spines['left'].set_visible(False)
+    ax_p.set_ylim([-110, 310])
     ax_p.set_yticks([])
     ax_p.set_yticklabels([])
 
     ax_eeg.set_xlabel('time (ms)')
 
-    ax_eeg.set_ylabel(r'$\Phi$ (pV)')
+    ax_eeg.set_ylabel(r'$\Phi$ (pV)', labelpad=7.5)
     for ax in [ax_p, ax_eeg, ax_syns]:
         ax.set_xlabel(r'time (ms)')
 
-    plotting_convention.mark_subplots(fig.axes, xpos=-0.25)
+    # label axes
+    xpos = [0.02, 0.52, 0.02, 0.52]
+    ypos = [0.98, 0.98, 0.49, 0.48]
+    letters = 'ABCD'
+    for i in range(len(letters)):
+        fig.text(xpos[i], ypos[i], letters[i],
+             horizontalalignment='center',
+             verticalalignment='center',
+             fontweight='demibold',
+             fontsize=8)
+
     fig.tight_layout(pad=0.5, h_pad=1., w_pad=.7)
-    title = './figures/fig_compare_neurons_l5ChC_wmd.png'
+    if current_based:
+        title = './figures/fig_compare_neurons_l5ChC_wmd_current_based.png'
+    else:
+        title = './figures/fig_compare_neurons_l5ChC_wmd.png'
     plt.savefig(title, dpi=600) #_nbc
