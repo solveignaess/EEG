@@ -326,9 +326,11 @@ This demonstrates that the relative error of the single-dipole approximation is 
 	\textbf{D}: Magnitude of current dipole moment, $|\mathbf{p}|$, as function of distance from soma to synaptic input location.
 	\textbf{E}: Relative error, RE, showing how single-dipole model deviates from multi-dipole model results as function of distance from soma to synapse location.
 	\textbf{F}: Relative error, RE, showing how single-dipole model deviates from multi-dipole model results as function of magnitude of current dipole moment, $|\mathbf{p}|$.
+	\tvnnote{Suggestion: How about running another simulation with all synapses active simulataneously, calculate the relative error, and add it to this panel (F) as a horizontal line? We would expect this to give a small error, helping to illustrate our point of the EEG being dominated by low-error dipoles.}
+	\gtenote{I wonder if it could be an idea to have a panel illustrating the timecourse of the signal underlying these results?}
+	\snnote{only one timepoint is shown. do you mean showing p(t) for all the different synapse locations? Haven't tested this yet..}
 	}
 %	\tvnnote{Suggestion: How about running another simulation with all synapses active simulataneously, calculate the relative error, and add it to this panel (F) as a horizontal line? We would expect this to give a small error, helping to illustrate our point of the EEG being dominated by low-error dipoles.}
-
 	\label{fig:compare_multi_single_dipole}
 \end{figure}
 
@@ -488,7 +490,7 @@ The construction of such realistic head models is typically dependent on \sntxt{
 T\sntxt{he number of computing hours can, however, be reduced by applying t}he reciprocity principle of Helmholtz\sntxt{. The reciprocity principle} states, in short, that switching the location of a current source and a recording electrode will not affect the measured potential \citep{Malmivuo1995, Ziegler2014, HUANG2016, Dmochowski2017}. This implies that it suffices to use FEM to calculate the lead field in the brain from virtual current dipoles \sntxt{placed} at each of the EEG electrodes\sntxt{. From the lead field matrix, we can } \sntxt{\sout{consecutively, and this will be sufficient to}} infer the potential at the EEG electrodes, given an arbitrary arangement of current dipoles in the brain.
 Luckily, several such pre-solved complex head models are freely available, \sntxt{\sout{such as} and one example is} the New York Head (Fig.~\ref{fig:compare_head_models}\textbf{B}), \sntxt{\sout{that we will use here} which we have applied here.}  (\cite{HUANG2016}; \url{www.parralab.org/nyhead/}).
 
-\snnote{Blir veldig glad for endringer/ innspill til hvordan folgende del skal bli bedre!}
+\snnote{Det neste avsnittet har jeg sett meg litt blind paa. Blir veldig glad for endringer/ innspill her!til hvordan folgende del skal bli bedre!}
 \sntxt{
 Here, we computed EEG signals from neural population activity, by inserting the z-component of the population dipole described in Section~\ref{subsec:populations} into the four-sphere model and the New York Head. We started by choosing a dipole position on the top of a sulcus in the parietal lobe, and oriented the dipole as if the pyramidal cells in the neural population were aligned with the normal vector of the brain surface. Then, we found an equivalent position in the four-sphere model, with the same brain surface normal vector. Further, we computed the resulting EEG signals applying the two head models as shown in Fig.~\ref{fig:compare_head_models}\textbf{C,D} for the time point of the population simulation giving with the largest current dipole moment amplitude ($t_{max}$). 
 
