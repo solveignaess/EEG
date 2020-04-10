@@ -1,0 +1,20 @@
+load_file("nrngui.hoc")
+
+pwmcnt = PWManager[0].count // used to hide this panel after fig selected
+
+xpanel("Select a figure")
+  xbutton("Figure 1 demo","fig_1()")
+  xbutton("Figure 2 demo","fig_2()")
+  xlabel("after selecting a figure choose cell or parameters")
+  xlabel("then press Init & Run")
+xpanel()
+
+proc fig_1() {
+  PWManager[0].hide(pwmcnt-1)
+  xopen("demofig1.hoc")
+}
+
+proc fig_2() {
+  PWManager[0].hide(pwmcnt-1)
+  xopen("initfig2.hoc")
+}

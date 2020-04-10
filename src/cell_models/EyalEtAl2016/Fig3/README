@@ -1,0 +1,24 @@
+README
+
+In Figure 3 we have used an active model for a human L2/3 neuron to
+demonstrate the effect of low Cm value on signal transfer and cortical
+computations.
+
+We have used the model from Fig. 1a, to which we added a simplified
+excitable model for the generation of Na+ spikes at the soma. We aimed
+at preserving both the current threshold (~300 pA) and the voltage
+threshold (~ + 20 mV above resting potential) for spike initiation as
+found in in vitro experiments in these cells (Verhoog et al. 2013;
+Testa-Silva et al. 2014)
+
+The model is available under ActiveModels/model_0603_cell08_cm045.hoc
+
+The other model model in this directory is the same model but with
+Cm=0.9 : model_0603_cell08_cm09.hoc
+
+In order to run the simulations in this directory (Fig3a, Fig3b and
+Fig3a), you will have first to compile the three mechanisms in the
+mechanisms folder (na, kv and NMDA). For more details, see compile mod
+files in the NEURON website
+(http://neuron.yale.edu/neuron/faq#compilemod), see chapter 9 in the
+NEURON BOOK (Carnevale and Hines 2005)

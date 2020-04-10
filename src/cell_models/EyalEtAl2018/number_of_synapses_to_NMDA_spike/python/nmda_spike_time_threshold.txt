@@ -1,0 +1,10 @@
+when nmda spike is defined as being above -40 mV for 20 ms
+nmda spike was created in 0.833 of the segments
+nmda spike was created with 19.921 +- 10.208 synapses
+
+cell0603_03: 83.838%, 20.135 +- 9.671
+cell0603_08: 82.019%, 20.680 +- 10.486
+cell0603_11: 80.732%, 21.433 +- 10.373
+cell1303_03: 79.894%, 20.866 +- 10.675
+cell1303_05: 86.422%, 19.387 +- 9.689
+cell1303_06: 88.145%, 17.020 +- 9.616

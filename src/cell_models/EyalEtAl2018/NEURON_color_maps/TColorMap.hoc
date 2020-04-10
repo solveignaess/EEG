@@ -1,0 +1,43 @@
+/**
+* ColorMap is simply to use a colormap from the type jet
+* to any plot shape object
+*
+* credit: Albert Gieon
+*/
+D__TCOLORMAPHOC = 1
+begintemplate TColorMap
+	objref cmat,cfile
+	public set_color_map	
+	proc init(){
+		cmat = new Matrix()
+
+		cfile = new File($s1)
+
+		cfile.ropen()
+		cmat.scanf(cfile)
+	
+		cfile.close()
+		if(numarg()>1) set_color_map($o2)
+	}
+	/*
+		$o1 - the shape plot
+		$2 - min value for the data range - if omited then 0 assumed.
+		$3 - max value for the data range
+	*/
+	proc set_color_map(){local s,na,k localobj shape 
+		s = cmat.nrow
+		shape = $o1
+		shape.colormap(cmat.nrow)
+		for(i=0;i<s;i+=1){
+
+			shape.colormap(i,cmat.getval(i,0),cmat.getval(i,1),cmat.getval(i,2))
+		}
+		na = numarg()
+		if(na>2){
+			shape.scale($2,$3)
+		}else{
+			if(na>1)  shape.scale(0,$2)
+		}
+	}
+endtemplate TColorMap
+

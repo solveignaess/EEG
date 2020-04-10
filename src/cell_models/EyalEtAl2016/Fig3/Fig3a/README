@@ -1,0 +1,13 @@
+README
+
+In this folder you'll find the files to re-generate Eyal et al. 2016, ELIFE, Fig 3A.
+contact guy.eyal@mail.huji.ac.il
+
+This figure examined the impact of the low Cm value on synaptic charge transfer in HL2/3 dendrites
+Two cases are tested - Model with Cm value of 0.45 uF/cm2 and model with cm = 0.9 uF/cm2. More details about the models can be found in Eyal et al.
+
+We found that the peak somatic excitatory postsynaptic potential (EPSP) is larger by ~84% (basal synapse) to ~93% (apical synapse) when Cm = 0.45 μF/cm2  as compared to the case with Cm = 0.9 μF/cm2 . We also measured the synaptic delay (Agmon-Snir & Segev 1993), defined as the time-difference between that of the local peak EPSP to that of the resultant soma EPSP. The synaptic delay from the distal tuft and basal synapses was dramatically reduced from 11 ms and 39 ms when Cm = 0.9 μF/cm2 to 6.5 ms and 20 ms when Cm = 0.45 μF/cm2, respectively.
+
+To Re-create Fig 3A simply run:
+1. Fig3a_apic_synapse.py
+2. Fig3a_basal_synapse.py

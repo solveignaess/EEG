@@ -1,0 +1,11 @@
+set of colormaps for NEURON. 
+They can be used for creating colored shape plots.
+The author of the files in this folder is Albert Gideon
+
+Example use in python:
+    h.load_file("TColorMap.hoc")
+
+    ps = h.PlotShape() 
+    ps.exec_menu("View = plot")
+    ps.variable("v")
+    cm1 = h.TColorMap("../NEURON_color_maps/jet.cm")

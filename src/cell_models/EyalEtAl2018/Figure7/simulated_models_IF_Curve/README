@@ -1,0 +1,4 @@
+README
+
+IF curve for the six human models similar to Eyal et al 2017 Fig7B. 
+To re-create files run Fig7B with re_simulate_models=True

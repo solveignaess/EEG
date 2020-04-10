@@ -1,0 +1,349 @@
+/* --------------------------------------------------------------
+   Multi-compartment simulations of neocortical neurons
+   DEMO
+  
+   Z. F. Mainen and T. J. Sejnowski (1996) Influence of dendritic
+   structure on firing pattern in model neocortical neurons. 
+   Nature 382: 363-366. 
+   
+   Demo of Figure 1.
+
+   updated: 11/1/96
+   author:
+   Zach Mainen
+   zach@salk.edu or zach@cshl.org
+
+
+   Corrections to methods of Figure 1 misprinted in paper:
+
+   1. Time step = 25 usec, not 250 usec
+   
+   2. I_Na rate functions are all shifted 5 mV negative
+   m:
+   alpha = 0.182(v+30)/(1-exp(-(v+30)/9))
+   beta = -0.124(v+30)/(1-exp((v+30)/9))
+   h:
+   alpha = 0.024(v+45)/(1-exp(-(v+45)/5))
+   beta = -0.0091(v+70)/(1-exp((v+70)/5))
+   beta_inf = 1/(1+exp(v+60)/6.2)
+
+   3. I_Ca activation not inactivation  is given first 
+
+   4. I_Km rates 
+   alpha =  0.001 (v+30)/(1-exp(-(v+30)/9))
+   beta =   0.001 (v+30)/(1-exp((v+30)/9)
+
+   5. g_kca = 3 (pS um^-2)
+
+   Correction to Figure 4:
+
+   "transfer impedance" should be "transfer conductance"
+   Z^-1 = I/V (uS) 
+   
+Minor revisions to GUI code by Ted Carnevale 2/2011
+to use load_file rather than load_proc,
+and to control locations of RunControl panel, 
+model selection panel, voltage axis graph, 
+and PlotShape.
+ 
+   -------------------------------------------------------------- */
+
+load_file("nrngui.hoc")
+
+objref sh, st, axonal, dendritic, dendritic_only
+
+create soma
+access soma
+
+tstop = 1000
+steps_per_ms = 40
+dt = 0.025
+
+
+// --------------------------------------------------------------
+// passive & active membrane 
+// --------------------------------------------------------------
+
+ra        = 150
+global_ra = ra
+rm        = 30000
+c_m       = 0.75
+cm_myelin = 0.04
+g_pas_node = 0.02
+
+v_init    = -70
+celsius   = 37
+
+Ek = -90
+Ena = 60
+
+
+gna_dend = 20
+gna_node = 30000
+gna_soma = gna_dend
+
+gkv_axon = 2000
+gkv_soma = 200
+
+gca = .3
+gkm = .1
+gkca = 3
+
+gca_soma = gca
+gkm_soma = gkm
+gkca_soma = gkca
+ 
+
+// --------------------------------------------------------------
+// Axon geometry
+//
+// Similar to Mainen et al (Neuron, 1995)
+// --------------------------------------------------------------
+
+n_axon_seg = 5
+
+create soma,iseg,hill,myelin[2],node[2]
+
+proc create_axon() {
+
+  create iseg,hill,myelin[n_axon_seg],node[n_axon_seg]
+
+  soma {
+    equiv_diam = sqrt(area(.5)/(4*PI))
+
+    // area = equiv_diam^2*4*PI
+  }
+  if (numarg()) equiv_diam = $1
+
+  iseg {                // initial segment between hillock + myelin
+     L = 15
+     nseg = 5
+     diam = equiv_diam/10        // see Sloper and Powell 1982, Fig.71
+  }
+
+  hill {                
+    L = 10
+    nseg = 5
+    diam(0:1) = 4*iseg.diam:iseg.diam
+  }
+
+  // construct myelinated axon with nodes of ranvier
+
+  for i=0,n_axon_seg-1 {
+    myelin[i] {         // myelin element
+      nseg = 5
+      L = 100
+      diam = iseg.diam         
+    }
+    node[i] {           // nodes of Ranvier
+      nseg = 1
+      L = 1.0           
+      diam = iseg.diam*.75       // nodes are thinner than axon
+    }
+  }
+
+  soma connect hill(0), 0.5
+  hill connect iseg(0), 1
+  iseg connect myelin[0](0), 1
+  myelin[0] connect node[0](0), 1
+
+  for i=0,n_axon_seg-2  { 
+      node[i] connect myelin[i+1](0), 1 
+      myelin[i+1] connect node[i+1](0), 1
+  }
+}
+
+// --------------------------------------------------------------
+// Spines
+// --------------------------------------------------------------
+
+      // Based on the "Folding factor" described in
+      // Jack et al (1989), Major et al (1994)
+      // note, this assumes active channels are present in spines 
+      // at same density as dendrites
+
+spine_dens = 1
+      // just using a simple spine density model due to lack of data on some 
+      // neuron types.
+
+spine_area = 0.83 // um^2  -- K Harris
+
+proc add_spines() { local a
+  forsec $o1 {
+    a =0
+    for(x) a=a+area(x)
+
+    F = (L*spine_area*spine_dens + a)/a
+
+    L = L * F^(2/3)
+    for(x) diam(x) = diam(x) * F^(1/3)
+  }
+}
+
+
+
+proc init_cell() {
+
+  // passive
+  forall {
+    insert pas
+    Ra = ra 
+    cm = c_m 
+    g_pas = 1/rm
+    e_pas = v_init
+  }
+
+  // exceptions along the axon
+  forsec "myelin" cm = cm_myelin
+  forsec "node" g_pas = g_pas_node
+
+  // na+ channels
+  forall insert na
+  forsec dendritic gbar_na = gna_dend
+  forsec "myelin" gbar_na = gna_dend
+  hill.gbar_na = gna_node
+  iseg.gbar_na = gna_node
+  forsec "node" gbar_na = gna_node
+
+  // kv delayed rectifier channels
+  iseg { insert kv  gbar_kv = gkv_axon }
+  hill { insert kv  gbar_kv = gkv_axon }
+  soma { insert kv  gbar_kv = gkv_soma }
+
+  // dendritic channels
+  forsec dendritic {
+    insert km    gbar_km  = gkm
+    insert kca   gbar_kca = gkca
+    insert ca    gbar_ca = gca
+    insert cad
+  }
+
+  soma {
+    gbar_na = gna_soma
+    gbar_km = gkm_soma
+    gbar_kca = gkca_soma
+    gbar_ca = gca_soma
+  }
+
+ 
+  forall if(ismembrane("k_ion")) ek = Ek
+  forall if(ismembrane("na_ion")) {
+    ena = Ena
+    // seems to be necessary for 3d cells to shift Na kinetics -5 mV
+    vshift_na = -5
+  }
+  forall if(ismembrane("ca_ion")) {
+    eca = 140
+    ion_style("ca_ion",0,1,0,0,0)
+    vshift_ca = 0
+  }
+}
+
+proc load_3dcell() {
+
+// $s1 filename
+
+  aspiny = 0
+  forall delete_section()
+  xopen($s1)
+  access soma
+
+  dendritic = new SectionList()
+
+  // make sure no compartments exceed 50 uM length
+  forall {
+    diam_save = diam
+    n = L/50
+    nseg = n + 1
+    if (n3d() == 0) diam = diam_save
+    dendritic.append()
+  }    
+
+
+  // show cell
+/*
+  sh = new PlotShape()
+  sh.size(-300,300,-300,300)
+*/
+  // but control position of PlotShape window -- Ted Carnevale
+  sh = new PlotShape(0)
+  sh.size(-300,300,-299.522,299.522)
+  sh.variable("v")
+  {sh.view(-300, -299.522, 600, 599.043, 265, 369, 200.64, 200.32)}
+
+  dendritic_only = new SectionList()
+  forsec dendritic dendritic_only.append()
+  soma  dendritic_only.remove()
+
+  create_axon()
+
+  init_cell()
+
+  if (!aspiny) add_spines(dendritic_only,spine_dens)
+
+  st=new IClamp(.5)
+  st.dur = 900
+  st.del = 5
+}
+
+// GUI
+
+// run control panel
+
+{
+xpanel("RunControl")
+xvalue("Init","v_init", 1,"stdinit()", 1, 1 )
+xbutton("Init & Run","run()")
+xbutton("Stop","stoprun=1")
+xvalue("Continue til","runStopAt", 1,"{continuerun(runStopAt) stoprun=1}", 1, 1 )
+xvalue("Continue for","runStopIn", 1,"{continuerun(t + runStopIn) stoprun=1}", 1, 1 )
+xbutton("Single Step","steprun()")
+xvalue("t","t", 2 )
+xvalue("Tstop","tstop", 1,"tstop_changed()", 0, 1 )
+xvalue("dt","dt", 1,"setdt()", 0, 1 )
+xvalue("Points plotted/ms","steps_per_ms", 1,"setdt()", 0, 1 )
+xvalue("Scrn update invl","screen_update_invl", 1,"", 0, 1 )
+xvalue("Real Time","realtime", 0,"", 0, 1 )
+xpanel(0,105)
+}
+
+// menu of models
+
+proc fig1a() {
+  load_3dcell("cells/lcAS3.hoc")
+  st.amp = 0.05
+}
+
+proc fig1b() {
+  load_3dcell("cells/j7.hoc")  
+  st.amp = 0.07
+}
+
+proc fig1c() {
+  load_3dcell("cells/j8.hoc")
+  st.amp = 0.1
+}
+
+proc fig1d() {
+  load_3dcell("cells/j4a.hoc") 
+  st.amp = 0.2
+}
+
+xpanel("Figure 1")
+xbutton("a. L3 Aspiny","fig1a()")
+xbutton("b. L4 Stellate","fig1b()")
+xbutton("c. L3 Pyramid","fig1c()")
+xbutton("d. L5 Pyramid","fig1d()")
+xpanel(159,481)
+
+// graph of v(0.5) vs. t
+
+objref g
+
+{
+g = new Graph(0)
+g.size(0,1000,-80,40)
+{g.view(0, -80, 1000, 120, 265, 105, 300.48, 200.32)}
+graphList[0].append(g)
+g.addexpr("v(.5)", 1, 1, 0.8, 0.9, 2)
+}

@@ -1,0 +1,161 @@
+/* --------------------------------------------------------------
+   Two-compartment reduced model for neocortical electrogenesis
+   DEMO
+  
+   Z. F. Mainen and T. J. Sejnowski (1996) Influence of dendritic
+   structure on firing pattern in model neocortical neurons. 
+   Nature 382: 363-366. 
+
+   author:
+   Zach Mainen
+   zach@salk.edu
+ 
+   -------------------------------------------------------------- */
+
+load_proc("nrnmainmenu")   // Use standard NEURON procedures from
+                           // "stdrun.hoc"
+
+
+tstop = 1000         // 1 second simulation
+steps_per_ms = 40    
+dt = 0.025           // time step
+celsius   = 37       // temperature scales kinetics of active currents
+
+
+// --------------------------------------------------------------
+// create two compartments, connect and insert conductances
+// --------------------------------------------------------------
+
+create dend          // dendritic compartment
+create axon          // axo-somatic compartment
+access axon
+connect dend(0), axon(.5)  
+                     // connect the compartments
+                     // the position arguments (0, 0.5) are irrelevant
+
+dend {
+    diam = 10/PI          
+    // note, L and Ra are set in "init()" procedure
+
+                     // uses the associated ".mod" files
+    insert na        // na.mod
+    insert km        // km.mod
+    insert kca       // kca.mod
+    insert ca        // ca.mod
+    insert cad       // cad.mod
+    insert pas     
+}
+
+axon {
+    diam = 10/PI
+    L = 10            // area of 100 um^2
+    // note Ra of axon is irrelevant to the 2-comp simulation
+
+    insert na         // na.mod
+    insert kv         // kv.mod
+}
+
+
+
+// --------------------------------------------------------------
+// electrical geometry
+// --------------------------------------------------------------
+
+
+rho = 165            // dendritic to axo-somatic area ratio 
+                     // useful range approx (50 to 200)
+kappa = 10           // coupling resistance (Mohm) 
+                     // useful range approx (0 to 10)
+
+
+// --------------------------------------------------------------
+// passive properties
+// --------------------------------------------------------------
+
+
+v_init    = -70      // resting membrane potential (approximate) (mV)
+forall cm = 0.75     // membrane capacity (uF-cm^-2
+rm        = 30000    // membrane resistivity (ohm-cm^2)
+dend.g_pas = 1/rm    // only dendrite has leak conductance
+dend.e_pas = v_init  // leak reversal potential (mV)
+
+
+// --------------------------------------------------------------
+// active conductances
+// --------------------------------------------------------------
+
+                     // Axo-somatic conductance densities (pS-um^-2)
+axon.gbar_na = 30000     // fast Na+ 
+axon.gbar_kv = 1500      // fast non-inactivating K+ 
+
+                     // Dendritic conductance densities (pS-um^-2)
+dend.gbar_na = 15         // fast Na+ 
+dend.gbar_ca = 0.3         // high voltage-activated Ca^2+ 
+dend.gbar_km = 0.1         // slow voltage-dependent non-inactivating K+
+dend.gbar_kca = 3         // slow Ca^2+-activated K+
+
+forall ek = -90      // K+ current reversal potential (mV)
+forall ena = 60      // Na+ current reversal potential (mV)
+
+dend.eca = 140       // Ca2+ current reversal potential (mV)
+                     // using an ohmic current rather than GHK equation
+dend { ion_style("ca_ion",0,1,0,0,0) }  
+
+
+
+// --------------------------------------------------------------
+// stimulating electrode
+// --------------------------------------------------------------
+
+objref st
+st = new IClamp(.1)
+axon st.loc(.5)
+st.amp = 0.1
+st.dur = 900
+st.del = 5
+
+
+
+// --------------------------------------------------------------
+// Redefinition of the standard hoc procedure for initialization
+// that allows for pre-equilibration of currents and translation
+// of "rho" and "kappa" parameters into proper dendrite L and Ra
+// --------------------------------------------------------------
+
+proc init() {
+
+  dend {
+    L  = rho*axon.L          // dend area is axon area multiplied by rho
+    Ra = Ra*kappa/ri(.5)     // axial resistivity is adjusted to achieve
+                             // desired coupling resistance
+  }
+
+  st_amp_save = st.amp   // preserve stimulus amplitude
+  st.amp = 0             // turn stimulus off
+
+  t = -1e6               // back up in time
+  finitialize(v_init)    // initialize
+  fcurrent()
+  temp_dt = dt           
+  dt = 10                // take a few large steps
+  for i=0,19 fadvance()  // to allow currents to reach steady state
+
+  t = 0                  // restore t,dt
+  dt = temp_dt
+
+  finitialize(v)         // initialize again
+  fcurrent()
+
+  st.amp = st_amp_save   // restore stimulus
+}
+
+
+// --------------------------------------------------------------
+// bring up standard menus and a graph 
+// --------------------------------------------------------------
+
+nrnmainmenu()
+nrncontrolmenu()
+newPlotV()
+
+

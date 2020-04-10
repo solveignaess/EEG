@@ -2,33 +2,44 @@ import numpy as np
 import matplotlib.pyplot as plt
 import plotting_convention as plotting_convention
 import LFPy
+import neuron
 from matplotlib import colorbar
 from matplotlib.collections import PolyCollection
+import os
+from os.path import join
 
 
-def make_data(morphology, syn_loc):
+def make_data(morphology, syninds, dip_loc=None, cell_model=None, x_rot=0, y_rot=0, z_rot=0, active=False):
     l23 = True
     sigma = 0.3
-
+    print('cell_model:', cell_model)
     # compute LFP close to neuron
     X,Z = np.meshgrid(np.linspace(-1300,1301,101), np.linspace(-900,1800,101))
     Y = np.zeros(X.shape)
-    cell_parameters, synapse_parameters, grid_electrode_parameters = set_parameters(morphology, X, Y, Z)
-    cell, synapse, grid_electrode = simulate(cell_parameters, synapse_parameters, grid_electrode_parameters, syn_loc)
+    cell_parameters, synapse_parameters, grid_electrode_parameters = set_parameters(morphology, X, Y, Z, cell_model=cell_model)
+    cell, synapse, grid_electrode = simulate(cell_parameters, synapse_parameters, grid_electrode_parameters, syninds, x_rot=x_rot, y_rot=y_rot, z_rot=z_rot, active=active)
     ## multicompartment
     cb_LFP_close = grid_electrode.LFP*1e6
+
+
     ## multi-dipole
     multi_dips, multi_dip_locs = cell.get_multi_current_dipole_moments()
     inf_vol = LFPy.InfiniteVolumeConductor(sigma)
     gridpoints_close = np.array([X.flatten(), Y.flatten(), Z.flatten()]).T
     multi_dip_LFP_close = inf_vol.get_multi_dipole_potential(cell, gridpoints_close)*1E6
+    ## save time when testing:
+    # multi_dip_LFP_close = np.zeros(cb_LFP_close.shape)
+
     ## single dipole
     single_dip = cell.current_dipole_moment
     syninds = cell.synidx
-    r_soma_syns = [cell.get_intersegment_vector(idx0 = 0,
-                   idx1 = i) for i in syninds]
-    r_mid = np.average(r_soma_syns, axis = 0)
-    r_mid = r_mid/2. + cell.somapos
+    if dip_loc is not None:
+        r_mid = dip_loc
+    else:
+        r_soma_syns = [cell.get_intersegment_vector(idx0 = 0,
+                       idx1 = i) for i in syninds]
+        r_mid = np.average(r_soma_syns, axis = 0)
+        r_mid = r_mid/2. + cell.somapos
 
     db_LFP_close = inf_vol.get_dipole_potential(single_dip , gridpoints_close - r_mid)*1e6
 
@@ -39,37 +50,92 @@ def make_data(morphology, syn_loc):
                                  'y': Y_f.flatten(),
                                  'z': Z_f.flatten()
                                  }
-    cell, synapse, grid_electrode_far = simulate(cell_parameters, synapse_parameters, grid_electrode_parameters, syn_loc)
+    cell, synapse, grid_electrode_far = simulate(cell_parameters, synapse_parameters, grid_electrode_parameters, syninds, x_rot=x_rot, y_rot=y_rot, z_rot=z_rot, active=active)
     ## multicompartment
     cb_LFP_far = grid_electrode_far.LFP*1e6
     ## multi dipole
     gridpoints_far = np.array([X_f.flatten(), Y_f.flatten(),Z_f.flatten()]).T
     multi_dip_LFP_far = inf_vol.get_multi_dipole_potential(cell, gridpoints_far)*1e6
+    # save time when testing:
+    # multi_dip_LFP_far = np.zeros(cb_LFP_far.shape)
 
     ## single dipole
     db_LFP_far = inf_vol.get_dipole_potential(single_dip , gridpoints_far-r_mid)*1e6
 
     max_ind = 10262844  # np.argmax(np.abs(grid_electrode_LFP)) + 100
-    time_max = 334  # np.mod(max_ind, len(cell.tvec))
+    time_max = np.argmax(np.abs(np.linalg.norm(cell.current_dipole_moment, axis=1)))  # 334  # np.mod(max_ind, len(cell.tvec))
     LFP_max_close = 100.  #np.round(np.max(np.abs(grid_electrode_LFP[:, time_max])))
     LFP_max_far = 100.
     print('-'*200)
     return cell, cb_LFP_close, cb_LFP_far, multi_dip_LFP_close, multi_dip_LFP_far, db_LFP_close, db_LFP_far, LFP_max_close, LFP_max_far, time_max, multi_dips, multi_dip_locs, single_dip, r_mid, X, Z, X_f, Z_f
     # print max_ind, time_max, LFP_max
 
-def set_parameters(morphology, X, Y, Z):
+def set_parameters(morphology, X, Y, Z, cell_model=None):
     """set cell, synapse and electrode parameters"""
-    cell_parameters = {'morphology': morphology,
-                   'tstart': 0., # simulation start time
-                   'tstop': 100 # simulation stop time [ms]
-                   }
-    # default time resolution for NEURON and Python is 0.1!
+    # cell_parameters = {'morphology': morphology,
+    #                'tstart': -10., # simulation start time
+    #                'tstop': 100, # simulation stop time [ms]
+    #                # parameters not included in first version of fig
+    #                'dt': 2**-4,
+    #                'passive': True,
+    #                'passive_parameters': {'g_pas' : 1./21400, 'e_pas' : -68.851}, # S/cm^2, mV # new
+    #                'Ra': 282, # Ω cm
+    #                'cm': 0.49 # µF/cm^2
+    #                }
+
+    model_folder = join("cell_models", "EyalEtAl2018")
+    morph_path = join(model_folder, "Morphs", morphology)
+
+    if cell_model == None:
+        cell_parameters = {
+            'v_init': -70,
+            'morphology': morph_path,
+            'passive_parameters': {'g_pas' : 1./30000, 'e_pas' : -70}, # S/cm^2, mV
+            'Ra' : 150, # Ω cm
+            'cm' : 1, # µF/cm^2
+            'nsegs_method': "lambda_f",
+            "lambda_f": 100,
+            'dt': 2**-4,  # [ms] Should be a power of 2
+            'tstart': -10,  # [ms] Simulation start time
+            'tstop': 100,  # [ms] Simulation end time
+            "pt3d": True,
+            'passive': True
+            }
+
+        # if celltype == 'l23':
+        #     cell_parameters['passive_parameters'] = {'g_pas' : 1./21400, 'e_pas' : -68.851} # S/cm^2, mV
+        #     cell_parameters['Ra'] = 282 # Ω cm
+        #     cell_parameters['cm'] = 0.49 # µF/cm^2
+    else:
+        mod_folder = join(model_folder, 'ActiveMechanisms')
+        model_path = join(model_folder, "ActiveModels", cell_model + '_mod')
+        neuron.load_mechanisms(mod_folder)
+
+        cell_parameters = {
+                'morphology': morph_path,
+                'templatefile': model_path + '.hoc',
+                'templatename': cell_model,
+                'templateargs': morph_path,
+                'v_init': -86,
+                'passive': False,
+                'dt': 2**-4,  # [ms] Should be a power of 2
+                'tstart': -200,  # [ms] Simulation start time
+                'tstop': 100,  # [ms] Simulation end time
+                "pt3d": True,
+                'nsegs_method': "lambda_f",
+                "lambda_f": 100,
+        }
+
+
 
     synapse_parameters = {'e': 0., # reversal potential
-                      'syntype': 'ExpSyn', # exponential synapse
-                      'tau': 5., # synapse time constant
-                      'weight': 0.001, # 0.001, # synapse weight
-                      'record_current': True # record synapse current
+                      # 'tau': 5., # synapse time constant (first fig version)
+                      'weight': 0.002, # 0.001, # synapse weight
+                      'record_current': True, # record synapse current
+                      # parameters not included in first version of fig
+                      'syntype': 'Exp2Syn',
+                      'tau1': 1., #Time constant, rise
+                      'tau2': 3., #Time constant, decay
                       }
 
     #Guessing the electrode requires a 3D-grid. Cannot set 3D-grid in mgrid,
@@ -81,21 +147,29 @@ def set_parameters(morphology, X, Y, Z):
                                  }
     return cell_parameters, synapse_parameters, grid_electrode_parameters
 
-def simulate(cell_parameters, synapse_parameters, grid_electrode_parameters, syn_loc):
+def simulate(cell_parameters, synapse_parameters, grid_electrode_parameters, syninds, x_rot=0, y_rot=0, z_rot=0, active=False):
     """set synapse location. simulate cell, synapse and electrodes for input synapse location"""
 
     # create cell with parameters in dictionary
-    cell = LFPy.Cell(**cell_parameters)
-#    cell.set_rotation(x=4.99, y=-4.33, z= 3.14
-    # if l23-cell.
-    cell.set_rotation(x=np.pi/2)
+    if not active:
+        cell = LFPy.Cell(**cell_parameters)
+    else:
+        cell = LFPy.TemplateCell(**cell_parameters)
 
-    pos = syn_loc
-   # set synapse location
-    synapse_parameters['idx'] = cell.get_closest_idx(x=pos[0], y=pos[1], z=pos[2])
-    # create synapse with parameters in dictionary
-    synapse = LFPy.Synapse(cell, **synapse_parameters)
-    synapse.set_spike_times(np.array([20.]))
+    cell.set_rotation(x=x_rot)
+    cell.set_rotation(y=y_rot)
+    cell.set_rotation(z=z_rot)
+
+    if type(syninds) == int:
+        syninds = [syninds]
+    for idx in syninds:
+        print('idx', idx)
+        synapse_parameters['idx'] = idx
+        print("synapse_parameters['idx']", synapse_parameters['idx'])
+        # synapse_parameters['idx'] = 551 #cell.get_closest_idx(x=pos[0], y=pos[1], z=pos[2])
+        # create synapse with parameters in dictionary
+        synapse = LFPy.Synapse(cell, **synapse_parameters)
+        synapse.set_spike_times(np.array([20.]))
     #  simulation goes from t: 0-100 in ms. spike_time = 20ms
     # timeres = 0.1 --> 801 measurements!
 
@@ -205,7 +279,7 @@ def make_fig_1(cell,
 
     # plot single dipole arrow
     # if l23:
-    arrow = single_dip[time_max]*30  # np.sum(P, axis = 0)*0.12
+    arrow = single_dip[time_max]*25  # np.sum(P, axis = 0)*0.12
     # else:
         # arrow = single_dip[time_max]*50  # np.sum(P, axis = 0)*0.12
     arrow_colors = ['gray', 'w']
@@ -214,7 +288,7 @@ def make_fig_1(cell,
         arrow_axes[i].arrow(r_mid[0] - 2*arrow[0],
                             r_mid[2] - 2*arrow[2],
                             arrow[0]*4, arrow[2]*4, #fc = 'k',ec = 'k',
-                            color=arrow_colors[i], alpha=0.8, width = 10, #head_width = 60.,
+                            color=arrow_colors[i], alpha=0.8, width = 12, #head_width = 60.,
                             length_includes_head = True)#,
 
 
@@ -235,9 +309,9 @@ def make_fig_1(cell,
     cbar.outline.set_visible(False)
 
 
-    ax0.set_title('multicompartment', fontsize='x-small')
+    ax0.set_title('compartment-based', fontsize='x-small')
     ax3.set_title('multi-dipole', fontsize='x-small')
-    ax6.set_title('single dipole', fontsize='x-small')
+    ax6.set_title('single-dipole', fontsize='x-small')
 
 
 
@@ -333,12 +407,10 @@ def plot_lfp_far(fig, ax, LFP_measurements, max_LFP, timestep, X_f, Z_f, colorax
 def plot_neuron(axis, cell, syn=False, lengthbar=False, clr='k', lb_clr='k'):
     zips = []
     for x, z in cell.get_idx_polygons():
-        zips.append(zip(x, z))
-
+        zips.append(list(zip(x, z)))
     # faster way to plot points:
-    polycol = PolyCollection(zips, edgecolors = 'none', facecolors = clr)
+    polycol = PolyCollection(list(zips), edgecolors = 'none', facecolors = 'k')
     axis.add_collection(polycol)
-
     # small length reference bar
     if lengthbar:
         axis.plot([-400, -400], [-200, 800], lb_clr, lw=2, clip_on=False)
@@ -351,14 +423,24 @@ def plot_neuron(axis, cell, syn=False, lengthbar=False, clr='k', lb_clr='k'):
 
     # red dot where synapse is located, ms = markersize; number of points given as float:
     if syn:
-        axis.plot(cell.xmid[cell.synidx], cell.zmid[cell.synidx], 'o', ms=3,
-                markeredgecolor='k', markerfacecolor='r')
+        for idx_num, idx in enumerate(cell.synidx):
+            axis.plot(cell.xmid[idx], cell.zmid[idx], 'o', ms=3,
+                    markeredgecolor='k', markerfacecolor='r')
 
 if __name__ == '__main__':
 
-    morphology = './cell_models/segev/CNG_version/2013_03_06_cell03_789_H41_03.CNG.swc'
-    syn_loc = (60, 0, 600)
-    cell, cb_LFP_close, cb_LFP_far, multi_dip_LFP_close, multi_dip_LFP_far, db_LFP_close, db_LFP_far, LFP_max_close, LFP_max_far, time_max, multi_dips, multi_dip_locs, single_dip, r_mid, X, Z, X_f, Z_f = make_data(morphology, syn_loc)
+    # morphology = './cell_models/segev/CNG_version/2013_03_06_cell03_789_H41_03.CNG.swc'
+    # morphology = './cell_models/segev/CNG_version/2013_03_06_cell03_789_H41_03.ASC'
+    morphology = '2013_03_06_cell03_789_H41_03.ASC'
+    # syn_loc = (-60, 0, 600)
+    # syn_loc = (60, 0, 600)
+    # syninds = [432]
+    # syninds = [328]
+    # syninds = [557]
+    syninds = [579]
+    [xrot, yrot, zrot] = [-np.pi/2, -np.pi/7, 0]
+    cell, cb_LFP_close, cb_LFP_far, multi_dip_LFP_close, multi_dip_LFP_far, db_LFP_close, db_LFP_far, LFP_max_close, LFP_max_far, time_max, multi_dips, multi_dip_locs, single_dip, r_mid, X, Z, X_f, Z_f = make_data(morphology, syninds, x_rot=xrot, y_rot=yrot)
+    print('time_max', time_max)
     fig = make_fig_1(cell,
                      cb_LFP_close, cb_LFP_far,
                      multi_dip_LFP_close, multi_dip_LFP_far,
@@ -368,4 +450,8 @@ if __name__ == '__main__':
                      multi_dips, multi_dip_locs,
                      single_dip, r_mid,
                      X, Z, X_f, Z_f)
-    fig.savefig('./figures/fig_dipole_field.pdf', bbox_inches='tight', dpi=300, transparent=True)
+    # fig.savefig('./figures/fig_dipole_field.pdf', bbox_inches='tight', dpi=300, transparent=True)
+    # fig.savefig('./figures/fig_dipole_field_passiveTrue_single_syn328.pdf', bbox_inches='tight', dpi=300, transparent=True)
+    # fig.savefig('./figures/fig_dipole_field_passiveTrue_single_syn557.pdf', bbox_inches='tight', dpi=300)
+    fig.savefig('./figures/fig_dipole_field_passiveTrue_single_syn579.pdf', bbox_inches='tight', dpi=300)
+    # fig.savefig('./figures/fig_dipole_field_passiveFalse2.pdf', bbox_inches='tight', dpi=300, transparent=True)

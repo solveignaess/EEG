@@ -1,0 +1,97 @@
+<html><pre>
+This is the README for the models associated with the paper:
+
+Eyal G, Verhoog MB, Testa-Silva G, Deitcher Y, Lodder JC,
+Benavides-Piccione R, Morales J, De (2016) Unique membrane properties
+and enhanced signal processing in human neocortical neurons. Elife
+
+The files here can be used to re generate Eyal’s et al. figures 1 and
+3.
+
+All rights are reserved to Guy Eyal, the Hebrew University. 
+
+Abstract:
+
+The advanced cognitive capabilities of the human brain are often
+attributed to our recently evolved neocortex. However, it is not known
+whether the basic building blocks of human neocortex, the pyramidal
+neurons, possess unique biophysical properties that might impact on
+cortical computations. Here we show that layer 2/3 pyramidal neurons
+from human temporal cortex (HL2/3 PCs) have a specific membrane
+capacitance (Cm) of ~0.5 µF/cm2, half of the commonly accepted
+“universal” value (~1 µF/cm2) for biological membranes. This finding
+was predicted by fitting in vitro voltage transients to theoretical
+transients then validated by direct measurement of Cm in nucleated
+patch experiments. Models of 3D reconstructed HL2/3 PCs demonstrated
+that such low Cm value significantly enhances both synaptic
+charge-transfer from dendrites to soma and spike propagation along the
+axon. This is the first demonstration that human cortical neurons have
+distinctive membrane properties, suggesting important implications for
+signal processing in human neocortex.
+
+This directory includes:
+1. Data of HL2/3 PCs:
+	a. Morphologies of six HL2/3 PCs.
+	b. Voltage transients from these six cells
+
+2. Detailed Models that were fitted to match the experimental traces
+
+3. Scripts to run the models and re create the figures in Eyal et al.
+
+To run the scripts you must:
+1. Install NEURON (<a href="https://senselab.med.yale.edu/ModelDB/NEURON_DwnldGuide.html">https://senselab.med.yale.edu/ModelDB/NEURON_DwnldGuide.html</a>)
+2. Install the following python libraries:
+	a. numpy 
+	b. matplotlib 
+	c. neuron 
+3. I recommend the use of ipython to best display the figures
+
+contact: guy.eyal at mail.huji.ac.il
+
+Examples of running the model:
+------------------------------
+Instructions are provided below for unix/linux. Please see
+<https://senselab.med.yale.edu/ModelDB/NEURON_DwnldGuide.html">https://senselab.med.yale.edu/ModelDB/NEURON_DwnldGuide.html</a>
+for additional help on how to run under windows or on the mac.
+
+Change directory to Fig1 and compile the mod files by typing on the command line:
+
+cd Fig1
+nrnivmodl ../mechanisms
+
+Start the simulations with commands like:
+
+ipython -i Fig1a.py
+
+Running the above and similarly with Fig1b.py, Fig1cd.py should produce the following:
+
+Fig 1a inset
+<img src="./screenshots/screenshot1.png" alt="screenshot1" width="225">
+Fig 1a
+<img src="./screenshots/screenshot2.png" alt="screenshot2" width="550">
+Fig 1b
+<img src="./screenshots/screenshot3.png" alt="screenshot3" width="550">
+Fig 1cd
+<img src="./screenshots/screenshot4.png" alt="screenshot4" width="550">
+
+When running Fig3 simulations you can cd to the Fig3 sub-folders and for
+convenience recompile the mod files
+
+cd ../Fig3/Fig3a
+nrnivmodl ../../mechanisms
+
+Then start with a similar command as before
+ipython -i Fig3a_apic_synapse.py
+
+(and similarly for the other programs)
+
+Fig 3a
+<img src="./screenshots/screenshot5.png" alt="screenshot5" width="550">
+Fig 3a bottom
+<img src="./screenshots/screenshot6.png" alt="screenshot6" width="550">
+Fig 3b
+<img src="./screenshots/screenshot7.png" alt="screenshot7" width="550">
+Fig 3c
+<img src="./screenshots/screenshot8.png" alt="screenshot8" width="550">
+
+</pre></html>

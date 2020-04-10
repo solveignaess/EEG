@@ -1,0 +1,12 @@
+README
+
+In Figure 4 we modeled NMDA conductance by fitting experimental traces recorded in cell1303_05 with and without AMPA blockers.
+The procedure can be found in the Methods section of Eyal et al. 2017. 
+The best 100 models resulted from this optimization are described in “best_100_models.txt” or in best_100_models.p (pickle file). 
+Fig4.py re-create figure 4 with the model we used in this paper, but the figure can be created with any one of the models by changing its index. 
+The data in the data folder was recorded by Thijs Verhoog. 
+
+To see an analysis of all the 100 models, see the code in FigS3. 
+The model we used for the paper was also successful in fitting the five other data traces, see the code in FigS4
+
+

@@ -1,0 +1,31 @@
+This folder includes pickle files that map from segments in the six HL2/L3 PC models to the number of synapses required to activated simultaneously in order to generate NMDA spike. EPSP was defined as NMDA spike if the local voltage in the dendrite was above -40mV for at least 20 ms.
+ 
+One may re-create these files but it requires long simulations (few hours for each model).
+The process to re-create is as follows:
+Under the python folder:
+1.  Run all the num_syn_per_segment* python files. One may run them simultaneously in parallel by running run_parallel.py on a cluster. This will re-create the textfiles in python/num_syn_per_seg_results that summarizes the results
+
+2.  Run segment_to_nmda_spike_dict.py to create the pickle files in this directory
+
+One may also re-create the nmda_spike_time_threshold.txt nmda_spike_time_threshold_terminals.txt files by running analyze_num_seg_per_nmda_spike.py. These files summarize the average number of synapses required to generate NMDA spike in human dendrite and specifically in the terminals of human dendritic branches.
+
+To use the pickle files in this folder (see Figure6/Fig6C.py for example):
+def seg_to_num_of_syn_per_nmda_spike_func(pickle_file,cell):
+    with open(pickle_file, 'rb') as handle:
+        d = pickle.load(handle)
+
+    seg_to_nmda_threshold = {}
+    for sec in list(cell.basal)+list(cell.apical):
+        for seg in list(sec)+[sec(1)]:
+            if seg.x == 0:
+                continue
+            dot_index = str.rfind(sec.hname(),".")
+            secname = sec.hname()[dot_index+1:]
+            seg_to_nmda_threshold[seg]  = d[(secname,round(seg.x,3))]
+
+    return seg_to_nmda_threshold
+
+
+
+
+

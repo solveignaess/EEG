@@ -1,0 +1,6 @@
+README
+
+This folder includes the data for figure S3 as well as the code to run it.
+models_num_syn_vs_v.txt summaries the data: For each one of the 100 models found in Figure 4 it activates between 1 and 50 synapses on the basal tree from Figure 5 and measures the peak EPSP voltage as function of number of synapses.
+To re-create it run run_best_100_models.py (About a two hours run).
+FigS3.py plots Figure S3

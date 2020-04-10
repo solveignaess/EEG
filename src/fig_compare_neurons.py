@@ -15,7 +15,7 @@ from os.path import join
 mod_folder = '../../LFPy/LFPy/LFPy/test'
 neuron.load_mechanisms(join(mod_folder))
 
-s = 6
+s = 15
 random.seed(s)
 
 def make_cell(morphology, morph_type='l23'):
@@ -24,26 +24,36 @@ def make_cell(morphology, morph_type='l23'):
     cell_parameters = {
         'v_init': -70,
         'morphology': morphology,
-        'passive_parameters': dict(e_pas=-70),
+        'passive_parameters': {'g_pas' : 1./30000, 'e_pas' : -70}, # S/cm^2, mV
+        'Ra' : 150, # Ω cm
+        'cm' : 1, # µF/cm^2
         'nsegs_method': "lambda_f",
         "lambda_f": 100,
         'dt': 2**-4,  # [ms] Should be a power of 2
-        'tstart': 0,  # [ms] Simulation start time
+        'tstart': -10,  # [ms] Simulation start time
         'tstop': 250,  # [ms] Simulation end time
         "pt3d": True,
-        # 'custom_code': custom_code
+        'passive': True
         }
+
+    # if morph_type == 'l23':
+    #     cell_parameters['passive_parameters'] = {'g_pas' : 1./21400, 'e_pas' : -68.851} # S/cm^2, mV
+    #     cell_parameters['Ra'] = 282 # Ω cm
+    #     cell_parameters['cm'] = 0.49 # µF/cm^2
 
     # create cell with parameters in dictionary
     print('initiate cell')
     cell = LFPy.Cell(**cell_parameters)
-    cell.set_rotation(x=np.pi/2)
 
+    # rotate cell
     if morph_type == 'l23':
-        soma_top_dist = np.max(cell.zend)
-        soma_brain_surf_dist = soma_top_dist + 10.
-        cell.set_pos(x = 0., y = 0., z = 378.)
-
+        cell.set_rotation(x=-np.pi/2)
+        cell.set_rotation(y=-np.pi/7)
+    else:
+        cell.set_rotation(x=np.pi/2)
+        # soma_top_dist = np.max(cell.zend)
+        # soma_brain_surf_dist = soma_top_dist + 10.
+        # cell.set_pos(x = 0., y = 0., z = 378.)
 
     return cell
 
@@ -62,7 +72,7 @@ def make_synapse(cell, weight, input_idx, input_spike_train, e=0., syntype='Exp2
     synapse.set_spike_times(input_spike_train)
     return cell, synapse
 
-def make_input(cell, weight=0.005, syntype='Exp2Syn'):
+def make_input(cell, weight=0.01, syntype='Exp2Syn'):
     # apical exc input at time=10
     input_idxs = cell.get_rand_idx_area_norm(section='allsec', nidx=100, z_min=np.max(cell.zmid)-200)
     pulse_center = 50 #+ np.random.normal(0, 1)
@@ -162,7 +172,7 @@ def return_eeg(cell, radii, sigmas, eeg_coords):
 def plot_neuron(axis, cell, clr, lengthbar=False, celltype='l23'):
     shift = 0.
     if celltype == 'l5':
-        shift = 700.
+        shift = 750.
     elif celltype == 'l5i':
         shift = 1400.
     [axis.plot([cell.xstart[idx] + shift, cell.xend[idx] + shift],
@@ -171,17 +181,18 @@ def plot_neuron(axis, cell, clr, lengthbar=False, celltype='l23'):
     axis.plot(cell.xmid[0] + shift, cell.zmid[0], 'o', c="k", ms=0.001)
     plt.axis('tight')
     # axis.axis('off')
-    axis.set_aspect('equal')
+    # axis.set_aspect('equal')
 
 if __name__ == '__main__':
 
     sim_cells = True
     compute_eegs = True
     current_based = False
-    morphology_dict = {'l23' : './cell_models/segev/CNG_version/2013_03_06_cell03_789_H41_03.CNG.swc',
+    morphology_dict = {
+                       'l23' : './cell_models/segev/CNG_version/2013_03_06_cell03_789_H41_03.ASC',
                        'l5' : './cell_models/hay/L5bPCmodelsEH/morphologies/cell1.asc',
-                       'l5i' : './cell_models/L5_ChC_cNAC187_3/morphology/rp110201_L5-1_idA_-_Scale_x1.000_y0.975_z1.000_-_Clone_3_no_axon.asc'} # chandelier cell
-
+                       'l5i' : './cell_models/L5_ChC_cNAC187_3/morphology/rp110201_L5-1_idA_-_Scale_x1.000_y0.975_z1.000_-_Clone_3_no_axon.asc'# chandelier cell
+                       }
     model_folder = None
     # set 4S parameters
     if compute_eegs:
@@ -198,7 +209,8 @@ if __name__ == '__main__':
         weight=0.5
     else:
         syntype='Exp2Syn'
-        weight=0.005
+        # weight=0.005
+        weight=0.01
     for m in morphology_dict.keys():
         print('morph_type', m)
         morphology = morphology_dict[m]
@@ -217,6 +229,18 @@ if __name__ == '__main__':
         error = np.max(np.abs(eeg - eeg_multidip)/np.abs(eeg_multidip[ind_max_error]))
         print('maximum global error for ', m, 'was', error)
         error_scaled.append(error)
+
+# ################################################################################
+# ##############################save data to file#################################
+# ################################################################################
+#     spiketimes_lists = [cell.sptimeslist[0] for cell in cells]
+#     synloc_zs = cells[0].zmid[cells[0].synapses[0].idx]
+#     np.savez('./data/fig3.npz',
+#              morphology_dict = morphology_dict,
+#              spiketimes_lists = spiketimes_lists,
+#              synloc_zs = synloc_zs,
+#
+#              )
 
 ################################################################################
 ###################################plotting#####################################
@@ -248,7 +272,7 @@ if __name__ == '__main__':
     ax_syns.plot(cells[0].sptimeslist[0], cells[0].zmid[cells[0].synapses[0].idx], 'x',
                  ms = 3., markerfacecolor = 'gray', markeredgecolor='gray', markeredgewidth=1., label='inhibitory')
 
-    ax_eeg.vlines([50, 100, 150, 200], -96, 43.44, colors='k', linestyles='-', linewidth=.5)
+    ax_eeg.vlines([50, 100, 150, 200], -96, 41, colors='k', linestyles='-', linewidth=.5)
     ax_eeg.plot([300, 310], [0, 10], 'gray', label='single-dipole')
     ax_eeg.plot([300, 310], [0, 10], 'gray',ls=':', label='multi-dipole')
 
@@ -271,15 +295,15 @@ if __name__ == '__main__':
         print('morph:', list(morphology_dict.keys())[cellnum])
         print('min pz:', np.min(p[:,2]))
         print('max px:', np.max(p[:,0]+300))
-        ax_eeg.plot(cell.tvec, eegs[cellnum], color=clrs[cellnum])
+        ax_eeg.plot(cell.tvec, eegs[cellnum], color=clrs[cellnum], clip_on=False)
         ax_eeg.plot(cell.tvec, eegs_multidip[cellnum], ':', color='gray')#clrs2[cellnum])
         print('max eeg:', np.max(eegs[cellnum]))
 
-    ax_syns.text(38, 78700, 'apical', fontsize=5)
-    ax_syns.text(89, 78700, 'basal', fontsize=5)
-    ax_syns.text(135, 78700, 'uniform', fontsize=5)
-    ax_syns.text(185, 78750, 'uniform', fontsize=5)
-    ax_syns.text(176, 78680, '+ inhibitory basal', fontsize=5)
+    ax_syns.text(38, 78720, 'apical', fontsize=5)
+    ax_syns.text(89, 78720, 'basal', fontsize=5)
+    ax_syns.text(135, 78720, 'uniform', fontsize=5)
+    ax_syns.text(185, 78770, 'uniform', fontsize=5)
+    ax_syns.text(176, 78700, '+ inhibitory basal', fontsize=5)
 
     for i in range(num_cells):
         cell = cells[i]
@@ -287,11 +311,11 @@ if __name__ == '__main__':
         ax_morph.plot(0,0,'o', ms = 1e-4)
     morph_names = ['hay l5', 'segev l23', 'inter l5']
 
-    ax_morph.set_title('morphologies', pad=13.5)
-    ax_syns.set_title('synaptic input')
-    ax_p.set_title('current dipole moment')
+    ax_morph.set_title('morphologies', pad=11)
+    ax_syns.set_title('synaptic input', pad=11)
+    ax_p.set_title('current dipole moment', pad=11)
     # ax_px.set_title('current dipole moment')
-    ax_eeg.set_title('EEG')
+    ax_eeg.set_title('EEG', pad=11)
 
     ax_morph.spines['top'].set_visible(False)
     ax_morph.spines['right'].set_visible(False)
@@ -299,9 +323,9 @@ if __name__ == '__main__':
     ax_morph.set_xticks([])
     ax_morph.set_xticklabels([])
     ax_morph.set_ylabel(r'z ($\mu$m)')
-    ax_morph.text(-150, 77170, 'rat L5 PC', fontsize=5.)
-    ax_morph.text(480, 77170, 'human L23 PC', fontsize=5.)
-    ax_morph.text(1250, 77170, 'rat L5 ChC', fontsize=5.)
+    ax_morph.text(-220, 77170, 'human L23 PC', fontsize=5.)
+    ax_morph.text(570, 77170, 'rat L5 PC', fontsize=5.)
+    ax_morph.text(1220, 77170, 'rat L5 ChC', fontsize=5.)
 
     for ax in [ax_syns, ax_p, ax_eeg]:
         ax.spines['top'].set_visible(False)
@@ -313,8 +337,8 @@ if __name__ == '__main__':
     for ax in [ax_morph, ax_syns]:
         ax.set_ylim([77500-250, 77500+1250])
         ax.set_yticklabels([str(int(i)) for i in np.linspace(-250, 1250, num = 7)])
-    ax_eeg.set_ylim([-96, 50])
-    ax_eeg.set_yticks([-75, -50, -25., 0., 25., 50.])
+    ax_eeg.set_ylim([-60, 40])
+    # ax_eeg.set_yticks([-75, -50, -25., 0., 25., 50.])
     ax_eeg.legend(loc=1, bbox_to_anchor=(1.1, 0.8, 0.1, 0.1), fontsize='x-small', frameon=False)
 
     end_point = cell.tvec[-1]+ 1.
@@ -322,7 +346,7 @@ if __name__ == '__main__':
     dx = .5
     ax_p.text(end_point+dx, -35, r'50 nA$\mu$m', fontsize='small')
     ax_p.plot([249, 249], [-1., -49.], 'k-')
-    # points for testing actual length of length bar
+    # # points for testing actual length of length bar
     # ax_p.plot(end_point, 0, 'ro', ms=1.)
     # ax_p.plot(end_point, -50, 'ro', ms=1.)
 
@@ -342,8 +366,8 @@ if __name__ == '__main__':
         ax.set_xlabel(r'time (ms)')
 
     # label axes
-    xpos = [0.02, 0.52, 0.02, 0.52]
-    ypos = [0.98, 0.98, 0.49, 0.48]
+    xpos = [0.02, 0.522, 0.02, 0.522]
+    ypos = [0.978, 0.978, 0.475, 0.475]
     letters = 'ABCD'
     for i in range(len(letters)):
         fig.text(xpos[i], ypos[i], letters[i],
@@ -352,9 +376,10 @@ if __name__ == '__main__':
              fontweight='demibold',
              fontsize=8)
 
-    fig.tight_layout(pad=0.5, h_pad=1., w_pad=.7)
+    fig.tight_layout(pad=0.5, h_pad=1.3, w_pad=.7)
     if current_based:
         title = './figures/fig_compare_neurons_l5ChC_wmd_current_based.png'
     else:
-        title = './figures/fig_compare_neurons_l5ChC_wmd.png'
+        # title = './figures/fig_compare_neurons_l5ChC_wmd.png'
+        title = './figures/figure3.png'
     plt.savefig(title, dpi=600) #_nbc

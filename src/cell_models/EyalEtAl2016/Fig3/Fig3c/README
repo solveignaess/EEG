@@ -1,0 +1,19 @@
+README
+
+In this folder you'll find the code to re-generate Eyal et al. 2016,  Fig. 3c.
+contact guy.eyal@mail.huji.ac.il
+
+In this figure we explored the impact of Cm ~ 0.5 μF/cm2 on the spike
+propagation velocity along the axon.
+Two cases are tested - Model with Cm value of 0.45 uF/cm2 and model
+with cm of 0.9 uF/cm2. More details about the models can be found in
+Eyal et al.
+
+We examined the case of a long non-myelinated axon, as the properties
+of the myelin are not available yet for human neurons. As expected, a
+lower Cm value increased the propagation speed of the action
+potential; for the parameters we have used the propagation was about
+65% faster compared with the case of a higher Cm
+
+To Re-create Fig 3c simply run:
+1. Fig3c.py

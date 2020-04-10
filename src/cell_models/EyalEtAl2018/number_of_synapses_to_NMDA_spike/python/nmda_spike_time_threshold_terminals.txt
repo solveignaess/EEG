@@ -1,0 +1,35 @@
+when nmda spike is defined as being above -40 mV for 20 ms
+nmda spike was created in 0.955078125 of the terminals
+nmda spike was created with 14.0695296524 +- 7.88823202513 synapses
+
+basal:
+nmda spike was created in 0.928838951311 of the basal terminals
+nmda spike was created with 15.310483871 +- 8.74990616123 synapses
+
+apical:
+nmda spike was created in 0.983673469388 of the apical terminals
+nmda spike was created with 12.7925311203 +- 6.65249666296 synapses
+
+all:
+cell0603_03: 96.053%, 13.466 +- 6.809
+cell0603_08: 95.522%, 16.844 +- 10.724
+cell0603_11: 92.727%, 15.716 +- 8.099
+cell1303_03: 94.792%, 15.165 +- 8.457
+cell1303_05: 96.386%, 12.925 +- 5.401
+cell1303_06: 98.750%, 10.152 +- 4.940
+
+basal:
+cell0603_03: 94.286%, 13.879 +- 6.971
+cell0603_08: 91.892%, 20.088 +- 11.097
+cell0603_11: 89.831%, 17.321 +- 8.334
+cell1303_03: 90.000%, 16.778 +- 9.931
+cell1303_05: 93.182%, 13.780 +- 5.603
+cell1303_06: 100.000%, 9.952 +- 5.636
+
+apcial:
+cell0603_03: 97.561%, 13.125 +- 6.653
+cell0603_08: 100.000%, 13.167 +- 8.963
+cell0603_11: 96.078%, 13.980 +- 7.457
+cell1303_03: 100.000%, 13.587 +- 6.323
+cell1303_05: 100.000%, 12.026 +- 5.026
+cell1303_06: 97.368%, 10.378 +- 3.996

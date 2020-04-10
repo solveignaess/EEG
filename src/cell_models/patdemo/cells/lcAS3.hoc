@@ -1,0 +1,349 @@
+/*
+Aspiny layer 3 cortical neuron
+
+B. Connors and L. Cauller
+Please contact the authors for details or for permission to use this 
+morphology in your publication.
+
+*/
+
+{ dArea=0   shrink=.1 tipseg=.5
+  napath=46 ndend0=15 ndend1=36 ndend2=4 ndend3=14 ndend4=4 ndend5=2 \
+  ndend6=13 natips=33 nbtips=0 naotips=0 	nexus=napath-1}
+
+aspiny=1
+
+create soma, sapath, s, leakyseal, dend0[ndend0], dend1[22],\
+	dend2[ndend2], dend3[ndend3], dend4[ndend4], \
+	dend5[ndend5], dend6[ndend6], apath[napath], atip[natips]
+
+forall {nseg=2 diam= .1 L=.1}
+
+sapath    {nseg=2 diam=5.6  L= 4.1 }
+soma      {nseg=2 diam=13.2 L= 8.2  }
+s         {nseg=2 diam=3.3  L= 4.1 }
+leakyseal {nseg=1 diam=10   L=.1  }
+dend0[0]  {nseg=2 diam= 1.54  L= 3.380015  }
+dend0[1]  {nseg=2 diam= 1.2  L= 8.406831  }
+dend0[2]  {nseg=2 diam= .86  L= 4.09196  }
+dend0[3]  {nseg=2 diam= .52  L= 48.88392  }
+dend0[4]  {nseg=2 diam= .2  L= 16.67353  }
+dend0[5]  {nseg=2 diam= .2  L= 30.79526  }
+dend0[6]  {nseg=2 diam= .52  L= 20.4368  }
+dend0[7]  {nseg=2 diam= .2  L= 57.21962  }
+dend0[8]  {nseg=2 diam= .86  L= 8.50969  }
+dend0[9]  {nseg=2 diam= .52  L= 15.67022  }
+dend0[10]  {nseg=2 diam= .2  L= 92.44191  }
+dend0[11]  {nseg=2 diam= 1.2  L= 2.937312  }
+dend0[12]  {nseg=2 diam= .86  L= 1.234221  }
+dend0[13]  {nseg=2 diam= .52  L= 56.71727  }
+dend0[14]  {nseg=2 diam= .2  L= 79.65829  }
+apath[0]  {nseg=2 diam= 5.66  L= 3.483487  }
+apath[1]  {nseg=2 diam= 2.24  L= 3.036067  }
+apath[2]  {nseg=2 diam= 1.88  L= 8.701141  }
+apath[3]  {nseg=2 diam= 1.88  L= 3.223197  }
+apath[4]  {nseg=2 diam= 1.88  L= 3.639464  }
+apath[5]  {nseg=2 diam= 1.54  L= 4.751868  }
+apath[6]  {nseg=2 diam= 1.54  L= 6.23092  } /*dend1[6]*/
+apath[7]  {nseg=2 diam= 1.54  L= 10.0  } /*6*/
+apath[8]  {nseg=2 diam= 1.2  L= 10.0  } /* dend1[7]*/
+apath[9]  {nseg=2 diam= 1.2  L= 3.1601  } /*7*/
+apath[10] {nseg=2 diam= 1.2  L= 8.052281  }/* dend1[8]*/
+apath[11] {nseg=2 diam= .86  L= 3.75661  } /*dend1[9]
+apath[12] {nseg=2 diam= .86  L= 10.00  } /*9*/
+apath[13] {nseg=2 diam= .86  L= 10.00  } /*9*/
+apath[14] {nseg=2 diam= .86  L= 10.00  } /*9*/
+apath[15] {nseg=2 diam= .86  L= 10.00  } /*9*/
+apath[16]  {nseg=2 diam= .86  L= 10.1887  } /*dend1[10] */
+for  i=17,32 {apath[i] {nseg=2 diam=.86  L=10}} /*10*/
+apath[33]  {nseg=2 diam= .86  L= 3.49696  } /*11*/
+apath[34]  {nseg=2 diam= .86  L= 10  }  /*11*/
+apath[35]  {nseg=2 diam= .52  L= 10.74542  }/*12*/
+apath[36]  {nseg=2 diam= .52  L= 10.0  }/*12*/
+
+for i=37,44 {apath[i]  {nseg=2 diam= .2  L= 10 }} /*13*/
+apath[45]  {nseg=2 diam= .2  L= 4.48232  } /*13*/
+
+dend1[0]  {nseg=2 diam= .2  L= 51.45483  }
+dend1[1]  {nseg=2 diam= .2  L= 2.104204  }
+dend1[2]  {nseg=2 diam= .2  L= 4.944441  }
+dend1[3]  {nseg=2 diam= .2  L= 26.68225  }
+dend1[4]  {nseg=2 diam= .2  L= 9.444315  }
+dend1[5]  {nseg=2 diam= .2  L= 11.89076  }
+dend1[6]  {nseg=2 diam= .2  L= 103.429  }
+dend1[7]  {nseg=2 diam= .2  L= 16.73799  }
+dend1[8]  {nseg=2 diam= .2  L= 2.700927  }
+dend1[9]  {nseg=2 diam= .2  L= 21.31327  }
+dend1[10]  {nseg=2 diam= .2  L= 17.1893  }
+dend1[11]  {nseg=2 diam= .2  L= 21.14153  }
+dend1[12]  {nseg=2 diam= .86  L= 18.09393  }
+dend1[13]  {nseg=2 diam= .52  L= 96.90914  }
+dend1[14]  {nseg=2 diam= .2  L= 51.8471  }
+dend1[15]  {nseg=2 diam= .52  L= 70.11376  }
+dend1[16]  {nseg=2 diam= .2  L= 40.60686  }
+dend1[17]  {nseg=2 diam= .2  L= 111.8526  }
+dend1[18]  {nseg=2 diam= .86  L= 16.84019  }
+dend1[19]  {nseg=2 diam= .52  L= 8.971144  }
+dend1[20]  {nseg=2 diam= .2  L= 10.0097  }
+dend1[21]  {nseg=2 diam= .2  L= 152.0742  }
+dend2[0]  {nseg=2 diam= 1.54  L= 15.43236  }
+dend2[1]  {nseg=2 diam= 1.2  L= 17.35308  }
+dend2[2]  {nseg=2 diam= .52  L= 150.022  }
+dend2[3]  {nseg=2 diam= .52  L= 43.15767  }
+dend3[0]  {nseg=2 diam= 3.26  L= 4.192989  }
+dend3[1]  {nseg=2 diam= .2  L= 17.92507  }
+dend3[2]  {nseg=2 diam= 1.88  L= 12.07538  }
+dend3[3]  {nseg=2 diam= 1.54  L= 5.903541  }
+dend3[4]  {nseg=2 diam= 1.2  L= 14.12161  }
+dend3[5]  {nseg=2 diam= 1.2  L= 86.32748  }
+dend3[6]  {nseg=2 diam= .2  L= 92.38025  }
+dend3[7]  {nseg=2 diam= .2  L= 7.08552  }
+dend3[8]  {nseg=2 diam= .86  L= 16.17919  }
+dend3[9]  {nseg=2 diam= .86  L= 2.070484  }
+dend3[10]  {nseg=2 diam= .52  L= 88.66397  }
+dend3[11]  {nseg=2 diam= .2  L= 66.17597  }
+dend3[12]  {nseg=2 diam= .52  L= 104.1001  }
+dend3[13]  {nseg=2 diam= .2  L= 61.90701  }
+dend4[0]  {nseg=2 diam= 1.2  L= 15.86683  }
+dend4[1]  {nseg=2 diam= .86  L= 22.17022  }
+dend4[2]  {nseg=2 diam= .86  L= 37.45369  }
+dend4[3]  {nseg=2 diam= .86  L= 5.749932  }
+dend5[0]  {nseg=2 diam= .52  L= 96.16141  }
+dend5[1]  {nseg=2 diam= .2  L= 51.23716  }
+dend6[0]  {nseg=2 diam= .86  L= 9.968356  }
+dend6[1]  {nseg=2 diam= .86  L= 2.258961  }
+dend6[2]  {nseg=2 diam= .52  L= 5.679591  }
+dend6[3]  {nseg=2 diam= .52  L= 33.11613  }
+dend6[4]  {nseg=2 diam= .52  L= 9.515333  }
+dend6[5]  {nseg=2 diam= .2  L= 65.53345  }
+dend6[6]  {nseg=2 diam= .2  L= 48.7303  }
+dend6[7]  {nseg=2 diam= .2  L= 108.399  }
+dend6[8]  {nseg=2 diam= .2  L= 45.64591  }
+dend6[9]  {nseg=2 diam= .2  L= 7.826734  }
+dend6[10]  {nseg=2 diam= .2  L= 54.01116  }
+dend6[11]  {nseg=2 diam= .2  L= 93.49458  }
+dend6[12]  {nseg=2 diam= .2  L= 53.43756  }
+
+for i=0,napath-2 { apath[i] connect apath[i+1] (0), 1}
+
+sapath { connect apath[0] (0), 1
+          connect soma    (0), 0}
+soma   {connect s        (0),1 
+	connect dend0[0] (0), .5
+	connect leakyseal (0),.5
+	connect dend2[0] (0), .5
+	connect dend4[0] (0), .5
+	connect dend5[0] (0), .5
+	connect dend6[0] (0), .5}
+s	connect dend3[0] (0), 1
+
+dend0[0] {connect dend0[1]  (0), 1
+          connect dend0[11]  (0), 1}
+dend0[1] {connect dend0[2]  (0), 1
+          connect dend0[8]  (0), 1}
+dend0[2]  connect dend0[3]  (0), 1
+dend0[3]  connect dend0[4]  (0), 1
+dend0[4] {connect dend0[5]  (0), 1
+          connect dend0[6]  (0), 1}
+dend0[6]  connect dend0[7]  (0), 1
+dend0[8]  connect dend0[9]  (0), 1
+dend0[9]  connect dend0[10]  (0), 1
+dend0[11]  connect dend0[12]  (0), 1
+dend0[12]  connect dend0[13]  (0), 1
+dend0[13]  connect dend0[14]  (0), 1
+apath[2]   connect dend1[21]  (0), 1
+apath[3]   connect dend1[18]  (0), 1
+apath[4]   connect dend1[17]  (0), 1
+apath[5]   connect dend1[15]  (0), 1
+apath[9]   connect dend1[12]  (0), 1
+apath[10]  connect dend1[9]  (0), 1
+apath[15]  connect dend1[6]  (0), 1
+apath[32]  connect dend1[1]  (0), 1
+apath[34]  connect dend1[0]  (0), 1
+
+dend1[1] {connect dend1[2]  (0), 1
+           connect dend1[3]  (0), 1}
+dend1[3] {connect dend1[4]  (0), 1
+           connect dend1[5]  (0), 1}
+dend1[6] {connect dend1[7]  (0), 1
+           connect dend1[8]  (0), 1}
+dend1[9] {connect dend1[10]  (0), 1
+           connect dend1[11]  (0), 1}
+dend1[12]  connect dend1[13]  (0), 1
+dend1[13]  connect dend1[14]  (0), 1
+dend1[15]  connect dend1[16]  (0), 1
+dend1[18]  connect dend1[19]  (0), 1
+dend1[19]  connect dend1[20]  (0), 1
+dend2[0]  connect dend2[1]  (0), 1
+dend2[1] {connect dend2[2]  (0), 1
+          connect dend2[3]  (0), 1}
+dend3[0] {connect dend3[1]  (0), 1
+          connect dend3[2]  (0), 1}
+dend3[2] {connect dend3[3]  (0), 1
+          connect dend3[8]  (0), 1}
+dend3[3]  connect dend3[4]  (0), 1
+dend3[4] {connect dend3[5]  (0), 1
+          connect dend3[7]  (0), 1}
+dend3[5]  connect dend3[6]  (0), 1
+dend3[8] {connect dend3[9]  (0), 1
+          connect dend3[12]  (0), 1}
+dend3[9]  connect dend3[10]  (0), 1
+dend3[10]  connect dend3[11]  (0), 1
+dend3[12]  connect dend3[13]  (0), 1
+dend4[0]  connect dend4[1]  (0), 1
+dend4[1] {connect dend4[2]  (0), 1
+          connect dend4[3]  (0), 1}
+dend5[0]  connect dend5[1]  (0), 1
+dend6[0] {connect dend6[1]  (0), 1
+          connect dend6[8]  (0), 1}
+dend6[1]  connect dend6[2]  (0), 1
+dend6[2] {connect dend6[3]  (0), 1
+          connect dend6[7]  (0), 1}
+dend6[3] {connect dend6[4]  (0), 1
+          connect dend6[6]  (0), 1}
+dend6[4]  connect dend6[5]  (0), 1
+dend6[8] {connect dend6[9]  (0), 1
+          connect dend6[12]  (0), 1}
+dend6[9] {connect dend6[10]  (0), 1
+          connect dend6[11]  (0), 1}
+
+/*tip sections*/
+
+dend3[13] connect atip[0](0), tipseg
+dend3[11] connect atip[1](0), tipseg
+dend3[6] connect atip[2](0), tipseg
+dend3[1] connect atip[3](0), tipseg
+dend0[14] connect atip[4](0), tipseg
+dend0[10] connect atip[5](0), tipseg
+dend0[7] connect atip[6](0), tipseg
+dend0[5] connect atip[7](0), tipseg
+dend2[3] connect atip[8](0), tipseg
+dend2[2] connect atip[9](0), tipseg
+dend4[3] connect atip[11](0), tipseg
+dend4[2] connect atip[12](0), tipseg
+dend5[1] connect atip[13](0), tipseg
+ dend6[12] connect atip[14](0), tipseg
+ dend6[11] connect atip[15](0), tipseg
+ dend6[10] connect atip[16](0), tipseg
+ dend6[7] connect atip[17](0), tipseg
+ dend6[6] connect atip[18](0), tipseg
+ dend6[5] connect atip[19](0), tipseg
+ dend1[21] connect atip[20](0), tipseg
+ dend1[20] connect atip[21](0), tipseg
+  dend1[17] connect atip[22](0), tipseg
+  dend1[16] connect atip[23](0), tipseg
+  dend1[14] connect atip[24](0), tipseg
+  dend1[11] connect atip[25](0), tipseg
+  dend1[10] connect atip[26](0), tipseg
+  dend1[8] connect atip[27](0), tipseg
+  dend1[7] connect atip[28](0), tipseg
+  dend1[5] connect atip[29](0), tipseg
+  dend1[4] connect atip[30](0), tipseg
+  dend1[2] connect atip[31](0), tipseg
+  dend1[0] connect atip[32](0), tipseg
+  apath[45] connect atip[10](0), tipseg
+
+
+double pdend0[ndend0], pdend1[ndend1], pdend2[ndend2], \
+	pdend3[ndend3], pdend4[ndend4], pdend5[ndend5], \
+	pdend6[ndend6]
+   pdend0[0] = 3.380015
+   pdend0[1] = 11.78685
+   pdend0[2] = 15.87881
+   pdend0[3] = 64.76273
+   pdend0[4] = 81.43626
+   pdend0[5] = 112.2315
+   pdend0[6] = 101.8731
+   pdend0[7] = 159.0927
+   pdend0[8] = 20.29654
+   pdend0[9] = 35.96675
+   pdend0[10] = 128.4087
+   pdend0[11] = 6.317327
+   pdend0[12] = 7.551547
+   pdend0[13] = 64.26881
+   pdend0[14] = 143.9271
+   pdend1[0] = 3.483487
+   pdend1[1] = 6.519555
+   pdend1[2] = 15.2207
+   pdend1[3] = 18.44389
+   pdend1[4] = 22.08335
+   pdend1[5] = 26.83522
+   pdend1[6] = 43.06615
+   pdend1[7] = 56.22625
+   pdend1[8] = 64.27853
+   pdend1[9] = 108.0351
+   pdend1[10] = 278.2238
+   pdend1[11] = 291.7208
+   pdend1[12] = 312.4662
+   pdend1[13] = 386.9485
+   pdend1[14] = 343.1756
+   pdend1[15] = 280.328
+   pdend1[16] = 285.2725
+   pdend1[17] = 307.0103
+   pdend1[18] = 316.4546
+   pdend1[19] = 318.9011
+   pdend1[20] = 211.4641
+   pdend1[21] = 228.2021
+   pdend1[22] = 214.165
+   pdend1[23] = 85.5918
+   pdend1[24] = 102.7811
+   pdend1[25] = 106.7333
+   pdend1[26] = 74.32018
+   pdend1[27] = 171.2293
+   pdend1[28] = 223.0764
+   pdend1[29] = 96.94898
+   pdend1[30] = 137.5558
+   pdend1[31] = 133.9359
+   pdend1[32] = 35.28408
+   pdend1[33] = 44.25523
+   pdend1[34] = 54.26493
+   pdend1[35] = 167.2949
+   pdend2[0] = 15.43236
+   pdend2[1] = 32.78543
+   pdend2[2] = 182.8074
+   pdend2[3] = 75.94311
+   pdend3[0] = 4.192989
+   pdend3[1] = 22.11806
+   pdend3[2] = 16.26837
+   pdend3[3] = 22.17191
+   pdend3[4] = 36.29352
+   pdend3[5] = 122.621
+   pdend3[6] = 215.0013
+   pdend3[7] = 43.37904
+   pdend3[8] = 32.44756
+   pdend3[9] = 34.51804
+   pdend3[10] = 123.182
+   pdend3[11] = 189.358
+   pdend3[12] = 136.5476
+   pdend3[13] = 198.4547
+   pdend4[0] = 15.86683
+   pdend4[1] = 38.03705
+   pdend4[2] = 75.49074
+   pdend4[3] = 43.78698
+   pdend5[0] = 96.16141
+   pdend5[1] = 147.3986
+   pdend6[0] = 9.968356
+   pdend6[1] = 12.22732
+   pdend6[2] = 17.90691
+   pdend6[3] = 51.02304
+   pdend6[4] = 60.53838
+   pdend6[5] = 126.0718
+   pdend6[6] = 99.75335
+   pdend6[7] = 126.306
+   pdend6[8] = 55.61427
+   pdend6[9] = 63.441
+   pdend6[10] = 117.4522
+   pdend6[11] = 156.9356
+   pdend6[12] = 109.0518
+
+nbranchpoints=9
+double bp[nbranchpoints]
+bp[0]=15.2
+bp[1]=3.22
+bp[2]=3.64
+bp[3]=4.75
+bp[4]=29.39
+bp[5]=8.05
+bp[6]=43.76
+bp[7]=170.19
+bp[8]=13.5

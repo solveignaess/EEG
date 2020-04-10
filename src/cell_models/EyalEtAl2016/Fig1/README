@@ -1,0 +1,25 @@
+In Figure 1, a brief depolarizing current pulse was injected to the
+soma of the 3D-reconstructed HL2/3 PCs (Their reconstructions are
+available in the morphs directory); the average resultant experimental
+voltage transients are available in the Voltage_traces folders.
+
+Detailed compartmental models for that same cells were then
+constructed, including dendritic spines that were globally
+incorporated into the model (Rapp et al. 1992). The shape, size,
+membrane area, and distribution of dendritic spines in the HL2/3 model
+were based on high-resolution 3D confocal images of several stretches
+of HL2/3 PCs dendrites (Benavides-Piccione et al. 2013) (see Methods).
+
+Attempts to fit the experimental transient (of one of these cells) via
+the model are illustrated in Figure 1a (each with its corresponding
+values for axial resistivity, Ra, specific membrane resistivity, Rm,
+and capacitance, Cm). Only when Cm was surprisingly low ~ about 0.5
+uF/cm2 we found a good fit.
+
+This was also the case for the five other cells as demonstrated in Figure1cd
+
+After installing the necessary files (see install in top folder), all
+scripts in this folder can be run using ipython.
+
+contact:
+guy.eyal at mail.huji.ac.il

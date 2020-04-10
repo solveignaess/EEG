@@ -1,0 +1,249 @@
+begintemplate cell1303_03_model_cm_0_43
+
+public init, biophys, geom_nseg, hardcode_biophys, create_model,delete_spine,add_spine_ra,add_few_spines
+public create_axon
+
+public soma, dend, apic, axon, spine,getAbsSecIndex
+public all, somatic, apical, axonal, basal, nSecSoma,Spines, nSecApical, nSecBasal, nSecAxonal, nSecAll, nSecAxonalOrig
+
+objref all, somatic, apical, axonal, basal, Spines, this
+
+strdef tstr
+
+proc init() {
+	all = new SectionList()
+	somatic = new SectionList()
+	basal = new SectionList()
+	apical = new SectionList()
+	axonal = new SectionList()
+	Spines = new SectionList()
+ 	forall delete_section()
+
+ 	// As fitted in Eyal et al 2016
+ 	StepDist = 60
+	F = 1.9
+	CM =0.43
+	RM = 53700
+	E_PAS =  -86
+	RA =  274
+
+}
+
+create soma[1], dend[1], apic[1], axon[1],spine[1]
+
+external lambda_f
+proc geom_nseg() {local nSec, L1, L2, D1, D2, nSeg1, nSeg2
+  soma area(.5)
+  nSec = 0
+  forsec all {
+  nseg = 1 + 2*int(L/40)
+  nSec = nSec + 1
+  }
+
+  nSecAll = nSec
+  nSec = 0
+  forsec somatic { nSec = nSec + 1}
+  nSecSoma	= 	nSec
+  nSec = 0
+  forsec apical { nSec = nSec + 1}
+  nSecApical= 	nSec
+  nSec = 0
+  forsec basal { nSec = nSec + 1}
+  nSecBasal	= 	nSec
+  nSec = 0
+  forsec axonal { nSec = nSec + 1}
+  nSecAxonalOrig = nSecAxonal	= 	nSec
+}
+
+
+proc biophys() { 
+	
+	
+	forsec all {
+	
+	   insert pas
+		
+		cm =CM
+	    g_pas=1/RM
+		Ra = RA
+		e_pas = E_PAS
+
+	}
+	
+	soma distance()
+	
+	forsec basal {
+	
+	  for (x){
+			if (distance(x)>StepDist) {
+				cm(x)=CM*F
+				g_pas(x)=(1/RM)*F
+			}
+		}	
+	}
+	forsec apical {
+	
+	  for (x){
+			if (distance(x)>StepDist) {
+			
+				cm(x)=CM*F
+				g_pas(x)=(1/RM)*F
+			}
+		}	
+	}
+	
+}
+
+
+proc create_model(){
+    forsec axonal{delete_section()}
+
+
+}
+
+proc add_spine(){localobj sref
+	PI = 3.14159265359  
+	sref = $o1
+	x = $2
+	neck_diam = $3
+	neck_len = $4
+	spine_head_area = $5
+
+
+	L_head = 2*sqrt(spine_head_area /4/PI) //sphere has the same surface area as cylinder with L=diam
+
+	diam_head = L_head
+	create spine[2]
+	spine[0]{
+		L = neck_len
+		diam = neck_diam
+		insert pas
+		cm =CM
+	    g_pas=1/RM
+		Ra = RA
+		e_pas = E_PAS
+		Spines.append()
+	}
+	spine[1]{
+		L = L_head
+		diam = diam_head
+		insert pas
+		cm =CM
+	    g_pas=1/RM
+		Ra = RA
+		e_pas = E_PAS
+		Spines.append()
+
+	}
+	connect  spine[1](0) ,spine[0](1)
+	sref.sec{ 
+		connect spine[0](0), x
+	}
+	
+
+
+	
+}
+proc add_spine_ra(){localobj sref
+	PI = 3.14159265359  
+	sref = $o1
+	x = $2
+	neck_diam = $3
+	neck_len = $4
+	spine_head_area = $5
+	ra = $6
+	
+
+	L_head = 2*sqrt(spine_head_area /4/PI) //sphere has the same surface area as cylinder with L=diam
+
+	diam_head = L_head
+	create spine[2]
+	spine[0]{
+		L = neck_len
+		diam = neck_diam
+		insert pas
+		cm =CM
+	    g_pas=1/RM
+		e_pas = E_PAS
+		Ra = ra
+		Spines.append()
+	}
+	spine[1]{
+		L = L_head
+		diam = diam_head
+		insert pas
+		cm =CM
+	    g_pas=1/RM
+		e_pas = E_PAS
+		Ra = ra
+		Spines.append()
+
+	}
+	connect  spine[1](0) ,spine[0](1)
+	sref.sec{ 
+		connect spine[0](0), x
+	}
+	
+
+
+	
+}
+proc delete_spine(){
+	forsec Spines{delete_section()}
+}
+
+proc add_few_spines(){localobj sref_list, x_vec,sref
+	PI = 3.14159265359  
+	sref_list = $o1
+	x_vec = $o2
+	neck_diam = $3
+	neck_len = $4
+	spine_head_area = $5
+	ra = $6
+
+
+
+	L_head = 2*sqrt(spine_head_area /4/PI) //sphere has the same surface area as cylinder with L=diam
+
+	diam_head = L_head
+	create spine[2*sref_list.count()]
+
+	for (j=0;j<sref_list.count();j+=1){
+		sref = sref_list.o(j)
+		shaft_x  = x_vec.x[j]
+		spine[2*(j)]{
+			L = neck_len
+			diam = neck_diam
+			insert pas
+			cm =CM
+	    	g_pas=1/RM
+			e_pas = E_PAS
+			Ra = ra
+			Spines.append()
+
+		}
+		spine[2*(j)+1]{
+			L = L_head
+			diam = diam_head
+			insert pas
+			cm =CM
+	    	g_pas=1/RM
+			e_pas = E_PAS
+			Ra = ra
+			Spines.append()
+
+		}
+		connect  spine[2*(j)+1](0) ,spine[2*(j)](1)
+		sref.sec{ 
+			connect spine[2*(j)](0), shaft_x
+		}
+	
+
+	}
+	
+}
+
+
+
+
+endtemplate cell1303_03_model_cm_0_43

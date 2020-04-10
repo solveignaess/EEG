@@ -1,0 +1,96 @@
+begintemplate model_1303_cell03
+/*
+*
+* This is the code for the model in Figure 1c1
+* It was optimised together with the corresponding morphology:
+* 2013_03_13_cell03_1204_H42_02.ASC
+* 
+* AUTHOR: Guy Eyal, the Hebrew University
+* CONTACT: guy.eyal@mail.huji.ac.il
+*
+*/
+public init, biophys, geom_nseg, delete_axon
+public create_axon
+
+public soma, dend, apic, axon
+public all, somatic, apical, axonal, basal
+objref all, somatic, apical, axonal, basal, this
+
+strdef tstr
+
+proc init() {
+	all = new SectionList()
+	somatic = new SectionList()
+	basal = new SectionList()
+	apical = new SectionList()
+	axonal = new SectionList()
+	
+ 	forall delete_section()
+ 	StepDist = 60 // Almost no spines in human cells within the first 60 um
+ 				  // from soma - see Benavides-Piccione 2013
+	F_Spines = 1.9       //As calculated - see detailes in Eyal 2016
+	//Results of the fitting algorithm
+	CM =0.43   	// uF/cm2
+	RM = 39360		// Ohm-cm2	
+	RA = 262.54	// Ohm-cm
+	// Junction Potential of 16 mV. Not important anyway for the passive model 
+	// But important when adding voltage dependant process - synapses and VG ion channels
+	E_PAS =  -86
+}
+
+create soma[1], dend[1], apic[1], axon[1]
+
+external lambda_f
+proc geom_nseg() {
+
+  forsec all {
+  nseg = 1 + 2*int(L/40)
+
+  }
+
+}
+
+
+proc biophys() {
+	
+	
+	forsec all {	
+	   insert pas		
+		cm =CM
+	    g_pas=1/RM
+		Ra = RA
+		e_pas = E_PAS
+	}
+	
+	soma distance()
+	
+	forsec basal {	
+	  for (x){
+			if (distance(x)>StepDist) {
+				cm(x)=CM*F_Spines
+				g_pas(x)=(1/RM)*F_Spines
+			}
+		}	
+	}
+	forsec apical {
+	
+	  for (x){
+			if (distance(x)>StepDist) {
+				cm(x)=CM*F_Spines
+				g_pas(x)=(1/RM)*F_Spines
+				
+			}
+		}	
+	}
+	
+}
+
+
+proc delete_axon(){
+    forsec axonal{delete_section()}
+
+}
+
+
+
+endtemplate model_1303_cell03
