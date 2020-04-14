@@ -36,7 +36,8 @@
 \usepackage{units}
 
 
-\usepackage{soul}
+%\usepackage{soul}
+\usepackage{soulutf8}
 \usepackage{placeins}
 
 \usepackage{nameref}
@@ -147,13 +148,13 @@ Analogous to how electric charges can create charge multipoles, a combination of
 \phi(R) = \frac{C_{\text{monopole}}}{R} + \frac{C_{\text{dipole}}}{R^2} + \frac{C_{\text{quadrupole}}}{R^3} + ...~,
 \end{equation}
 when the distance R from the center of the volume to the measurement point is larger than the distance from the volume center to the most peripheral source \citep{JACKSON1998}. For definitions of the monopole contribution $C_{\text{monopole}}$, dipole contribution $C_{\text{dipole}}$, quadrupole contribution $C_{\text{quadrupole}}$, see \cite{RIERA2012}.
+\tvnnote{Usikker på om vi bør bruke denne referansen, da litt av poenget i den artikkelen er at de ser monopoler? Har vi en annen? Se Gratiy, Pettersen, Einevoll, Dale (2013) Pitfalls in the interpretation of multielectrode data: on the infeasibility of the neuronal current-source monopoles. J Neurophysiol 109:1681–1682.} 
 In neural tissue, the current monopole contribution is zero due to current conservation, since the transmembrane currents sum to zero at all points in time \citep{PETTERSEN2012}. Further, the quadrupole, octopole and higher order terms are negligible to the current dipole contribution when $R$ is sufficiently large.  Therefore, the extracellular potential from a neuron simulation can be estimated with the second term of the current multipole expansion; an approximation known as the \textit{current dipole approximation} \citep{PETTERSEN&EINEVOLL2008,PETTERSEN2014,NUNEZ2006}:
 \begin{equation}\label{eq:dipole_approx}
 \phi(\mathbf{r}) = \frac{C_{\text{dipole}}}{R^2} =\frac{1}{4 \pi \sigma} \frac{|\mathbf{p}| \cos \theta}{|{\bf r} - {\bf r}_p|^2}~.
 \end{equation}
 Here, $\mathbf{p}$ is the current dipole moment in a medium with conductivity $\sigma$, $R = |{\bf R}| = |{\bf r} - {\bf r}_p|$ is the distance between the current dipole moment at ${\bf r}_p$ and the electrode location ${\bf r}$, and $\theta$ denotes the angle between $\mathbf{p}$ and $\mathbf{R}$.
-
-A current dipole moment ${\bf p}$ can be calculated from an axial current $I$ inside a neuron and the distance vector ${\bf d}$ traveled by the axial current: ${\bf p} = I{\bf d}$, analogous to a charge dipole moment.
+\tvntxt{The \sout{A}} current dipole moment ${\bf p}$ can be calculated from an axial current $I$ inside a neuron and the distance vector ${\bf d}$ traveled by the axial current: ${\bf p} = I{\bf d}$, analogous to a charge dipole moment. \tvnnote{Bruker vi ikke også den litt enklere formelen med transmembrane strømmer $p=\sum I r$?}
 
 As mentioned above, the current dipole approximation is applicable in the far-field limit, that is when $R$ is much larger than the dipole length $d = |{\bf d}|$, $R > 3d$ or $4d$ \citep{NUNEZ2006}.
 
@@ -161,7 +162,7 @@ As mentioned above, the current dipole approximation is applicable in the far-fi
 
 \paragraph{Multi-dipole approach}\label{par:multi_dip}
 
-From a multicompartmental neuron simulation, one can compute multiple current dipole moments: e.i. one for each axial current flowing between neighboring compartments in the neuron:
+From a multicompartmental neuron simulation, one can compute multiple current dipole moments, i.e., one for each axial current flowing between neighboring compartments in the neuron:
 \begin{equation}
 {\bf p}_k = I_k^{axial} {\bf d}_k
 \end{equation}
@@ -170,9 +171,9 @@ Here, $I_k^{axial}$ is an axial current traveling along distance vector ${\bf d}
 Each of these current dipole moments contributes to the extracellular potential. By inserting all the current dipole moments from a neuron simulation into the current dipole approximation (Equation~\ref{eq:dipole_approx}), we get a good estimate of the extracellular potential at any electrode location where the distance between the electrode and the nearest dipole is shorter than three or four times this dipole's length \citep{NUNEZ2006}.
 Note that these (multi-)dipoles are quite short (normally on the scale of a few tens of micrometers), meaning that the multi-dipole approach is normally a very good approximation at distances larger than 50-100 $\si{\mu m}$ from the neuron.
 \snnote{Maybe exclude the last sentence above? I only checked the segev 3a cell, and the largest dipole length was 12.5 micrometers, that's all it's based on.}
-
+\tvnnote{Jeg syntes den er lur å ha med, men kanskje koble det tydligere opp mot lengden på compartments i morfologiene?}
 \paragraph{Single-dipole approximation}\label{par:single_dip}
-In order to save time and storage, we can compute a single current dipole moment for each neuron. One way of doing this is to sum up the multiple current dipole moments, in other words, to make a position-weighted sum of all the axial currents for each time point in the neuron simulation:
+In order to save time and storage \tvnnote{trenger ikke motivasjon her syntes jeg}, we can compute a single current dipole moment for each neuron. One way of doing this is to sum up the multiple current dipole moments, in other words, to make a position-weighted sum of all the axial currents for each time point in the neuron simulation:
 
 \begin{equation}\label{eq:dip_sum_axial}
 \mathbf{p}(t) = \sum_{k=1}^{N-1} {\bf p}_k(t) = \sum_{i=1}^{N-1} I_k^{axial}(t) \mathbf{d}_k,
@@ -231,10 +232,10 @@ where $N$ is the number of compartments and $N-1$ is the number of axial current
 Electric potentials will be affected by the geometries and conductivities of the various parts of the head \citep{NUNEZ2006}\sntxt{, which is especially important for electrode locations outside of the brain. This can be incorporated into our extracellular potential calculations by applying simplified or more complex head models}.
 
 \subsubsection{Four-sphere model}
-The four-sphere head model is an analytical, simplified model consisting of four concentric shells: brain tissue, cerebrospinal (CSF) fluid, skull and scalp, where the conductivity can be set individually for each shell, \citep{SRINIVASAN1998,NUNEZ2006}. The model solution is given in \cite{NAESS2017} and is found by solving the Poisson equation subject to boundary conditions ensuring continuity of current and electric potentials over the boundaries, as well as no current escaping the outer shell. This model is based on the current dipole approximation.
+The four-sphere head model is \tvntxt{a simple analytical \sout{, simplified}} model consisting of four concentric shells: brain tissue, cerebrospinal (CSF) fluid, skull and scalp, where the conductivity can be set individually for each shell, \citep{SRINIVASAN1998,NUNEZ2006}. The model solution is given in \cite{NAESS2017} and is found by solving the Poisson equation subject to boundary conditions ensuring continuity of current and electric potentials over the boundaries, as well as no current escaping the outer shell. This model is based on the current dipole approximation.
 
 \subsubsection{New York Head model}\label{subsubsec:eeg_BEM}
-The New York head model is an example of a numerical, complex head model based on 152 adult heads. Making use of high-resolution anatomical MRI-data, the surface of the white matter, gray matter, inner skull, outer skull and outer scalp, was mapped out, and used as boundaries in a geometrically detailed head volume conductor \citep{HUANG2015}. The boundaries divide the head model into subvolumes of constant conductivity. In the New York Head Model, the link between current dipoles in the brain and resulting EEG signals was established using the finite element method \cite{LOGG2012,HUANG2015}. Even though developing such a model comes at a high financial and computational cost, applying the pre-solved model is quite straightforward: inserting a current dipole moment into an arbitrary brain location gives the resulting EEG signals in minutes.
+The New York head model is an example of a numerical, complex head model based on 152 adult heads. Making use of high-resolution anatomical MRI-data, the surface of the white matter, gray matter, inner skull, outer skull and outer scalp, was mapped out, and used as boundaries in a geometrically detailed head volume conductor \citep{HUANG2015}. The boundaries divide the head model into subvolumes of constant conductivity. In the New York Head Model, the link between current dipoles in the brain and resulting EEG signals was established using the finite element method \citep{LOGG2012,HUANG2015}. Even though developing such a model comes at a high financial and computational cost, applying the pre-solved model is quite straightforward: inserting a current dipole moment into an arbitrary brain location gives the resulting EEG signals in minutes.\tvnnote{Minutes? Ville trodd mye mindre. Nevne reciprocity?}
 
 \subsection{Simulation of neural activity}
 All neuron simulations were performed using the python package \texttt{LFPy}, running NEURON under the hood. 
