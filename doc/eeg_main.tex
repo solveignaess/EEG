@@ -179,27 +179,21 @@ Note that the length of each (multi-)dipole is equal to half the length of \tvnt
 %\snnote{Noe sånt?}
 
 \paragraph{Single-dipole approximation}\label{par:single_dip}
-
-%In order to save time and storage %\tvnnote{trenger ikke motivasjon her syntes jeg}
-
-\sntxt{\sout{, we can compute a single current dipole moment for each neuron.} For each neuron we can compute one single current dipole moment.} One way of doing this is to sum up the multiple current dipole moments \sntxt{\sout{, in other words, to make a position-weighted sum of all the axial currents for each time point in the neuron simulation:}}
-
-
+\tvntxt{From each multicompartmental neuron simulation we computed} one single current dipole moment. \tvntxt{This can either be done by \sout{One way of doing this is to sum} summing} up the multiple current dipole moments,
 
 \begin{equation}\label{eq:dip_sum_axial}
 \mathbf{p}(t) = \sum_{k=1}^{M} {\bf p}_k(t) = \sum_{i=1}^{M} I_k^{axial}(t) \mathbf{d}_k,
 \end{equation}
-\sntxt{where $M$ is the number of axial currents.
-
-An equivalent way of computing the single current dipole moment is to make a position-weighted sum of all the transmembrane currents for each time point in the simulation:
+where $M$ is the number of axial currents,
+\tvntxt{or equivalently from \sout{ way of computing the single current dipole moment is to make}} a position-weighted sum of all the transmembrane currents \tvntxt{\sout{for each time point in the simulation} \citep{LINDEN2010, HAGEN2018}}:
 
 \begin{equation}\label{eq:dip_sum_trans}
 \mathbf{p}(t) = \sum_{k=1}^{N} I_k^{trans}(t) \mathbf{r}_k,
 \end{equation}
-where N is the number of compartments in the multicompartmental neuron model and ${\bf r}_k$ is the position of transmembrane current $I_k^{trans}(t)$.}
+where N is the number of compartments in the multicompartmental neuron model and ${\bf r}_k$ is the position of transmembrane current $I_k^{trans}(t)$.
 
 
-Combining the single current dipole moment with the current dipole approximation gives us the extracellular potential from a single neuron in the far-field limit ($R>3d$ or $4d$) \citep{NUNEZ2006}.
+Combining the single current dipole moment with the current dipole approximation gives us the extracellular potential from a single neuron in the far-field limit ($R>3d$ or $4d$) \citep{NUNEZ2006}. \tvnnote{Trengs kanskje ikke?}
 
 
 
@@ -250,30 +244,25 @@ Combining the single current dipole moment with the current dipole approximation
 
 
 \subsection{Head models}
-Electric potentials will be affected by the geometries and conductivities of the various parts of the head \citep{NUNEZ2006}\sntxt{, which is especially important for electrode locations outside of the brain. This can be incorporated into our extracellular potential calculations by applying simplified or more \sntxt{\sout{complex} realistic} head models}.
+Electric potentials will be affected by the geometries and conductivities of the various parts of the head \citep{NUNEZ2006}\sntxt{, which is especially important for electrode locations outside of the brain. This can be incorporated into our extracellular potential calculations by applying simplified or more complex head models}.
 
 \subsubsection{Four-sphere model}
 The four-sphere head model is a simple analytical model consisting of four concentric shells: brain tissue, cerebrospinal (CSF) fluid, skull and scalp, where the conductivity can be set individually for each shell, \citep{SRINIVASAN1998,NUNEZ2006}. The model solution is given in \cite{NAESS2017} and is found by solving the Poisson equation subject to boundary conditions ensuring continuity of current and electric potentials over the boundaries, as well as no current escaping the outer shell. This model is based on the current dipole approximation.
 
 \subsubsection{New York Head model}\label{subsubsec:eeg_BEM}
-The New York Head model is a realistic head model based on high-resolution, anatomical MRI-data from 152 adult heads \citep{HUANG2015}. The link between current dipoles in the brain and the resulting EEG signals was established taking advantage of the reciprocity theorem, stating that the position of the electrode and the dipolar source can be switched without affecting the measured potential. This means, that it is sufficient to virtually inject current at the locations of the EEG electrodes and use the finite element method \citep{LOGG2012} to compute the resulting potential anywhere in the brain. The resulting  is fully described by the \txttt{lead field} which can be downloaded from \url{parralab.org/nyhead/}. %Due to the reciprocity theorem {sitere RushandDriscoll1969}, which in short states that switching the location of recording electrode will not affect the measured potential,  This lead field matrix was computed by inserting current into all the various electrode locations, using the finite element method , 
-
-\begin{equation}
-{\bf Phi} = {\bf L} \cdot {\bf p}
-\end{equation}
-
-
-%The New York head model is an example of a numerical, complex head model based on 152 adult heads. In the New York Head Model, the link between current dipoles in the brain and resulting EEG signals was established using the finite element method \citep{LOGG2012,HUANG2015}. Even though developing such a model comes at a high financial and computational cost, applying the pre-solved model is quite straightforward: inserting a current dipole moment into an arbitrary brain location gives the resulting EEG signals less than a second.\tvnnote{Minutes? Ville trodd mye mindre. Nevne reciprocity?}\snnote{Obs! Denne hadde jeg glemt å fikse. 0.29s! } \snnote{Synes dette avsnittet er litt kjipt.. Enig i at reciprocity burde være med her. Burde vi isåfall fjerne det fra 3.5? Dette med hvor lang tid det tar å kjøre NYH har vi skrevet mer detaljert under 3.5.. Kunne evt. ha lagt første avsnitt fra 3.5 her og laget en kortere versjon til 3.5?}
+The New York head model is an example of a numerical, complex head model based on 152 adult heads. Making use of high-resolution anatomical MRI-data, the surface of the white matter, gray matter, inner skull, outer skull and outer scalp, was mapped out, and used as boundaries in a geometrically detailed head volume conductor \citep{HUANG2015}. The boundaries divide the head model into subvolumes of constant conductivity. In the New York Head Model, the link between current dipoles in the brain and resulting EEG signals was established using the finite element method \citep{LOGG2012,HUANG2015}. Even though developing such a model comes at a high financial and computational cost, applying the pre-solved model is quite straightforward: inserting a current dipole moment into an arbitrary brain location gives the resulting EEG signals less than a second.\tvnnote{Minutes? Ville trodd mye mindre. Nevne reciprocity?}\snnote{Obs! Denne hadde jeg glemt å fikse. 0.29s! }
+\tvnnote{Forøvrig tenker jeg dette passer bedre i results :-)} \snnote{Synes dette avsnittet er litt kjipt.. Enig i at reciprocity burde være med her. Burde vi isåfall fjerne det fra 3.5? Dette med hvor lang tid det tar å kjøre NYH har vi skrevet mer detaljert under 3.5.. Kunne evt. ha lagt første avsnitt fra 3.5 her og laget en kortere versjon til 3.5?}
 
 \subsection{Simulation of neural activity}
 All neuron simulations were performed using the python package \texttt{LFPy}, running NEURON under the hood. 
 For investigations of single-cell contributions to extracellular potentials, we applied three different morphologically reconstructed cell models: The human layer-23 pyramidal cell from \cite{EYAL2016}, the layer-5 pyramidal cell from rat cortex constructed by \cite{HAY2011} and a rat layer-5 chandelier cell; an interneuron model developed by \cite{MARKRAM2015}.
 
 The pyramidal cell models were downloaded from \href{senselab.med.yale.edu/modeldb/}{senselab.med.yale.edu/modeldb/}, see accession numbers 195667 and 139653 respectively, while we found the interneuron at the Neocortical Microcircuit Collaboration Portal (\href{https://bbp.epfl.ch/nmc-portal}{https://bbp.epfl.ch/nmc-portal/microcircuit}) under layer-5, Chandelier Cell (ChC), continuous Non-accomodating (cNAC). \snnote{There are several morphologies under each of the accession numbers. should we specify exactly which morphology we've used?}
+\tvnnote{Ja, gi navnet på morfologien}
 
-For all simulations with passive ion channels only, we used the following cell parameters: membrane resistance of 30000~$\Omega \text{cm}^2$, axial resistance of 150~$\Omega \text{cm}$ \citep{MAINEN1996} and a membrane capacitance of 1~$\mu\text{F}/\text{cm}^2$ (rounded up from \cite{GENTET2000}). Whenever active mechanisms were included in the simulations, all cell properties were incorporated as described in the specific cell's doumentation.
+For all simulations with passive ion channels only\tvnnote{Gjelder ikke hybrid modellen. Kanskje gi figurnummer?}, we used the following cell parameters: membrane resistance of 30000~$\Omega \text{cm}^2$, axial resistance of 150~$\Omega \text{cm}$ \citep{MAINEN1996} and a membrane capacitance of 1~$\mu\text{F}/\text{cm}^2$ \tvntxt{\sout{(rounded up from}} \citep{GENTET2000}. Whenever active mechanisms were included in the simulations, all cell properties were incorporated as described in the specific cell's doumentation.
 
-In this paper, all synaptic input was modeled as conductance-based, exponential synapses, (synapse type \texttt{Exp2Syn} in \texttt{LFPy}). The rise time constant was set to 1 ms and the decay time constant was 3 ms, synaptic reversal potential was 0 mV and the synaptic weight was set to 0.002, unless otherwise specified. 
+In this paper, all synaptic input was modeled as conductance-based, exponential synapses, (synapse type \texttt{Exp2Syn} in \texttt{NEURON}). The rise time constant was set to 1 ms and the decay time constant was 3 ms, synaptic reversal potential was 0 mV and the synaptic weight was set to 0.002, unless otherwise specified. \tvnnote{Gjelder ikke hybrid modellen. Kanskje gi figurnummer?}
 
 %
 %\begin{table}[h!]
@@ -292,10 +281,12 @@ In this paper, all synaptic input was modeled as conductance-based, exponential 
 %\end{table}
 
 \snnote{Burde denne vaert mer omfattende?:}
-For modeling of population activity, we  used the so-called hybrid scheme on the large-scale point-neuron cortical microcircuit model from \cite{POTJANS2014,HAGEN2016}.
+\tvnnote{La på bittelitt, tenker det holder}
+For modeling of population activity (Figure~\ref{fig:population}), we  used the so-called hybrid scheme, and the simulation was unmodified from \cite{HAGEN2016}, except that all single-cell current dipole moments were recorded, and the EEG signals calculated.
 
-
-
+\tvntxt{
+\subsection{Code availability}
+Simulation code to reproduce all figures in this paper is freely available from \url{https://github.com/solveignaess/EEG.git}}
 
 %Next, we can solve the forward problem numerically with the Boundary Element Method (BEM). Applying BEM on the forward problem for EEG implies first of all to write the Poisson equation as a boundary integral equation where the potential $\phi$ only appears on the boundaries. This can be done making use of Green's theorem and boundary conditions ensuring continuity of current and potential on the boundaries, and no current escaping the scalp surface. Finally, we approximate the electric potential by discretizing the boundary integral equation. 
 
@@ -351,8 +342,8 @@ For modeling of population activity, we  used the so-called hybrid scheme on the
 
 %\snnote{ikke helt sikker paa denne introen.. bruker jo ikke bare single synaptisk input og litt usikker paa om det er lurt aa nevne MEG her? Men sikkert lurt aa spikre denne naar resten er i orden.}
 %\tvnnote{Might work to say something like: For illustration, we first consider a single synaptic input, before moving on to ... head model ... populations... MEG}
-\sntxt{
-We introduce an approach for detailed biophysical modeling of electromagnetic brain signals. For illustration, we first consider single synaptic input to single neurons in an infinite homogeneous head model, before moving on to the inhomogeneous four-sphere head model. Finally, we study electric potentials from population activity, also applying the realistic New York Head model. Note that we will only consider EEG signals, but the general results are equally valid for MEG signals.}
+
+We introduce an approach for modeling \tvntxt{\sout{electromagnetic brain } electroencephalography (EEG) signals from detailed biophysical multicompartment cell models}. For illustration, we first consider single synaptic input to single neurons in an infinite homogeneous head model, before moving on to \tvntxt{\sout{the inhomogeneous four-sphere} a simple generic} head model. Finally, we study \tvntxt{\sout{electric potentials} EEGs} from population activity, also applying  \tvntxt{a realistic head \sout{New York Head} model}. Note that \tvntxt{while} we will only consider EEG signals, the general \tvntxt{\sout{results are} approach is} equally valid for MEG signals.
 %We introduce an approach for detailed biophysical modeling of ECoG, EEG and MEG signals by considering a single synaptic input to a biophysically detailed cell model. 
 %
 %Note that we will for the most part only consider EEG signals, but the general results are equally valid for MEG signals.
@@ -384,14 +375,14 @@ We introduce an approach for detailed biophysical modeling of electromagnetic br
 %The standard forward-modeling scheme for extracellular potentials model extracellular potentials from neurons' transmembrane currents. When it comes to inverse modeling of EEG/MEG, on the other hand, the goal is to find the current dipole moments from the measured electromagnetic signals. Also, applying 
 %}
 
-\tvnnote{Can we find a simple one-sentence motivation for why we might want to do this? Maybe start paragraph by breifly introducing why we want to go from compartment-based to dipole-based?}
-\snnote{Tuesday, we discussed that the overall motivation for going from compartment-based to dipole-based is 1) we need dipoles for head models and 2) inverse methods model dipoles, not currents. I wrote a short draft on this paragraph in the Introduction, so that we don't forget to spell this out there. Since the Results section should be able to stand alone, I guess it makes sense to mention this here as well. I found it very hard to make an easy-to-read one-sentence motivation here. Is it ok to skip part 2 of the motivation, in order to make this shorter, and assume that the reader goes through the introduction, if she wants the full story? I came up with a suggestion where I feel like the flow is ok, and that it leads up nicely to the rest of the section, but even though leaving out motivation part 2, I didn't manage to keep it within one sentence. Is this ok, or do you have any other suggestions?=)}
-\sntxt{
-In this section, we compare three strategies for computing extracellular potentials: the compartment-based approach, the multi-dipole approach and the single-dipole approximation.
+%\tvnnote{Can we find a simple one-sentence motivation for why we might want to do this? Maybe start paragraph by breifly introducing why we want to go from compartment-based to dipole-based?}
+%\snnote{Tuesday, we discussed that the overall motivation for going from compartment-based to dipole-based is 1) we need dipoles for head models and 2) inverse methods model dipoles, not currents. I wrote a short draft on this paragraph in the Introduction, so that we don't forget to spell this out there. Since the Results section should be able to stand alone, I guess it makes sense to mention this here as well. I found it very hard to make an easy-to-read one-sentence motivation here. Is it ok to skip part 2 of the motivation, in order to make this shorter, and assume that the reader goes through the introduction, if she wants the full story? I came up with a suggestion where I feel like the flow is ok, and that it leads up nicely to the rest of the section, but even though leaving out motivation part 2, I didn't manage to keep it within one sentence. Is this ok, or do you have any other suggestions?=)}
+
+\tvntxt{We start by comparing} three strategies for computing extracellular potentials: the compartment-based approach, the multi-dipole approach and the single-dipole approximation.
 While the first is a well-established method for computing extracellular potentials in homogeneous volume conductors,
 %(in addition to studies such as \cite{NESS2016})
  inhomogeneous head models typically take current dipole moments as input, and must be based on approximations such as the latter two. In order to understand the differences between the three strategies, we here compare extracellular potentials generated by a single cell receiving excitatory synaptic input.
-}
+
 %The neural activity underlying EEG signals is predominantly thought of as transmembrane currents. However, when it comes to inverse modeling of these signals, one estimates the origin of neural activity as current dipoles, instead of currents. Applying head models for computing EEG signals typically take 
 
 Excitatory synaptic input initiates a negative current at the synapse location, since positive ions flow into the cell. Due to current conservation \citep{NUNEZ2006}, this negative current is exactly balanced by spatially distributed positive currents along the cellular membrane, as illustrated in Fig.~\ref{fig:dipole_field}\textbf{A} for a single apical excitatory synaptic input to a human cortical layer-2/3 pyramidal cell model \citep{EYAL2016}. \sntxt{The simulation lasted 100 ms, with the synaptic input occurring after 20ms.}
@@ -401,7 +392,7 @@ In the standard procedure for modeling extracellular potentials, here referred t
 
 For the sake of comparing these modeling approaches, we have assumed that the cell is positioned in an infinite homogeneous medium. Very close to the neuron, the extracellular potential will strongly depend on the exact distribution of transmembrane currents across the cellular morphology and  will, therefore, typically not take a  \sntxt{purely} dipolar shape 
 %\tvnnote{be purely dipolar? It is dipole-like after all?}\snnote{agree!}
-(Fig.~\ref{fig:dipole_field} \textbf{D,E} versus \textbf{F}). However, since the dipole contribution will dominate when we are further away from the current sources (see Equation~\ref{eq:multipole_expansion}), the extracellular potential becomes increasingly dipolar with distance from the cell \citep{LINDEN2010}, meaning that for the purpose of calculating extracellular potentials far away from the cell, the single-dipole approximation might be well justified (Fig.~\ref{fig:dipole_field}\textbf{G-I}). \sntxt{Note that there can be small differences between the results from the compartment-based and the multi-dipole approaches for electrode locations in the immediate vicinity of the neuron (Fig.~\ref{fig:dipole_field}D versus Fig.~\ref{fig:dipole_field}E), however for the electrode locations considered in the rest of this paper, these differences will be negligible.}
+(Fig.~\ref{fig:dipole_field} \textbf{D,E} versus \textbf{F}). However, since the dipole contribution will dominate when we are further away from the current sources (see Equation~\ref{eq:multipole_expansion}), the extracellular potential becomes increasingly dipolar with distance from the cell \citep{LINDEN2010}, meaning that for the purpose of calculating extracellular potentials far away from the cell, the single-dipole approximation might be well justified (Fig.~\ref{fig:dipole_field}\textbf{G-I}). Note that there can be small differences between the results from the compartment-based and the multi-dipole approaches for electrode locations in the immediate vicinity of the neuron (Fig.~\ref{fig:dipole_field}D versus Fig.~\ref{fig:dipole_field}E), however for the electrode locations considered in the rest of this paper, these differences will be negligible.
 
 
 %For electrode locations in the immediate vicinity of the neuron, it is possible to see tiny differences between the compartment-based and the multi-dipole approaches, however
