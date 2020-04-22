@@ -658,6 +658,7 @@ Note that \tvntxt{despite the complexity} the NYH model is substantially faster 
 		%	\snnote{compute angle between EEG electrode and current dipole moment/ current dipole position vector. This should also affect the amplitude..}
 		\tvnnote{Kanskje egentlig litt like farger i G-J? Hva med svart og grå?}	
 	}
+	\label{fig:compare_head_models}
 \end{figure}
 
 %\tvnnote{When we have a figure with a single current dipole of, say 1 nA/um, and corresponding EEG potentials, of say, 1 uV, we should send it to the New York Head model people (Stefan Haufe), and ask for a confirmation that the magnitude of the EEG in relation to the current dipole makes sense}
@@ -665,34 +666,67 @@ Note that \tvntxt{despite the complexity} the NYH model is substantially faster 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%DISCUSSION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion}\label{sec:discussion}
+\tvntxt{
+\subsection*{Summary}
+In this paper we have introduced an approach for reducing arbitrary simulated neural activity to single current dipoles (Fig.~\ref{fig:dipole_field}), and implemented the approach into the open-source python tool LFPy 2.0 \citep{HAGEN2018}. We verified that the approach was applicable for calculating EEG, but not ECoG signals (Fig.~\ref{fig:compare_multi_single_dipole}-\ref{fig:eeg_compare_cell_types}), and showed examples of how this approach can be a powerful tool for investigating and understanding single-cell EEG contributions (Fig.~\ref{fig:eeg_compare_cell_types}-\ref{fig:ca_spike}). Furthermore, we demonstrated that the presented approach could be easily integrated with existing large-scale simulations of neural activity, and how it can be used to construct compact representations of the EEG contributions from entire neural populations, while still firmly grounded in the underlying biophysics (Fig.~\ref{fig:population}). Finally, we demonstrated how the simulated current dipoles, from single cells or large neural populations, can be direcly inserted into complex head models (Fig.~\ref{fig:compare_head_models}).
+}
+
+\tvntxt{
+\subsection*{Importance of work}
+The EEG signals has been important for a century, but still very little is known about the neural origin of the signal \citep{COHEN2017}. This work lays some of the foundation for obtaining a better, model-based understanding of the EEG signal. 
+This work lays some of the foundation for simulation of EEGs from large-scale neural network in realistic head models \citep{MARKRAM2015, BILLEH2019}, which we expect will be an increasinlgy important tool in neuroscience \citep{EINEVOLL2019}.
+
+In this formalism it is easy to investigate the contribution to the EEG signal from, e.g., different cell types, from somatic spikes, or from dendritic spikes, by only comparing the z-component of the resulting current dipoles, without the need for the added complexity of head models. This decoupling of the current dipole moment and head model presents a simplified way of investigating the origin of the EEG signal.
+
+Inverse methods identify generic cortical dipoles, but this work is an important step towards consolidating ...
+
+Note that this approach has already been used by \cite{HAGEN2018} and \cite{Maki-Marttunen2019}.
+
+}
+\tvntxt{
+\subsection*{Comparisson to similar work}
+Compare to other projects like HNN (Human Neocortical Neurosolver) (\url{https://hnn.brown.edu/}) and TVB \citep{TVB}
+Cite others? Freesurfer? Sim4Life? Don Hagler? 
+}
+
+\tvntxt{
+\subsection*{Limitations}
+
+Single-cells are fairly well understood, and the measurement physics (head models) is fairly well understood. Neural networks is the main limitation, in addition to the compute power needed for simulation of millions of neurons. 
+}
+
+\tvntxt{
+\subsection*{Outlook}
+Should be combined with animal studies like \cite{BRUYNS2017}
+
+Discuss kernel from population firing rates to current dipole moment?
+
+Combined with kernel method
+
+``EEG is hard to enterpret because of large number of neuron contributing''. True, but still basically (probably) just four main sources: apical excitation/inhibition and basal excitation/inhibition to pyramidal cells, and connectivity is to a large degree fixed, meaning that we could probably map population firing rate to EEG.
+
+Discuss relevance to \cite{MAKI2019}?
+}
+
+\tvntxt{
+\subsection*{Nice final statement}
+Something light-hearted but profound, optimistic but realistic, and humble but borderline pompous.
+}
+------
 
 
-We have found that the single-cell current dipole moment is applicable for calculating a neuron's EEG-contribution, and that this approach can be helpful in estimating the relative EEG-contribution of different cell types and different modes of synaptic input, in addition to investigating 
+Discuss potential impact of I$_{\rm h}$ on human EEG \citep{NESS2016, NESS2018, KALMBACH2018}.
 
-In this formalism it is easy to investigate the contribution to the EEG signal from, e.g., different cell types, from somatic spikes, or from dendritic spikes, by only comparing the z-component of the resulting current dipoles, without the need for the added complexity of head models etc.
+
+On the other end of the scale are whole-brain simulations with \citep{TVB}, to 
 
 \begin{itemize}
-	\item Good paper for discussion/intro:  \cite{COHEN2017} (``too little is done to understand the origin of the EEG'')
-	\item Discuss value of results to ongoing large-scale simulation projects.
-	\item ``EEG is hard to enterpret because of large number of neuron contributing''. True, but still basically (probably) just four main sources: apical excitation/inhibition and basal excitation/inhibition to pyramidal cells, and connectivity is to a large degree fixed, meaning that we could probalby map population firing rate to EEG.
-	\item Discuss relevance to \cite{MAKI2019}?
-	\item Discuss value of decoupling current dipole moments and head model
-	\item Discuss kernel from population firing rates to current dipole moment?
-	\item Discuss potential impact of I$_{\rm h}$ on human EEG \citep{NESS2016, NESS2018, KALMBACH2018}.
-	\item Compare to other projects like HNN (Human Neocortical Neurosolver) (\url{https://hnn.brown.edu/}) and TVB \citep{TVB}
-	\item Important work on the path towards a real understanding of the biophysical origin of EEGs \cite{BRUYNS2017}
-\end{itemize}
-On the other end of the scale are whole-brain simulations with  \citep{TVB}, to 
-\sntxt{
-	\begin{itemize}
 		\item Because of linearity, the EEG from a neural population is the sum of all the single-cell EEG contributions. However, if the spatial extent of the neural population (~ 1 mm) is small relative to the distance to the EEG electrodes (~ 1 cm), then individual current-dipoles can be summed, e.g., for each neural sub-population, or for the entire neural population, and the EEG signal can be computed based on the summed current dipoles. This could be a very promising approach for decomposing and understanding the EEG in large-scale neural  simulations like the cortical column simulations of the HBP, the Potians-Diesman  simulations of Hagen, or the Allen brain initiative.
 		\item Which populations are important? We found that the EEG calculated as the sum of the single-cell EEG contributions from the current dipoles of all ~80,000 cells, spatially distributed within a cylinder (panel B and E) was indistinguishable from the EEG calculated as the sum of the EEG from 4 population current dipoles in the center of the population. Each of these 4 current dipoles was the sum of the z-components of the current dipoles of the pyramidal cells in the different layers (panel F, L23E, L4E, L5E, L6E). We found that all pyramidal cell populations had a substantial EEG contribution, however, the largest was the L2/3 population. It should however be noted that this is not a very realistic scenario, because of current-based synapses etc.
 		
-	\end{itemize}
-	
-}
+\end{itemize}
 
-\tvnnote{Cite others? Freesurfer? Sim4Life? Don Hagler? HNN?}
+
 % \appendix
 % \section{Point-Source vs. Line-Source Dipole Moment} \label{sec:point_line_cdm}
 % \tvnnote{I don't think we need to go into this.}
