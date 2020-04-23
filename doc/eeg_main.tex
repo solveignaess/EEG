@@ -92,8 +92,9 @@
 	
 	\begin{abstract}
 		Many important brain signals, like the LFP, ECoG, EEG and MEG are thought to primarily reflect synaptic input to populations of geometrically aligned pyramidal neurons. Therefore, it is important to get a better understanding of the biophysics underlying the synaptic contribution to these brain signals. For a pyramidal neuron receiving a single synaptic input, it is well established that the ensuing extracellular potential will take the shape of a dipole in the far field limit, i.e., sufficiently far away from the neuron. This can potentially greatly simplify the link between the measured brain signals and the underlying neural sources, but this link has not yet been taken full advantage of in the framework of detailed biophysical forward modeling of brain signals. 
-		Here we present a framework for reducing complex simulated neural activity to simple dipoles, and test the applicability of the approach. We find that the framework works excellently for calculating EEG signals, but not ECoG signals. We demonstrate how this approach can greatly simplify the link between the experimentally measurable EEG signal and the underlying neural sources, in a manner that is firmly grounded in the underlying biophysics. We demonstrate the power of this approach by showing that the EEG from a simple neural population can be well represented by reducing it to a single dipole, based on the average obtained from the cells in the neural population.
-		\tvnnote{Mention importance for ongoing large-scale modelling efforts?}
+		Here we present a framework for reducing complex simulated neural activity to simple dipoles, and test the applicability of the approach. We find that the framework works excellently for calculating EEG signals, but not ECoG signals. We demonstrate how this approach can greatly simplify the link between the experimentally measurable EEG signal and the underlying neural sources, in a manner that is firmly grounded in the underlying biophysics. We demonstrate the power of this approach by showing that the EEG contribution from a neural population can be well represented by reducing it to a single dipole, based on the average obtained from the cells in the neural population. Such current dipoles can easily be used in both generic and complex head models, allowing for easy simulation and clean analysis of the neural origin of the EEG signal.
+		\tvnnote{NeuroImage har graphical abstracts, så det bør vi tenke på!}
+		\tvntxt{\url{https://www.elsevier.com/wps/find/journaldescription.cws_home/622925?generatepdf=true}}
 	\end{abstract}
 	
 \end{frontmatter}
@@ -104,12 +105,36 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%INTRODUCTION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Higlights}
+\tvnnote{NeuroImage vil ha Highlights med 3-5 bullet points}
+\begin{itemize}
+\item Arbitrary simulated neural activity can be automatically reduced to current dipoles
+\item Such current dipoles can be used with generic or realistic head models for calculation of EEG or MEG signals
+\item Allows easy simulation of EEG signals from both single cells and large-scale neural networks
+\item Gives clean way of studying the neural origin of EEG signals
+\end{itemize}
+
+
 \section{Introduction}\label{sec:introduction}
-\sntxt{Picking up where \cite{LINDEN2010} left off.}
 
-To include references to the relevant literature, we should read through and find appropriate places to cite papers like \cite{BUZSAKI2012,SILVA2013, COHEN2017}
+\tvnnote{To include references to the relevant literature, we should read through BUZSAKI2012,SILVA2013, COHEN2017 and find appropriate papers to cite.
+}
 
-\tvnnote{EEG-people are really into oscillations, should we include that somewhere?}
+Electroencephalography (EEG) is the measurement of electrical potentials on the surface of the skull,
+and such measurements have been an essential part of neuroscience for nearly a century \citep{SILVA2013}. Today, such measurements are still among the most important non-invasive methods (without surgical interventions) to study human cognitive functions, as well as to diagnose and study brain diseases \citep{COHEN2017, Pesaran2018}.
+
+Despite EEG's long history and important position in neuroscience, we still know surprisingly little about the neural origin of the signal \citep{COHEN2017}. We have a relatively good understanding of the biophysical origin of the EEG signal: it mainly originates from large numbers synaptic inputs to cortical pyramidal cell populations \citep{NUNEZ2006, Pesaran2018}, however, we know very little about exactly what types of neural activity that cause even the most well-known characteristics of the EEG signal, such as different types of oscillations (e.g., alpha, beta, and gamma waves), as well as the shape of the signal in response to sensory stimuli (event-related potentials, ERPs) \citep{COHEN2017}. However, we know that these different characteristics of the EEG signal change in predictable ways as a result of brain disorders such as epilepsy or schizophrenia \citep{Light2013, MAKI2019} or as a result of the condition of the brain, such as sleep or attention \citep{Klimesch1998}. In other words, a better understanding of what aspects of the brain activity that is reflected in measured EEG signals could be of great help, both to understand what is going on in the brain and to cure brain disorders \citep{MAKI2019}.
+
+The reason for our lack of understanding of the neural origin of the EEG signal is multifaceted,
+but among the main causes are (i) the high number of neurons that contribute to the signal, and (ii)
+strong ethical constraints on which tools can be used to investigate human brain. However, in recent years there have been major advances in several relevant branches of neuroscience that means a better understanding of the EEG signal may now be within reach \citep{COHEN2017}. On the experimental side, there has been a rapid development in technology and the methods used to study neural activity in animal studies, which in turn make important contributions our understanding of the human brain \citep{SILVA2013, COHEN2017, Pesaran2018, BRUYNS2017}, and on the modeling side there has been great development
+in the tools needed \citep{HAGEN2018} and in available computing power \citep{EINEVOLL2019}.
+
+Neural simulations has been important for understanding brain signals for a long time ...
+
+However, EEG is slightly different.
+
+Here we ...
 
 \sntxt{	%Alt to 1st sentence below: When computing extracellular potentials in neural tissue, the standard approach is to apply a well-established compartment-based approach based on the underlying 		neural activity in the form of transmembrane currents.
 	The neural activity underlying electric brain signals is predominantly thought of as transmembrane currents. Inevitably, these transmembrane currents form the basis of a well-established biophysical modeling scheme for computing extracellular potentials in neural tissue.
@@ -658,6 +683,7 @@ Note that \tvntxt{despite the complexity} the NYH model is substantially faster 
 		%	\snnote{compute angle between EEG electrode and current dipole moment/ current dipole position vector. This should also affect the amplitude..}
 		\tvnnote{Kanskje egentlig litt like farger i G-J? Hva med svart og grå?}	
 	}
+	\label{fig:compare_head_models}
 \end{figure}
 
 %\tvnnote{When we have a figure with a single current dipole of, say 1 nA/um, and corresponding EEG potentials, of say, 1 uV, we should send it to the New York Head model people (Stefan Haufe), and ask for a confirmation that the magnitude of the EEG in relation to the current dipole makes sense}
@@ -666,33 +692,60 @@ Note that \tvntxt{despite the complexity} the NYH model is substantially faster 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion}\label{sec:discussion}
 
+\subsection*{Summary}
+In this paper we have introduced an approach for reducing arbitrary simulated neural activity to single current dipoles (Fig.~\ref{fig:dipole_field}), and implemented the approach into the open-source python tool LFPy 2.0 \citep{HAGEN2018}. We verified that the approach was applicable for calculating EEG, but not ECoG signals (Fig.~\ref{fig:compare_multi_single_dipole}-\ref{fig:eeg_compare_cell_types}), and showed examples of how this approach can be a powerful tool for investigating and understanding single-cell EEG contributions (Fig.~\ref{fig:eeg_compare_cell_types}-\ref{fig:ca_spike}). Furthermore, we demonstrated that the presented approach could be easily integrated with existing large-scale simulations of neural activity, and how it can be used to construct compact representations of the EEG contributions from entire neural populations, while still firmly grounded in the underlying biophysics (Fig.~\ref{fig:population}). Finally, we demonstrated how the simulated current dipoles, from single cells or large neural populations, can be direcly inserted into complex head models for calculating more realistic EEG signals (Fig.~\ref{fig:compare_head_models}).
 
-We have found that the single-cell current dipole moment is applicable for calculating a neuron's EEG-contribution, and that this approach can be helpful in estimating the relative EEG-contribution of different cell types and different modes of synaptic input, in addition to investigating 
 
-In this formalism it is easy to investigate the contribution to the EEG signal from, e.g., different cell types, from somatic spikes, or from dendritic spikes, by only comparing the z-component of the resulting current dipoles, without the need for the added complexity of head models etc.
+\subsection*{Importance of work}
+EEG signals have been important for a century, but still very little is known about the neural origin of the signal \citep{COHEN2017}. This work lays some of the foundation for obtaining a better, model-based understanding of the EEG signal, by allowing easy simulation of EEG signals from arbitrary simulated neural activity.
+
+In this formalism it is easy to investigate the contribution to the EEG signal from, e.g., different cell types, from somatic spikes, or from dendritic spikes, by only comparing the z-component of the resulting current dipoles, without the need for the added complexity of head models. This decoupling of the current dipole moment and head model presents a simplified way of investigating the origin of the EEG signal.
+
+EEG measurements are often used for source localization, which aims to identify the underlying cortical dipoles, however, such dipoles are generic in the sense that they are typically not intended to represent well-defined neural populations. This work takes a step towards consolidating the so far mostly separate scientific disciplines of neural modelling and EEG data analysis.
+
+Through enabling simulation of EEGs from large-scale neural network in realistic head models \citep{MARKRAM2015, BILLEH2019}, which we expect will be an increasingly important tool in neuroscience \citep{EINEVOLL2019}.
+
+
+\subsection*{Limitations}
+Single-cells are fairly well understood, and the measurement physics (head models) is fairly well understood. Neural networks is the main limitation, in addition to the compute power needed for simulation of millions of neurons. However, several ongoing research projects are pursuing such modelling efforts, like the Allen Brain institute and the Human Brain Project.
+
+
+Note that the approach perented here has already been used by \cite{HAGEN2018} and \cite{MAKI2019}.
+
+
+\subsection*{Comparisson to similar work}
+Compare to other projects like HNN (Human Neocortical Neurosolver) (\url{https://hnn.brown.edu/}) and TVB \citep{TVB}
+Cite others? Freesurfer? Sim4Life? Don Hagler? 
+
+
+\subsection*{Outlook}
+Should be combined with animal studies like \cite{BRUYNS2017}
+
+Discuss kernel from population firing rates to current dipole moment?
+
+Combined with kernel method
+
+An often quoted obstacle hindering a better understanding of the EEG signal in terms of the underlying neural sources is the sheer number of neurons contributing to the signal, which is typically expected to be from a few hundreds of thousands to millions of neurons.
+While this is indeed a daunting challenge, the EEG is still a relatively simple signal, with basically just four main sources: apical excitation/inhibition and basal excitation/inhibition to pyramidal cells. Connectivity is to a large degree fixed, meaning that we could probably map population firing rate to EEG.
+
+Discuss relevance to \cite{MAKI2019}?
+
+\subsection*{Nice final statement}
+Something light-hearted but profound, optimistic but realistic, and humble but borderline pompous.
+
+------
+
+
+Discuss potential impact of I$_{\rm h}$ on human EEG \citep{NESS2016, NESS2018, KALMBACH2018}.
+
 
 \begin{itemize}
-	\item Good paper for discussion/intro:  \cite{COHEN2017} (``too little is done to understand the origin of the EEG'')
-	\item Discuss value of results to ongoing large-scale simulation projects.
-	\item ``EEG is hard to enterpret because of large number of neuron contributing''. True, but still basically (probably) just four main sources: apical excitation/inhibition and basal excitation/inhibition to pyramidal cells, and connectivity is to a large degree fixed, meaning that we could probalby map population firing rate to EEG.
-	\item Discuss relevance to \cite{MAKI2019}?
-	\item Discuss value of decoupling current dipole moments and head model
-	\item Discuss kernel from population firing rates to current dipole moment?
-	\item Discuss potential impact of I$_{\rm h}$ on human EEG \citep{NESS2016, NESS2018, KALMBACH2018}.
-	\item Compare to other projects like HNN (Human Neocortical Neurosolver) (\url{https://hnn.brown.edu/}) and TVB \citep{TVB}
-	\item Important work on the path towards a real understanding of the biophysical origin of EEGs \cite{BRUYNS2017}
-\end{itemize}
-On the other end of the scale are whole-brain simulations with  \citep{TVB}, to 
-\sntxt{
-	\begin{itemize}
 		\item Because of linearity, the EEG from a neural population is the sum of all the single-cell EEG contributions. However, if the spatial extent of the neural population (~ 1 mm) is small relative to the distance to the EEG electrodes (~ 1 cm), then individual current-dipoles can be summed, e.g., for each neural sub-population, or for the entire neural population, and the EEG signal can be computed based on the summed current dipoles. This could be a very promising approach for decomposing and understanding the EEG in large-scale neural  simulations like the cortical column simulations of the HBP, the Potians-Diesman  simulations of Hagen, or the Allen brain initiative.
 		\item Which populations are important? We found that the EEG calculated as the sum of the single-cell EEG contributions from the current dipoles of all ~80,000 cells, spatially distributed within a cylinder (panel B and E) was indistinguishable from the EEG calculated as the sum of the EEG from 4 population current dipoles in the center of the population. Each of these 4 current dipoles was the sum of the z-components of the current dipoles of the pyramidal cells in the different layers (panel F, L23E, L4E, L5E, L6E). We found that all pyramidal cell populations had a substantial EEG contribution, however, the largest was the L2/3 population. It should however be noted that this is not a very realistic scenario, because of current-based synapses etc.
 		
-	\end{itemize}
-	
-}
+\end{itemize}
 
-\tvnnote{Cite others? Freesurfer? Sim4Life? Don Hagler? HNN?}
+
 % \appendix
 % \section{Point-Source vs. Line-Source Dipole Moment} \label{sec:point_line_cdm}
 % \tvnnote{I don't think we need to go into this.}
