@@ -93,7 +93,7 @@
 	\begin{abstract}
 		Many important brain signals, like the LFP, ECoG, EEG and MEG are thought to primarily reflect synaptic input to populations of geometrically aligned pyramidal neurons. Therefore, it is important to get a better understanding of the biophysics underlying the synaptic contribution to these brain signals. For a pyramidal neuron receiving a single synaptic input, it is well established that the ensuing extracellular potential will take the shape of a dipole in the far field limit, i.e., sufficiently far away from the neuron. This can potentially greatly simplify the link between the measured brain signals and the underlying neural sources, but this link has not yet been taken full advantage of in the framework of detailed biophysical forward modeling of brain signals. 
 		Here we present a framework for reducing complex simulated neural activity to simple dipoles, and test the applicability of the approach. We find that the framework works excellently for calculating EEG signals, but not ECoG signals. We demonstrate how this approach can greatly simplify the link between the experimentally measurable EEG signal and the underlying neural sources, in a manner that is firmly grounded in the underlying biophysics. We demonstrate the power of this approach by showing that the EEG contribution from a neural population can be well represented by reducing it to a single dipole, based on the average obtained from the cells in the neural population. Such current dipoles can easily be used in both generic and complex head models, allowing for easy simulation and clean analysis of the neural origin of the EEG signal.
-		\tvnnote{NeuroImage har graphical abstracts, så det bør vi tenke på!}
+
 		\tvntxt{\url{https://www.elsevier.com/wps/find/journaldescription.cws_home/622925?generatepdf=true}}
 	\end{abstract}
 	
@@ -105,6 +105,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%INTRODUCTION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{graph_abst.png}
+	\caption{\textbf{Graphical abstract}.
+\tvnnote{NeuroImage har graphical abstracts, så det bør vi tenke på! Her er en kladd.}
+}
+\label{fig:graphical_abstract}
+\end{figure}
+
+
+
 \section*{Higlights}
 \tvnnote{NeuroImage vil ha Highlights med 3-5 bullet points}
 \begin{itemize}
@@ -602,7 +613,6 @@ We also compared the relative amplitude of the EEG signal from each population, 
 		\textbf{D}: For the two L5 populations (L5I and L5E), the three components of the current dipole moment is shown for all individual cells (gray), together with the population average (black).
 		\textbf{E}: Illustration of the four-sphere head model, with the red column corresponding the the outline of the population in panel \textbf{B}.
 		\textbf{F}: The EEG signal from each population found by summing the single-cell EEG contribution of all individual cells (different colors), together with the total summed EEG signal (black). The simplified EEG signal was found by first summing the z-component of the current dipole moments for all pyramidal cells, that is L2/3E, L5E and L6E, and calculating the EEG from this single current dipole (red dashed).
-		\snnote{maybe we can align the panel lettering?}
 	}
 	\label{fig:population}
 \end{figure}
@@ -691,6 +701,23 @@ Note that \tvntxt{despite the complexity} the NYH model is substantially faster 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%DISCUSSION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion}\label{sec:discussion}
+Order:
+summary
+
+EEG is important but little is known, this work lays foundation
+Easy to study contribution, decoupled from head model (like Ih or Ca)
+Source localization
+
+Sinlge cells and head models fairly well understood but not circuit level
+Hard, but several ongoing projects, like Allen and HBP, which we expect will be increasingly important in neuroscience over the comming years.
+Our work enables EEG from large scale sims in complex head models
+
+TVB and HNN are doing important and related work, but at somewhat different levels
+
+Our approach can be used to calculate mappings from firing rates to EEGs through the kernel method, thereby meeting TVB.
+
+A better understanding of EEG signals could lead to important discoveries (Mäki-Marttunen et al. 2019)
+Our approach should ideally be used in combination with animal studies (Bruynes-Haylett et al. 2017)
 
 \subsection*{Summary}
 In this paper we have introduced an approach for reducing arbitrary simulated neural activity to single current dipoles (Fig.~\ref{fig:dipole_field}), and implemented the approach into the open-source python tool LFPy 2.0 \citep{HAGEN2018}. We verified that the approach was applicable for calculating EEG, but not ECoG signals (Fig.~\ref{fig:compare_multi_single_dipole}-\ref{fig:eeg_compare_cell_types}), and showed examples of how this approach can be a powerful tool for investigating and understanding single-cell EEG contributions (Fig.~\ref{fig:eeg_compare_cell_types}-\ref{fig:ca_spike}). Furthermore, we demonstrated that the presented approach could be easily integrated with existing large-scale simulations of neural activity, and how it can be used to construct compact representations of the EEG contributions from entire neural populations, while still firmly grounded in the underlying biophysics (Fig.~\ref{fig:population}). Finally, we demonstrated how the simulated current dipoles, from single cells or large neural populations, can be direcly inserted into complex head models for calculating more realistic EEG signals (Fig.~\ref{fig:compare_head_models}).
@@ -742,7 +769,6 @@ Discuss potential impact of I$_{\rm h}$ on human EEG \citep{NESS2016, NESS2018, 
 \begin{itemize}
 		\item Because of linearity, the EEG from a neural population is the sum of all the single-cell EEG contributions. However, if the spatial extent of the neural population (~ 1 mm) is small relative to the distance to the EEG electrodes (~ 1 cm), then individual current-dipoles can be summed, e.g., for each neural sub-population, or for the entire neural population, and the EEG signal can be computed based on the summed current dipoles. This could be a very promising approach for decomposing and understanding the EEG in large-scale neural  simulations like the cortical column simulations of the HBP, the Potians-Diesman  simulations of Hagen, or the Allen brain initiative.
 		\item Which populations are important? We found that the EEG calculated as the sum of the single-cell EEG contributions from the current dipoles of all ~80,000 cells, spatially distributed within a cylinder (panel B and E) was indistinguishable from the EEG calculated as the sum of the EEG from 4 population current dipoles in the center of the population. Each of these 4 current dipoles was the sum of the z-components of the current dipoles of the pyramidal cells in the different layers (panel F, L23E, L4E, L5E, L6E). We found that all pyramidal cell populations had a substantial EEG contribution, however, the largest was the L2/3 population. It should however be noted that this is not a very realistic scenario, because of current-based synapses etc.
-		
 \end{itemize}
 
 
