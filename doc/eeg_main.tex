@@ -92,9 +92,8 @@
 	
 	\begin{abstract}
 		Many important brain signals, like the LFP, ECoG, EEG and MEG are thought to primarily reflect synaptic input to populations of geometrically aligned pyramidal neurons. Therefore, it is important to get a better understanding of the biophysics underlying the synaptic contribution to these brain signals. For a pyramidal neuron receiving a single synaptic input, it is well established that the ensuing extracellular potential will take the shape of a dipole in the far field limit, i.e., sufficiently far away from the neuron. This can potentially greatly simplify the link between the measured brain signals and the underlying neural sources, but this link has not yet been taken full advantage of in the framework of detailed biophysical forward modeling of brain signals. 
-		Here we present a framework for reducing complex simulated neural activity to simple dipoles, and test the applicability of the approach. We find that the framework works excellently for calculating EEG signals, but not ECoG signals. We demonstrate how this approach can greatly simplify the link between the experimentally measurable EEG signal and the underlying neural sources, in a manner that is firmly grounded in the underlying biophysics. We demonstrate the power of this approach by showing that the EEG contribution from a neural population can be well represented by reducing it to a single dipole, based on the average obtained from the cells in the neural population. Such current dipoles can easily be used in both generic and complex head models, allowing for easy simulation and clean analysis of the neural origin of the EEG signal.
-
-		\tvntxt{\url{https://www.elsevier.com/wps/find/journaldescription.cws_home/622925?generatepdf=true}}
+		Here we present a framework for reducing complex simulated neural activity to simple dipoles, and test the applicability of the approach. We find that the framework works excellently for calculating EEG signals, but not ECoG signals. We demonstrate how this approach can greatly simplify the link between the experimentally measurable EEG signal and the underlying neural sources, in a manner that is firmly grounded in the underlying biophysics. We demonstrate the power of this approach by showing that the EEG from a simple neural population can be well represented by reducing it to a single dipole, based on the average obtained from the cells in the neural population.
+		\tvnnote{Mention importance for ongoing large-scale modelling efforts?}
 	\end{abstract}
 	
 \end{frontmatter}
@@ -105,47 +104,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%INTRODUCTION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1.0\textwidth]{graph_abst.png}
-	\caption{\textbf{Graphical abstract}.
-\tvnnote{NeuroImage har graphical abstracts, så det bør vi tenke på! Her er en kladd.}
-}
-\label{fig:graphical_abstract}
-\end{figure}
-
-
-
-\section*{Higlights}
-\tvnnote{NeuroImage vil ha Highlights med 3-5 bullet points}
-\begin{itemize}
-\item Arbitrary simulated neural activity can be automatically reduced to current dipoles
-\item Such current dipoles can be used with generic or realistic head models for calculation of EEG or MEG signals
-\item Allows easy simulation of EEG signals from both single cells and large-scale neural networks
-\item Gives clean way of studying the neural origin of EEG signals
-\end{itemize}
-
-
 \section{Introduction}\label{sec:introduction}
+\sntxt{Picking up where \cite{LINDEN2010} left off.}
 
-\tvnnote{To include references to the relevant literature, we should read through BUZSAKI2012,SILVA2013, COHEN2017 and find appropriate papers to cite.
-}
+To include references to the relevant literature, we should read through and find appropriate places to cite papers like \cite{BUZSAKI2012,SILVA2013, COHEN2017}
 
-Electroencephalography (EEG) is the measurement of electrical potentials on the surface of the skull,
-and such measurements have been an essential part of neuroscience for nearly a century \citep{SILVA2013}. Today, such measurements are still among the most important non-invasive methods (without surgical interventions) to study human cognitive functions, as well as to diagnose and study brain diseases \citep{COHEN2017, Pesaran2018}.
-
-Despite EEG's long history and important position in neuroscience, we still know surprisingly little about the neural origin of the signal \citep{COHEN2017}. We have a relatively good understanding of the biophysical origin of the EEG signal: it mainly originates from large numbers synaptic inputs to cortical pyramidal cell populations \citep{NUNEZ2006, Pesaran2018}, however, we know very little about exactly what types of neural activity that cause even the most well-known characteristics of the EEG signal, such as different types of oscillations (e.g., alpha, beta, and gamma waves), as well as the shape of the signal in response to sensory stimuli (event-related potentials, ERPs) \citep{COHEN2017}. However, we know that these different characteristics of the EEG signal change in predictable ways as a result of brain disorders such as epilepsy or schizophrenia \citep{Light2013, MAKI2019} or as a result of the condition of the brain, such as sleep or attention \citep{Klimesch1998}. In other words, a better understanding of what aspects of the brain activity that is reflected in measured EEG signals could be of great help, both to understand what is going on in the brain and to cure brain disorders \citep{MAKI2019}.
-
-The reason for our lack of understanding of the neural origin of the EEG signal is multifaceted,
-but among the main causes are (i) the high number of neurons that contribute to the signal, and (ii)
-strong ethical constraints on which tools can be used to investigate human brain. However, in recent years there have been major advances in several relevant branches of neuroscience that means a better understanding of the EEG signal may now be within reach \citep{COHEN2017}. On the experimental side, there has been a rapid development in technology and the methods used to study neural activity in animal studies, which in turn make important contributions our understanding of the human brain \citep{SILVA2013, COHEN2017, Pesaran2018, BRUYNS2017}, and on the modeling side there has been great development
-in the tools needed \citep{HAGEN2018} and in available computing power \citep{EINEVOLL2019}.
-
-Neural simulations has been important for understanding brain signals for a long time ...
-
-However, EEG is slightly different.
-
-Here we ...
+\tvnnote{EEG-people are really into oscillations, should we include that somewhere?}
 
 \sntxt{	%Alt to 1st sentence below: When computing extracellular potentials in neural tissue, the standard approach is to apply a well-established compartment-based approach based on the underlying 		neural activity in the form of transmembrane currents.
 	The neural activity underlying electric brain signals is predominantly thought of as transmembrane currents. Inevitably, these transmembrane currents form the basis of a well-established biophysical modeling scheme for computing extracellular potentials in neural tissue.
@@ -158,7 +122,7 @@ Here we ...
 \section{Methods}\label{sec:methods}
 %\tvnnote{I think it makes sense to more-or-less finish Results first, and then see how much we need to include here (some of it might fit into results, and figure captions. I like to have Methods in almost bullet-point format}
 \tvnnote{Tror vi kan skrive litt mindre lærebok aktig, med mer "vi gjorde" enn "man kan"}
-Neural activity generates electric currents in the brain, which in turn create electromagnetic fields. In this section, we explain how electric brain signals can be modeled in simple and more complex volume conductors.
+Neural activity generates electric currents in the brain, which in turn create electromagnetic fields. In this section, we explain how \sntxt{we model} electric brain signals \sntxt{\sout{can be modeled}} in simple and more complex volume conductors.
 
 \subsection{Forward modeling of electric potentials}
 Due to negligibility of capacitive effects in the head, electric and magnetic signals effectively decouple, and we can apply the quasistatic approximation of Maxwell's equations for calculating these signals \citep{HAMALAINEN1993,NUNEZ2006}. In other words, for computing extracellular electric potentials, we envision the head as a 3D volume conductor, and combining Maxwell's equations with the current conservation law, we obtain the Poisson Equation for computing extracellular potentials \cite{GRIFFITHS1999}:
@@ -177,7 +141,7 @@ Extracellular potentials generated by transmembrane currents can be calculated w
 \end{equation}
 where $\mathbf{r}_n$ is the location of transmembrane current $I_n$, \sntxt{$N$ is the number of transmembrane currents} and $\sigma$ is the extracellular conductivity. %\tvnnote{Nevne N}.
 This scheme is \sntxt{here} referred to as the \sntxt{\sout{multicompartment neuron model} compartment-based approach.} %\tvnnote{Mener vi "compartment based approach"?}
-\sntxt{\sout{\sout{, and can easily be applied making use of} and was applied using the Python package \texttt{LFPy 2.0} running NEURON under the hood}} \citep{HAGEN2018,CARNEVALE2006}.
+\sntxt{\sout{, and can easily be applied making use of} and was applied using the Python package \texttt{LFPy 2.0} running NEURON under the hood} \citep{HAGEN2018,CARNEVALE2006}.
 \tvnnote{Istedet for å si at det lett kan gjøres med LFPy, foreslår jeg å bare si vi brukte LFPy :-)}
 \snnote{kanskje bare sløyfe siste setning, siden det uansett står under 2.3?}
 
@@ -186,7 +150,7 @@ Analogous to how electric charges can create charge multipoles, a combination of
 \begin{equation}\label{eq:multipole_expansion}
 \phi(R) = \frac{C_{\text{monopole}}}{R} + \frac{C_{\text{dipole}}}{R^2} + \frac{C_{\text{quadrupole}}}{R^3} + ...~,
 \end{equation}
-when the distance R from the center of the volume to the measurement point is larger than the distance from the volume center to the most peripheral source \citep{JACKSON1998} \snnote{Sitere bokkapittel!}.
+when the distance $R$ from the center of the volume to the measurement point is larger than the distance from the volume center to the most peripheral source \citep{JACKSON1998} \snnote{Sitere bokkapittel!}.
 %For definitions of the monopole contribution $C_{\text{monopole}}$, dipole contribution $C_{\text{dipole}}$, quadrupole contribution $C_{\text{quadrupole}}$, see \cite{RIERA2012}.
 %\tvnnote{Usikker på om vi bør bruke denne referansen, da litt av poenget i den artikkelen er at de ser monopoler? Har vi en annen? Se Gratiy, Pettersen, Einevoll, Dale (2013) Pitfalls in the interpretation of multielectrode data: on the infeasibility of the neuronal current-source monopoles. J Neurophysiol 109:1681–1682.} 
 %\snnote{Aha!! Dette hadde jeg ikke fått med meg! Helt enig! Jeg klarer ikke å finne noen kilde som oppgir disse leddene for strømkilder (ikke ladninger). Går vel kanskje greit å ikke sitere noen her?} \tvnnote{Ja, kanskje bare evt legge inn sitering til bok-kapittelet vårt senere :-)}
@@ -232,6 +196,8 @@ or equivalently from a position-weighted sum of all the transmembrane currents \
 \end{equation}
 where N is the number of compartments in the multicompartmental neuron model and ${\bf r}_k$ is the position of transmembrane current $I_k^{trans}(t)$.
 \tvnnote{Nenve hvordan man får dette ut i LFPy 2.0, type "We have implemented ..."}
+\snnote{Dette er jo egentlig ikke nytt, da, var jo allerede på plass i LFPy2.0-artikkelen, men det er kanskje greit å ha det der likevel?}
+We have implemented both above-mentioned methods in LFPy2.0, see \texttt{cell.get\_multi\_current\_dipole\_moments()} and \texttt{cell.current\_dipole\_moment}.
 
 %Combining the single current dipole moment with the current dipole approximation gives us the extracellular potential from a single neuron in the far-field limit ($R>3d$ or $4d$) \citep{NUNEZ2006}. \tvnnote{Trengs kanskje ikke?}
 
@@ -290,12 +256,12 @@ Electric potentials will be affected by the geometries and conductivities of the
 The four-sphere head model is a simple analytical model consisting of four concentric shells: brain tissue, cerebrospinal (CSF) fluid, skull and scalp, where the conductivity can be set individually for each shell, \citep{SRINIVASAN1998,NUNEZ2006}. The model solution is given in \cite{NAESS2017} and is found by solving the Poisson equation subject to boundary conditions ensuring continuity of current and electric potentials over the boundaries, as well as no current escaping the outer shell. This model is based on the current dipole approximation.
 
 \subsubsection{New York Head model}\label{subsubsec:NYH}
-The New York Head model is a realistic head model based on high-resolution, anatomical MRI-data from 152 adult heads \citep{HUANG2015}. The model was constructed by taking advantage of the reciprocity theorem, stating that the position of the electrode and the dipolar source can be switched without affecting the measured potential \citep{RUSH1969}. This means, that virtually injecting current at the locations of the EEG electrodes and using the finite element method \citep{LOGG2012} to compute the resulting potential anywhere in the brain, gives the link between current dipoles in the brain and the resulting EEG signals. This link was captured in a matrix known as the \textit{lead field} ${\bf L}$: 
+The New York Head model is a realistic head model based on high-resolution, anatomical MRI-data from 152 adult heads \citep{HUANG2015}. The model was constructed by taking advantage of the reciprocity theorem, stating that the position of the electrode and the dipolar source can be switched without affecting the measured potential \citep{RUSH1969}. This means, that virtually injecting current at the locations of the EEG electrodes and using the finite element method \citep{LOGG2012} to compute the resulting potential anywhere in the brain, gives the link between current dipoles in the brain and the resulting EEG signals. This link was captured in a matrix known as the \textit{lead field} ${\bf L}$ \citep{NUNEZ2006}: 
 
 \begin{equation}
 {\bf L} = \frac{{\bf E}}{I}
 \end{equation}
-Here, $I$ is the injected current at the electrode locations and ${\bf E}$ is the resulting electric field in the brain. The lead field matrix gives us the precise link between a current dipole moment ${\bf p}$ in the brain and the resulting EEG signals ${\bf \Phi}$:
+Here, $I$ is the injected current at the electrode locations and ${\bf E}$ is the resulting electric field in the brain. The lead field matrix gives us the precise link between a current dipole moment ${\bf p}$ in the brain and the resulting EEG signals ${\bf \Phi}$ \citep{NUNEZ2006}:
 \begin{equation}
 {\bf \Phi} = {\bf L} \cdot {\bf p}.
 \end{equation}
@@ -369,12 +335,17 @@ We introduce an approach for modeling electroencephalography (EEG) signals from 
 %\tvnnote{Can we find a simple one-sentence motivation for why we might want to do this? Maybe start paragraph by breifly introducing why we want to go from compartment-based to dipole-based?}
 %\snnote{Tuesday, we discussed that the overall motivation for going from compartment-based to dipole-based is 1) we need dipoles for head models and 2) inverse methods model dipoles, not currents. I wrote a short draft on this paragraph in the Introduction, so that we don't forget to spell this out there. Since the Results section should be able to stand alone, I guess it makes sense to mention this here as well. I found it very hard to make an easy-to-read one-sentence motivation here. Is it ok to skip part 2 of the motivation, in order to make this shorter, and assume that the reader goes through the introduction, if she wants the full story? I came up with a suggestion where I feel like the flow is ok, and that it leads up nicely to the rest of the section, but even though leaving out motivation part 2, I didn't manage to keep it within one sentence. Is this ok, or do you have any other suggestions?=)}
 
-We start by comparing three strategies for computing extracellular potentials: the compartment-based approach, the multi-dipole approach and the single-dipole approximation.
-While the first is a well-established method for computing extracellular potentials in homogeneous volume conductors,
+%We start by comparing three strategies for computing extracellular potentials: the compartment-based approach, the multi-dipole approach and the single-dipole approximation.
+%While the first is a well-established method for computing extracellular potentials in homogeneous volume conductors,
 %(in addition to studies such as \cite{NESS2016})
-inhomogeneous head models typically take current dipole moments as input, and must be based on approximations such as the latter two. In order to understand the differences between the three strategies, we here compare extracellular potentials generated by a single cell receiving excitatory synaptic input.
-\tvnnote{Jeg føler avsnittet over kunne vært omstrukturert. "Calculation of EPs within the brain follows well-established method of assuming infinite homogeneous volume conductor. However this assumption is not applicable to EEG recording outside head, which requires head model. Such head models typically take current dipoles as input. Here we introduce and test an approach to calculate such current-dipoles from arbitrary simulated neural activity."}
+%inhomogeneous head models typically take current dipole moments as input, and must be based on approximations such as the latter two. In order to understand the differences between the three strategies, we here compare extracellular potentials generated by a single cell receiving excitatory synaptic input.
 
+\sntxt{
+When modeling electric potentials within the brain, we can apply the well-established compartment-based approach assuming a homogeneous volume conductor, see \ref{subsubsec:multicomp}. However, this assumption is no longer valid when it comes to modeling of EEG signals on the scalp, which calls for an inhomogeneous head model. Such head models typically take current dipoles as input, as opposed to currents, and must be based on the current dipole approximation. Here, we introduce an approach for computing current dipoles from arbitrary simulated neural activity, and compare current-based and dipole-based modeling of electric potentials generated by a single cell receiving excitatory synaptic input.
+}
+
+\tvnnote{Jeg føler avsnittet over kunne vært omstrukturert. "Calculation of EPs within the brain follows well-established method of assuming infinite homogeneous volume conductor. However this assumption is not applicable to EEG recording outside head, which requires head model. Such head models typically take current dipoles as input. Here we introduce and test an approach to calculate such current-dipoles from arbitrary simulated neural activity."}
+\snnote{God idé! Hva synes du?}
 %The neural activity underlying EEG signals is predominantly thought of as transmembrane currents. However, when it comes to inverse modeling of these signals, one estimates the origin of neural activity as current dipoles, instead of currents. Applying head models for computing EEG signals typically take 
 
 Excitatory synaptic input initiates a negative current at the synapse location, since positive ions flow into the cell. Due to current conservation \citep{NUNEZ2006}, this negative current is exactly balanced by spatially distributed positive currents along the cellular membrane, as illustrated in Fig.~\ref{fig:dipole_field}\textbf{A} for a single apical excitatory synaptic input to a human cortical layer-2/3 pyramidal cell model \citep{EYAL2016}.
@@ -384,9 +355,13 @@ Excitatory synaptic input initiates a negative current at the synapse location, 
 %\tvnnote{I don't feel we have to introduce them, but maybe cite a basic textbook?}
 In the standard procedure for modeling extracellular potentials, here referred to as the {\it compartment-based approach}, the transmembrane current in each cellular compartment corresponds to a point current source/sink. Another strategy is to consider the axial current of each cellular compartment as a small current dipole (see Equation~\eqref{eq:dip_sum_axial}), which we will refer to as the {\it multi-dipole approach} (Fig.~\ref{fig:dipole_field}\textbf{B}). By summing all these dipoles into one single dipole at a specific position, we obtain the {\it single-dipole approximation} (Fig.~\ref{fig:dipole_field}\textbf{C}).
 \tvnnote{Vi må huske å nevne at man enkelt får denne fra cell.current-dipole-moment i LFPy}
+\snnote{Holder det å nevne dette i metoden?}
 For the sake of comparing these modeling approaches, we have assumed that the cell is positioned in an infinite homogeneous medium. Very close to the neuron, the extracellular potential will strongly depend on the exact distribution of transmembrane currents across the cellular morphology and  will, therefore, typically not take a  \sntxt{purely} dipolar shape 
 %\tvnnote{be purely dipolar? It is dipole-like after all?}\snnote{agree!}
-(Fig.~\ref{fig:dipole_field} \textbf{D,E} versus \textbf{F}). However, since the dipole contribution will dominate when we are further away from the current sources (see Equation~\ref{eq:multipole_expansion}), the extracellular potential becomes increasingly dipolar with distance from the cell \citep{LINDEN2010}, meaning that for the purpose of calculating extracellular potentials far away from the cell, the single-dipole approximation might be well justified (Fig.~\ref{fig:dipole_field}\textbf{G-I}). Note that there can be small differences between the results from the compartment-based and the multi-dipole approaches for electrode locations in the immediate vicinity of the neuron \tvnnote{Kanskje heller si "immediate vicinity of the current sources, due to the assumptions in the current dipole approximation" eller noe slikt? Tenker også vi kan droppe resten av setningen} (Fig.~\ref{fig:dipole_field}D versus Fig.~\ref{fig:dipole_field}E), however for the electrode locations considered in the rest of this paper, these differences will be negligible.
+(Fig.~\ref{fig:dipole_field} \textbf{D,E} versus \textbf{F}). However, since the dipole contribution will dominate when we are further away from the current sources (see Equation~\ref{eq:multipole_expansion}), the extracellular potential becomes increasingly dipolar with distance from the cell \citep{LINDEN2010}, meaning that for the purpose of calculating extracellular potentials far away from the cell, the single-dipole approximation might be well justified (Fig.~\ref{fig:dipole_field}\textbf{G-I}). Note that there can be small differences between the results from the compartment-based and the multi-dipole approaches for electrode locations in the \sntxt{immediate vicinity of the current sources, due to the assumptions in the current dipole approximation} (Fig.~\ref{fig:dipole_field}D versus Fig.~\ref{fig:dipole_field}E).%immediate vicinity of the neuron
+%\tvnnote{Kanskje heller si "immediate vicinity of the current sources, due to the assumptions in the current dipole approximation" eller noe slikt? Tenker også vi kan droppe resten av setningen}
+%\snnote{jepp!}
+ %, however for the electrode locations considered in the rest of this paper, these differences will be negligible.
 
 
 %For electrode locations in the immediate vicinity of the neuron, it is possible to see tiny differences between the compartment-based and the multi-dipole approaches, however
@@ -402,7 +377,7 @@ For the sake of comparing these modeling approaches, we have assumed that the ce
 	\caption{\textbf{Extracellular potentials become dipolar in the far field limit}. 
 		\textbf{A}: Layer 2/3 pyramidal cell from human \citep{EYAL2016} with an excitatory synapse placed on apical dendrite (red dot), and the resulting transmembrane currents for each compartment (blue and red arrows for negative and positive currents respectively).
 		\textbf{B}: Green arrows represent the multiple current dipole moments between neighboring neural compartments.
-		\textbf{C}: Gray arrow illustrates the total current dipole moment, that is, the \tvntxt{vector} sum of the dipoles in B.
+		\textbf{C}: Gray arrow illustrates the total current dipole moment, that is, the vector sum of the dipoles in B.
 	\textbf{D-F}: Extracellular potential in immediate proximity of the neuron, computed with the compartment-based approach, multi-dipole approach and single-dipole approximation, respectively. Note that the multi-dipole results differ slightly from the compartment-based approach when the distance from the measurement point to the nearest current dipole moment is short compared to the dipole length.
 \textbf{G-I}: Same as D-F, but at a larger spatial scale (zoomed out). See $1$~mm scalebar in panel A, D and G.
 \snnote{New synapse location with less dipol-shaped potential. Here, xlim and ylim are equal for first and second row, i.e. second row is more zoomed in than before. Don't know why the scalebars in A and D don't align. Will look into it. }
@@ -425,23 +400,24 @@ For the sake of comparing these modeling approaches, we have assumed that the ce
 %This point can be considered a 'center-of-gravity' for the cells transmembrane currents  \citep{LINDEN2010, AHLFORS2015}, meaning that for a synaptic input at this location, equally much of the return current will be above and below the synaptic input, resulting in a very weak current dipole moments (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{E}).
 %This demonstrates that the relative error of the single-dipole approximation is negatively correlated with the amplitude of the current dipole moment (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{F}), indicating that for large numbers of synaptic input, the total error of the single-dipole approximation can be expected to be small.
 \tvnnote{Jeg har prøvd å skrive dette litt kortere, og endte opp med å forandre en hel del. Hva tror du?}
-\tvntxt{Calculation of ECoG and EEG signals requires a head model, and to evalulate the applicability of the single-dipole approximation for calculating such signals, we applied the four-sphere head model \citep{NAESS2017, HAGEN2018, HAGEN2019}.}
+\snnote{Ja! Dette ble kjempebra!!! Litt usikker på starten, bare.. Man er jo ikke helt avhengig av hodemodell for ECoG-utregninger, tenker på MoI..}
+\sntxt{\sout{Calculation of ECoG and EEG signals requires a head model, and to evalulate the applicability of the single-dipole approximation for calculating such signals} In order to test the applicability of the single-dipole approximation for calculating ECoG and EEG signals}, we applied the four-sphere head model \citep{NAESS2017, HAGEN2018, HAGEN2019}.
+\sntxt{Since the four-sphere head model takes current dipoles as input, the multi-dipole approach was used as benchmark: an assumption that should be well justified for the cell-to-electrode distances considered, see Section \ref{subsec:cb_db_comp_inf}.}
+\snnote{Setning over: Lurer på om det kanskje er lurt å nevne dette eksplisitt, siden dette er noe folk ikke har sett før?}
 %The ECoG and EEG signals are strongly affected by the very different conductivities of the CSF, skull and scalp \citep{NUNEZ2006}. To implement the different conductivities into our calculations, we applied the four-sphere head model when testing the applicability of the single-dipole approximation for computing ECoG and EEG signals \citep{NAESS2017, HAGEN2018, HAGEN2019}. \tvnnote{Korte ned avsnitt over til noe slikt som: "To account for the different conductivities of the different regions of the head, we used the four-sphere head model"?}
 %Our virtual experimental set-up consisted of a vertical electrode array placed directly above a single neuron. The electrode extended from 100 $\mu$m above the top of the neuron and all the way to the scalp surface. For different positions of a single conductance-based excitatory synaptic input to the human cortical layer-2/3 pyramidal cell model \citep{EYAL2016} with passive ion channels only (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{A}), we calculated the electric potential at the electrode measurement locations, using both the multi-dipole approach and the single-dipole approximation (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}).
-\tvntxt{
-	For different locations of a single excitatory synaptic input to a human cortical layer-2/3 pyramidal cell model \citep{EYAL2016}
-	(Fig.~\ref{fig:compare_multi_single_dipole}\textbf{A}), we calculated the electric potential at positions spanning from 100 $\mu$m above the top of the cell, to the surface of the head, using both the multi-dipole approach and the single-dipole approximation (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}).
-	We used conductance-based synapses and included only passive membrane conductances, but we confirmed that instead using current-based synpses or a fully active cell model gave very similar results.  
-}
 
-\tvntxt{The electric potential attenuated steeply with distance when crossing the different layers of the head model, most strongly across the low-conducting skull (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}). 
-	For all synaptic input locations, we observed that the electric potential calculated with the single-dipole approximation markedly deviated from the multi-dipole approach directly above the cell model, but the difference strongly decreased with distance from the cell (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}, full versus dashed lines for two chosen synapse locations). 
-	We quantified the model dissimilarities by looking at the relative error, and for a chosen distal synaptic input the relative error was 40.0\% and 1.06\% at the position of the ECoG and EEG electrodes respectively (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{C}, green line). For a proximal synaptic input we observed a relative error of 75.3$\%$ at the ECoG position, and 7.32$\%$ at the EEG position (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{C}, purple line).
-	In other words, the single-dipole approximation can result in substantial errors at the position of the ECoG electrodes, but appears justified at the position of the EEG electrodes for some synaptic locations. We found that the relative error of the single-dipole approximation for calculating EEG signals peaked at synaptic locations $\sim$ 60 and 400~$\si{\um}$
-	above the soma (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{D}),
-	but note that these synaptic input locations also give relatively weak current dipole moments (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{E}).
-	This demonstrates that the relative error of the single-dipole approximation is negatively correlated with the amplitude of the current dipole moment (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{F}), indicating that for large numbers of synaptic input, the total error of the single-dipole approximation can be expected to be small. This is expected, given that purely dipolar-like current source distributions gives larger EEG contributions than multi-polar current source distributions.
-}
+For different locations of a single excitatory synaptic input to a human cortical layer-2/3 pyramidal cell model \citep{EYAL2016}
+(Fig.~\ref{fig:compare_multi_single_dipole}\textbf{A}), we calculated the electric potential at positions spanning from 100 $\mu$m above the top of the cell, to the surface of the head, using both the multi-dipole approach and the single-dipole approximation (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}).
+We used conductance-based synapses and included only passive membrane conductances, but we confirmed that instead using current-based synpses or a fully active cell model gave very similar results.  
+
+The electric potential attenuated steeply with distance when crossing the different layers of the head model, most strongly across the low-conducting skull (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}). 
+For all synaptic input locations, we observed that the electric potential calculated with the single-dipole approximation markedly deviated from the multi-dipole approach directly above the cell model, but the difference strongly decreased with distance from the cell (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}, full versus dashed lines for two chosen synapse locations). 
+We quantified the model dissimilarities by looking at the relative error, and for a chosen distal synaptic input the relative error was 40.0\% and 1.06\% at the position of the ECoG and EEG electrodes respectively (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{C}, green line). For a proximal synaptic input we observed a relative error of 76.1$\%$ at the ECoG position, and 7.61$\%$ at the EEG position (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{C}, purple line).
+In other words, the single-dipole approximation can result in substantial errors at the position of the ECoG electrodes, but appears justified at the position of the EEG electrodes for some synaptic locations. We found that \sntxt{\sout{the relative error of the single-dipole approximation for calculating EEG signals peaked} calculating EEG signals with the single dipole-approximation gave relative errors} peaking \sntxt{\sout{at} for} synaptic locations $\sim$ 60 and 400~$\si{\um}$
+above the soma (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{D}),
+but note that these synaptic input locations also give relatively weak current dipole moments (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{E}).
+This demonstrates that the relative error of the single-dipole approximation is negatively correlated with the amplitude of the current dipole moment (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{F}), indicating that for large numbers of synaptic input, the total error of the single-dipole approximation can be expected to be small. This is expected, given that purely dipolar-like current source distributions gives larger EEG contributions than multi-polar current source distributions.
 
 %As expected, we found that synaptic input to the distal apical dendrite gave larger potentials than synaptic input to the proximal dendrite, since the former leads to stronger current dipole moments \citep{LINDEN2010, AHLFORS2015}. For both synaptic input areas, the potential attenuated steeply with distance
 %\tvnnote{maybe 'steeply with distance' so it does not sound like we are talking about time?} when crossing the different layers of the head model, most strongly across the low-conducting skull (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}). 
@@ -464,7 +440,7 @@ For the sake of comparing these modeling approaches, we have assumed that the ce
 %\snnote{Mention in methods.}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1.0\textwidth]{figure2.png}
+	\includegraphics[width=1.0\textwidth]{figure2_eeg.png}
 	\caption{\textbf{Single-dipole approximation is justified for EEG but not ECoG signals}. 
 		\textbf{A}: Illustration of four-sphere head model, where the pink, blue, green and purple spherical shells represent the brain, CSF, skull and scalp respectively. The pink inset shows the human layer-2/3 neuron \citep{EYAL2016}. $41$ simulations lasting 100 ms with a single synaptic input after 20 ms to cell with passive ion channels only, were performed for varying input locations, see colored dots. \sntxt{The z-component of the resulting current dipole moments for two synaptic input locations (large colored dots) are shown in inset below as functions of time. The data presented in this figure are computed at the simulation time points producing the largest current dipole moment for each synaptic input location.}
 		\textbf{B}: Magnitude of extracellular potential $|\phi|$ as function of distance from the top of the neuron, shown for two simulations with synaptic input locations marked by large colored dots in upper inset of A. In each simulation, we consider the timepoint with the largest current dipole moment. Dashed lines show extracellular potentials computed with multi-dipole, and full lines show single-dipole calculations.
@@ -613,6 +589,7 @@ We also compared the relative amplitude of the EEG signal from each population, 
 		\textbf{D}: For the two L5 populations (L5I and L5E), the three components of the current dipole moment is shown for all individual cells (gray), together with the population average (black).
 		\textbf{E}: Illustration of the four-sphere head model, with the red column corresponding the the outline of the population in panel \textbf{B}.
 		\textbf{F}: The EEG signal from each population found by summing the single-cell EEG contribution of all individual cells (different colors), together with the total summed EEG signal (black). The simplified EEG signal was found by first summing the z-component of the current dipole moments for all pyramidal cells, that is L2/3E, L5E and L6E, and calculating the EEG from this single current dipole (red dashed).
+		\snnote{maybe we can align the panel lettering?}
 	}
 	\label{fig:population}
 \end{figure}
@@ -701,77 +678,30 @@ Note that \tvntxt{despite the complexity} the NYH model is substantially faster 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%DISCUSSION%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion}\label{sec:discussion}
-Order:
-summary
 
-EEG is important but little is known, this work lays foundation
-Easy to study contribution, decoupled from head model (like Ih or Ca)
-Source localization
-
-Sinlge cells and head models fairly well understood but not circuit level
-Hard, but several ongoing projects, like Allen and HBP, which we expect will be increasingly important in neuroscience over the comming years.
-Our work enables EEG from large scale sims in complex head models
-
-TVB and HNN are doing important and related work, but at somewhat different levels
-
-Our approach can be used to calculate mappings from firing rates to EEGs through the kernel method, thereby meeting TVB.
-
-A better understanding of EEG signals could lead to important discoveries (Mäki-Marttunen et al. 2019)
-Our approach should ideally be used in combination with animal studies (Bruynes-Haylett et al. 2017)
-
-\subsection*{Summary}
-In this paper we have introduced an approach for reducing arbitrary simulated neural activity to single current dipoles (Fig.~\ref{fig:dipole_field}), and implemented the approach into the open-source python tool LFPy 2.0 \citep{HAGEN2018}. We verified that the approach was applicable for calculating EEG, but not ECoG signals (Fig.~\ref{fig:compare_multi_single_dipole}-\ref{fig:eeg_compare_cell_types}), and showed examples of how this approach can be a powerful tool for investigating and understanding single-cell EEG contributions (Fig.~\ref{fig:eeg_compare_cell_types}-\ref{fig:ca_spike}). Furthermore, we demonstrated that the presented approach could be easily integrated with existing large-scale simulations of neural activity, and how it can be used to construct compact representations of the EEG contributions from entire neural populations, while still firmly grounded in the underlying biophysics (Fig.~\ref{fig:population}). Finally, we demonstrated how the simulated current dipoles, from single cells or large neural populations, can be direcly inserted into complex head models for calculating more realistic EEG signals (Fig.~\ref{fig:compare_head_models}).
-
-
-\subsection*{Importance of work}
-EEG signals have been important for a century, but still very little is known about the neural origin of the signal \citep{COHEN2017}. This work lays some of the foundation for obtaining a better, model-based understanding of the EEG signal, by allowing easy simulation of EEG signals from arbitrary simulated neural activity.
-
-In this formalism it is easy to investigate the contribution to the EEG signal from, e.g., different cell types, from somatic spikes, or from dendritic spikes, by only comparing the z-component of the resulting current dipoles, without the need for the added complexity of head models. This decoupling of the current dipole moment and head model presents a simplified way of investigating the origin of the EEG signal.
-
-EEG measurements are often used for source localization, which aims to identify the underlying cortical dipoles, however, such dipoles are generic in the sense that they are typically not intended to represent well-defined neural populations. This work takes a step towards consolidating the so far mostly separate scientific disciplines of neural modelling and EEG data analysis.
-
-Through enabling simulation of EEGs from large-scale neural network in realistic head models \citep{MARKRAM2015, BILLEH2019}, which we expect will be an increasingly important tool in neuroscience \citep{EINEVOLL2019}.
-
-
-\subsection*{Limitations}
-Single-cells are fairly well understood, and the measurement physics (head models) is fairly well understood. Neural networks is the main limitation, in addition to the compute power needed for simulation of millions of neurons. However, several ongoing research projects are pursuing such modelling efforts, like the Allen Brain institute and the Human Brain Project.
-
-
-Note that the approach perented here has already been used by \cite{HAGEN2018} and \cite{MAKI2019}.
-
-
-\subsection*{Comparisson to similar work}
-Compare to other projects like HNN (Human Neocortical Neurosolver) (\url{https://hnn.brown.edu/}) and TVB \citep{TVB}
-Cite others? Freesurfer? Sim4Life? Don Hagler? 
-
-
-\subsection*{Outlook}
-Should be combined with animal studies like \cite{BRUYNS2017}
-
-Discuss kernel from population firing rates to current dipole moment?
-
-Combined with kernel method
-
-An often quoted obstacle hindering a better understanding of the EEG signal in terms of the underlying neural sources is the sheer number of neurons contributing to the signal, which is typically expected to be from a few hundreds of thousands to millions of neurons.
-While this is indeed a daunting challenge, the EEG is still a relatively simple signal, with basically just four main sources: apical excitation/inhibition and basal excitation/inhibition to pyramidal cells. Connectivity is to a large degree fixed, meaning that we could probably map population firing rate to EEG.
-
-Discuss relevance to \cite{MAKI2019}?
-
-\subsection*{Nice final statement}
-Something light-hearted but profound, optimistic but realistic, and humble but borderline pompous.
-
-------
-
-
-Discuss potential impact of I$_{\rm h}$ on human EEG \citep{NESS2016, NESS2018, KALMBACH2018}.
-
-
+We have found that the single-cell current dipole moment is applicable for calculating a neuron's EEG-contribution, and that thiss (Fig.~\ref{fig:eeg_compare_cell_types}-\ref{fig:ca_spike}). Furthermore, we demonstrated that the presented approach can be helpful in estimating the relativould be easily integrated with existing large-scale simulations of neural activity, and how it can be used to construct compact representations of the EEG- contribution of different cell types and different modes of synaptic input, in additig., different cell types, from somatic spikes, or fc.
 \begin{itemize}
+	\item Good paper for discussion/intro:  \cite{COHEN2017} (``too little is done to understand the origin of the EEG'')
+	\item Discuss value of results to ongoing large-scale simulation projects.
+	\item ``EEG is hard to enterpret because of large number of neuron contributing''. True, but still basically (probably) just four main sources: apical excitation/inhibition and basal excitation/inhibition to pyramidal cells, and connectivity is to a large degree fixed, meaning that we could probalby map population firing rate to EEG.
+	\item Discuss relevance to \cite{MAKI2019}?
+	\item Discuss value of decoupling current dipole moments and head model
+	\item Discuss kernel from population firing rates to current dipole moment?
+	\item Discuss potential impact of I$_{\rm h}$ on human EEG \citep{NESS2016, NESS2018, KALMBACH2018}.
+	\item Compare to other projects like HNN (Human Neocortical Neurosolver) (\url{https://hnn.brown.edu/}) and TVB \citep{TVB}
+	\item Important work on the path towards a real understanding of the biophysical origin of EEGs \cite{BRUYNS2017}
+\end{itemize}
+On the other end of the scale are whole-brain simulations with  \citep{TVB}, to 
+\sntxt{
+	\begin{itemize}
 		\item Because of linearity, the EEG from a neural population is the sum of all the single-cell EEG contributions. However, if the spatial extent of the neural population (~ 1 mm) is small relative to the distance to the EEG electrodes (~ 1 cm), then individual current-dipoles can be summed, e.g., for each neural sub-population, or for the entire neural population, and the EEG signal can be computed based on the summed current dipoles. This could be a very promising approach for decomposing and understanding the EEG in large-scale neural  simulations like the cortical column simulations of the HBP, the Potians-Diesman  simulations of Hagen, or the Allen brain initiative.
 		\item Which populations are important? We found that the EEG calculated as the sum of the single-cell EEG contributions from the current dipoles of all ~80,000 cells, spatially distributed within a cylinder (panel B and E) was indistinguishable from the EEG calculated as the sum of the EEG from 4 population current dipoles in the center of the population. Each of these 4 current dipoles was the sum of the z-components of the current dipoles of the pyramidal cells in the different layers (panel F, L23E, L4E, L5E, L6E). We found that all pyramidal cell populations had a substantial EEG contribution, however, the largest was the L2/3 population. It should however be noted that this is not a very realistic scenario, because of current-based synapses etc.
-\end{itemize}
+		
+	\end{itemize}
+	
+}
 
-
+\tvnnote{Cite others? Freesurfer? Sim4Life? Don Hagler? HNN?}
 % \appendix
 % \section{Point-Source vs. Line-Source Dipole Moment} \label{sec:point_line_cdm}
 % \tvnnote{I don't think we need to go into this.}
