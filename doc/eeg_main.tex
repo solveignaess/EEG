@@ -450,8 +450,12 @@ For all synaptic input locations, we observed that the electric potential calcul
 We quantified the model dissimilarities by looking at the relative error, and for a chosen distal synaptic input the relative error was 40.0\% and 1.06\% at the position of the ECoG and EEG electrodes respectively (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{C}, green line). For a proximal synaptic input we observed a relative error of 76.1$\%$ at the ECoG position, and 7.61$\%$ at the EEG position (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{C}, purple line).
 In other words, the single-dipole approximation can result in substantial errors at the position of the ECoG electrodes, but appears justified at the position of the EEG electrodes for some synaptic locations. We found that \sntxt{\sout{the relative error of the single-dipole approximation for calculating EEG signals peaked} calculating EEG signals with the single dipole-approximation gave relative errors} peaking \sntxt{\sout{at} for} synaptic locations $\sim$ 60 and 400~$\si{\um}$
 above the soma (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{D}),
-but note that these synaptic input locations also give relatively weak current dipole moments (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{E}).
+but note that these synaptic input locations also give relatively weak \sntxt{ EEG signals\sout{current dipole moments}} (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{E}).
+This demonstrates that the relative error of the single-dipole approximation is negatively correlated with the amplitude of the \sntxt{scalp potential \sout{current dipole moment}} (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{F}). 
+\snnote{Jeg er litt usikker på de siste setningene her:}
+
 This demonstrates that the relative error of the single-dipole approximation is negatively correlated with the amplitude of the current dipole moment (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{F}), indicating that for large numbers of synaptic input, the total error of the single-dipole approximation can be expected to be small. This is expected, given that purely dipolar-like current source distributions gives larger EEG contributions than multi-polar current source distributions.
+\snnote{Her antar vi at mye synaptisk input gir større dipol enn lite synaptisk input.. Det stemmer nødvendigvis ikke hvis man sammenligner én apikal synapse med mange synapser som er fordelt over hele morfologien... Jeg tror jeg skjønner hva du vil fram til, men klarer ikke å finne noen bedre måte å skrive det på.=S}
 
 %As expected, we found that synaptic input to the distal apical dendrite gave larger potentials than synaptic input to the proximal dendrite, since the former leads to stronger current dipole moments \citep{LINDEN2010, AHLFORS2015}. For both synaptic input areas, the potential attenuated steeply with distance
 %\tvnnote{maybe 'steeply with distance' so it does not sound like we are talking about time?} when crossing the different layers of the head model, most strongly across the low-conducting skull (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{B}). 
@@ -481,10 +485,10 @@ This demonstrates that the relative error of the single-dipole approximation is 
 		%\tvnnote{Is the potential at a given timestep, or is it max? Should be mentioned here I think.}
 		\textbf{C}: Relative error RE at EEG location comparing the single-dipole model to the multi-dipole model, as function of distance from top of neuron to measurement point.
 		\textbf{D}: Relative error RE showing how single-dipole model deviates from multi-dipole model EEG calculations, as function of distance from soma to synapse location.
-		\textbf{E}: Magnitude of current dipole moment $|\mathbf{p}|$ as function of distance from soma to synaptic input location.
-		\tvnnote{Hadde det kanskje egentlig gitt mer mening å plotte EEG amplitude her? Kanskje mer ryddig å vise (enklere å forklare) at feilen i EEG-signalet er omvent korrelert med EEG amplitude?}
-		\textbf{F}: Relative error RE showing how EEG calculations performed with the single-dipole approximation deviates from multi-dipole modeling results as function of magnitude of current dipole moment $|\mathbf{p}|$.
-		\tvnnote{Kanskje du kan skrive navnet på de forskellige regionene med tilhørende farge over panel C eller noe slikt? }
+		\textbf{E}: Magnitude of \sntxt{EEG signal $|\text{EEG}|$ \sout{current dipole moment $|\mathbf{p}|$}} as function of distance from soma to synaptic input location.
+%		\tvnnote{Hadde det kanskje egentlig gitt mer mening å plotte EEG amplitude her? Kanskje mer ryddig å vise (enklere å forklare) at feilen i EEG-signalet er omvent korrelert med EEG amplitude?}
+		\textbf{F}: Relative error RE showing how EEG calculations performed with the single-dipole approximation deviates from multi-dipole modeling results as function of \sntxt{amplitude of the EEG signal $|\text{EEG}|$. \sout{magnitude of current dipole moment $|\mathbf{p}|$}}.
+%		\tvnnote{Kanskje du kan skrive navnet på de forskellige regionene med tilhørende farge over panel C eller noe slikt? }
 		%	\tvnnote{Suggestion: How about running another simulation with all synapses active simulataneously, calculate the relative error, and add it to this panel (F) as a horizontal line? We would expect this to give a small error, helping to illustrate our point of the EEG being dominated by low-error dipoles.}
 	}
 	%	\tvnnote{Suggestion: How about running another simulation with all synapses active simulataneously, calculate the relative error, and add it to this panel (F) as a horizontal line? We would expect this to give a small error, helping to illustrate our point of the EEG being dominated by low-error dipoles.}
