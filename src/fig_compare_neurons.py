@@ -15,9 +15,6 @@ from os.path import join
 mod_folder = '../../LFPy/LFPy/LFPy/test'
 neuron.load_mechanisms(join(mod_folder))
 
-s = 15
-random.seed(s)
-
 def make_cell(morphology, morph_type='l23'):
     """set synapse location. simulate cell, synapse and electrodes for input synapse location"""
 
@@ -72,9 +69,17 @@ def make_synapse(cell, weight, input_idx, input_spike_train, e=0., syntype='Exp2
     synapse.set_spike_times(input_spike_train)
     return cell, synapse
 
-def make_input(cell, weight=0.01, syntype='Exp2Syn'):
+def make_input(cell, weight=0.01, syntype='Exp2Syn', morph_type='l23'):
+
+    if morph_type == 'l5i':
+        zmin_apical = np.min(cell.zmid)
+        zmax_basal = np.max(cell.zmid)
+    else:
+        zmin_apical = np.max(cell.zmid)-200
+        zmax_basal = cell.zmid[0]+100
+
     # apical exc input at time=10
-    input_idxs = cell.get_rand_idx_area_norm(section='allsec', nidx=100, z_min=np.max(cell.zmid)-200)
+    input_idxs = cell.get_rand_idx_area_norm(section='allsec', nidx=100, z_min=zmin_apical)
     pulse_center = 50 #+ np.random.normal(0, 1)
     for input_idx in input_idxs:
         input_spike_train = np.random.normal(pulse_center, 3, size=1)
@@ -82,7 +87,7 @@ def make_input(cell, weight=0.01, syntype='Exp2Syn'):
 
     # basal exc input at time=60
     input_idxs = cell.get_rand_idx_area_norm(section='allsec', nidx=100,
-                                             z_min=np.min(cell.zmid), z_max=cell.zmid[0]+100)
+                                             z_min=np.min(cell.zmid), z_max=zmax_basal)
     pulse_center = 100 #+ np.random.normal(0, 1)
     for input_idx in input_idxs:
         input_spike_train = np.random.normal(pulse_center, 3, size=1)
@@ -105,7 +110,7 @@ def make_input(cell, weight=0.01, syntype='Exp2Syn'):
 
     # basal inh input at t=200
     input_idxs = cell.get_rand_idx_area_norm(section='allsec', nidx=50,
-                                             z_min=np.min(cell.zmid), z_max=cell.zmid[0]+100)
+                                             z_min=np.min(cell.zmid), z_max=zmax_basal)
     pulse_center = 200 #+ np.random.normal(0, 1)
     for input_idx in input_idxs:
         input_spike_train = np.random.normal(pulse_center, 3, size=1)
@@ -184,6 +189,8 @@ def plot_neuron(axis, cell, clr, lengthbar=False, celltype='l23'):
     # axis.set_aspect('equal')
 
 if __name__ == '__main__':
+    s = 15
+    np.random.seed(seed=s)
 
     sim_cells = True
     compute_eegs = True
@@ -217,7 +224,7 @@ if __name__ == '__main__':
         cell = make_cell(morphology, morph_type=m)
         # if m == 'l5i':
         #     forall delete_section('axon')
-        cell,synapse = make_input(cell, weight=weight, syntype=syntype)
+        cell,synapse = make_input(cell, weight=weight, syntype=syntype, morph_type=m)
         cell.simulate(rec_vmem=True, rec_current_dipole_moment=True, rec_imem=True)
         cells.append(cell)
 
@@ -229,7 +236,7 @@ if __name__ == '__main__':
         error = np.max(np.abs(eeg - eeg_multidip)/np.abs(eeg_multidip[ind_max_error]))
         print('maximum global error for ', m, 'was', error)
         error_scaled.append(error)
-
+#
 # ################################################################################
 # ##############################save data to file#################################
 # ################################################################################
@@ -239,8 +246,13 @@ if __name__ == '__main__':
 #              morphology_dict = morphology_dict,
 #              spiketimes_lists = spiketimes_lists,
 #              synloc_zs = synloc_zs,
-#
+#              somapos=cell.somapos
 #              )
+#
+# ################################################################################
+# #############################load data from file################################
+# ################################################################################
+
 
 ################################################################################
 ###################################plotting#####################################
@@ -378,7 +390,7 @@ if __name__ == '__main__':
 
     fig.tight_layout(pad=0.5, h_pad=1.3, w_pad=.7)
     if current_based:
-        title = './figures/fig_compare_neurons_l5ChC_wmd_current_based.png'
+        title = './figures/figure3_current_based.png'
     else:
         # title = './figures/fig_compare_neurons_l5ChC_wmd.png'
         title = './figures/figure3.png'

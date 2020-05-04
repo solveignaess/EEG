@@ -13,8 +13,11 @@ def make_data(morphology, syninds, dip_loc=None, cell_model=None, x_rot=0, y_rot
     l23 = True
     sigma = 0.3
     print('cell_model:', cell_model)
-    # compute LFP close to neuron
-    X,Z = np.meshgrid(np.linspace(-1300,1301,101), np.linspace(-900,1800,101))
+    # # compute LFP close to neuron
+    # X,Z = np.meshgrid(np.linspace(-1300,1301,101), np.linspace(-900,1800,101))
+    # Y = np.zeros(X.shape)
+    # compute LFP very close to neuron
+    X,Z = np.meshgrid(np.linspace(-550,550,101), np.linspace(-250,850,101))
     Y = np.zeros(X.shape)
     cell_parameters, synapse_parameters, grid_electrode_parameters = set_parameters(morphology, X, Y, Z, cell_model=cell_model)
     cell, synapse, grid_electrode = simulate(cell_parameters, synapse_parameters, grid_electrode_parameters, syninds, x_rot=x_rot, y_rot=y_rot, z_rot=z_rot, active=active)
@@ -359,10 +362,14 @@ def plot_lfp(fig, ax, LFP_measurements, max_LFP, timestep, X, Z, colorax = False
                levels=levels_norm)
 
     if lengthbar:
-        ax.plot([-1200, -1200], [-800, 20], 'k', lw=2, clip_on=False)
-        ax.text(-1090, -380, r'$1 \mathsf{mm}$', size = 8, va='center', ha='center', rotation = 'vertical')
-    plt.axis('tight')
+        ax.plot([-400, -400], [-200, 800], 'k', lw=2, clip_on=False)
+        ax.text(-330, 400, r'$1 \mathsf{mm}$', color='k', size = 8, va='center', ha='center', rotation = 'vertical')
+        # ax.plot([-1200, -1200], [-800, 200], 'k', lw=2, clip_on=False)
+        # ax.text(-1090, -380, r'$1 \mathsf{mm}$', size = 8, va='center', ha='center', rotation = 'vertical')
+    # plt.axis('tight')
     ax.axis('off')
+    ax.set_xlim([-500,500])
+    ax.set_ylim([-250,850])
     return LFP, levels, ep_intervals
 
 def plot_lfp_far(fig, ax, LFP_measurements, max_LFP, timestep, X_f, Z_f, colorax = False,
@@ -394,7 +401,7 @@ def plot_lfp_far(fig, ax, LFP_measurements, max_LFP, timestep, X_f, Z_f, colorax
                colors='k', zorder = -2,  # extend='both')
                levels=levels_norm)
 
-    plt.axis('tight')
+    # plt.axis('tight')
     if lengthbar:
         print('lengthbar true')
         ax.plot([-14000, -14000], [-14000, -13000], 'k', lw=2, clip_on=False)
@@ -418,7 +425,9 @@ def plot_neuron(axis, cell, syn=False, lengthbar=False, clr='k', lb_clr='k'):
     # axis.plot([100, 200], [-400, -400], 'k', lw=1, clip_on=False)
     # axis.text(150, -470, r'100$\mu$m', va='center', ha='center')
 
-    plt.axis('tight')
+    # plt.axis('tight')
+    axis.set_xlim([-500,500])
+    axis.set_ylim([-250,850])
     axis.axis('off')
 
     # red dot where synapse is located, ms = markersize; number of points given as float:
@@ -437,7 +446,7 @@ if __name__ == '__main__':
     # syninds = [432]
     # syninds = [328]
     # syninds = [557]
-    syninds = [579]
+    syninds = [481]
     [xrot, yrot, zrot] = [-np.pi/2, -np.pi/7, 0]
     cell, cb_LFP_close, cb_LFP_far, multi_dip_LFP_close, multi_dip_LFP_far, db_LFP_close, db_LFP_far, LFP_max_close, LFP_max_far, time_max, multi_dips, multi_dip_locs, single_dip, r_mid, X, Z, X_f, Z_f = make_data(morphology, syninds, x_rot=xrot, y_rot=yrot)
     print('time_max', time_max)
@@ -453,5 +462,5 @@ if __name__ == '__main__':
     # fig.savefig('./figures/fig_dipole_field.pdf', bbox_inches='tight', dpi=300, transparent=True)
     # fig.savefig('./figures/fig_dipole_field_passiveTrue_single_syn328.pdf', bbox_inches='tight', dpi=300, transparent=True)
     # fig.savefig('./figures/fig_dipole_field_passiveTrue_single_syn557.pdf', bbox_inches='tight', dpi=300)
-    fig.savefig('./figures/fig_dipole_field_passiveTrue_single_syn579.pdf', bbox_inches='tight', dpi=300)
+    fig.savefig('./figures/fig_dipole_field_passiveTrue_single_syn481.pdf', bbox_inches='tight', dpi=300)
     # fig.savefig('./figures/fig_dipole_field_passiveFalse2.pdf', bbox_inches='tight', dpi=300, transparent=True)
