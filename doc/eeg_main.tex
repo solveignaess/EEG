@@ -745,20 +745,28 @@ EEG measurements are often used for source localization, which aims to identify 
 Arguably, we today have a reasonably good understanding of how single neurons operate, that is, how they respond to synaptic input, and how multitudes of such synaptic inputs combine to produce action potentials \citep{EINEVOLL2019}. Similarly, we have a reasonably good understanding of the measurement physics for the EEG signal, that is, how the neural currents affect the electric potentials recorded outside the head \citep{NUNEZ2006, COHEN2017}.
 The challenge in understanding EEG signals is therefore closely related to the greatest challenge in modern neuroscience: understanding neural networks. Understanding such complicated dynamical systems typically requires some kind of computational modelling \citep{EINEVOLL2019}, however, the complexity of neurons, and the complexity and size of the neural networks involved in even the simplests of cognitive tasks makes this a daunting challenge. The steady increase in available computing power, in combination with the ever increasing knowledge on synptic connectivity patterns is however making this approach increasingly attractive \citep{Reimann2013, Egger2014, MARKRAM2015, Gratiy2018, Arkhipov2018, HAGEN2016, Reimann2019, BILLEH2019}, and several ongoing research projects are pursuing such modelling efforts, like the Allen Institute for Brain Science and the Human Brain Project. While such biophysically detailed large-scale neural simulation is still in its infancy, we expect it to become an increasingly important research tool in neuroscience \citep{EINEVOLL2019}, and by enabling simulation of EEGs with realistic head models from such simulations, we hope such approaches can help shed light on the neural origin of EEG in the comming years.
 
-Note that while we here used LFPy 2.0 \citep{HAGEN2018, HAGEN2019}, a python interface to NEURON \citep{CARNEVALE2006}, the calculation of the current dipole moments can easily be implemented into any framework where the transmembrane currents are available through the simple formula in given in eq.~ (\ref{eq:dip_sum_trans}).
+Note that while we here used LFPy 2.0 \citep{HAGEN2018, HAGEN2019}, a python interface to NEURON \citep{CARNEVALE2006}, the calculation of the current dipole moments can easily be implemented into any framework where the transmembrane currents are available through the simple formula in given in eq.~(\ref{eq:dip_sum_trans}).
 
 \subsection*{Comparisson to similar work}
-Important work in interpreting EEGs in terms of the underlying neural activity has been done previously through use of "minimally sufficient" models, see for example \cite{Murakami2002, Murakami2003, Jones2007, Jones2009, Sliva2018, NEYMOTIN2020}. Here, "minimally sufficient" means that the cell models only had the minimum needed spatial structure (point neuron can not produce current dipole moments), only considered a few cell types, and employed simple synaptic connection rules. In particular, the Human Neocortical Neurosolver (HNN) \citep{NEYMOTIN2020} is designed to allow researchers to link measured EEG or MEG recordings to neural activity simulated through a pre-defined canonical neocortical column template network. HNN comes with an interactive GUI designed for users with little or no experience in computational modeling, and might therefore be an appropriate choice for researchers seeking to gain a better understanding of their EEG/MEG data. 
-However, while the use of such minimally sufficient models allows for quick and direct comparison between simulated and recorded EEG signals, it is not (presently) compatible with simulating EEG or MEGs from biophysically detailed single cell- or network models, constructed from large quantities of experimental data \citep{Reimann2013, Egger2014, MARKRAM2015, HAGEN2016, Gratiy2018, Arkhipov2018, BILLEH2019}.  
+Important work in interpreting EEGs in terms of the underlying neural activity has been done previously through use of "minimally sufficient" biophysical models, see for example \cite{Murakami2002, Murakami2003, Jones2007, Jones2009, Sliva2018, NEYMOTIN2020}. Here, "minimally sufficient" means that the cell models only had the minimum needed spatial structure (point neuron can not produce current dipole moments), only considered a few cell types, and employed simple synaptic connection rules. In particular, the Human Neocortical Neurosolver (HNN) \citep{NEYMOTIN2020} is designed to allow researchers to link measured EEG or MEG recordings to neural activity simulated through a pre-defined canonical neocortical column template network. HNN comes with an interactive GUI designed for users with little or no experience in computational modeling, and might therefore be an appropriate choice for researchers seeking to gain a better understanding of their EEG/MEG data. 
+However, while the use of such minimally sufficient models allows for quick and direct comparison between simulated and recorded EEG signals, it is not (presently) compatible with simulating EEG or MEGs from biophysically detailed single cell- or network models, constructed from detailed experimental data \citep{Reimann2013, Egger2014, MARKRAM2015, HAGEN2016, Gratiy2018, Arkhipov2018, BILLEH2019}.  
 
 %"HNN’s interactive GUI is designed for users with no formal computational neural modeling or software development experience to be able to develop and test hypotheses on the cellular- and circuit-level generators of their human data"
 %"HNN’s model was chosen to be minimally sufficient to accurately account for the biophysical origin of the primary cur- rents that underlie EEG/MEG signals in a single brain area"
 %"HNN’s default canonical neocortical column template network"
 %"The number of cells in the network is adjustable in the Local Network Parameters window via the Cells tab, while maintaining at 3-to-1 pyramidal to inhibitory interneuron ratio in each layer. The con-nectivity pattern is fixed, but the synaptic weights between cell types can be adjusted in the Local Network menu and the Synaptic Gains menu."
 
+An even more high-level approach to simulate MEG/EEG signals have been pursued through neural field or neural mass models \citep{David2003, Coombes2006}, which aims to model neural activity at the population level
+
+VB is a software for full brain network simulations using detailed connectivity between brain regions by long-range neural fiber tracts as identified by tractography based methods \citep{TVB}, and can therefore use personalized head models.
+
+ 
+
+"It is important to mention the similarity to neural mass models, which neglect spatial extensions but involve the same underlying assumptions on population coding and time-graining. "
+
+"Neural field equations are tissue level models that describe the spatiotemporal evolution of coarse grained variables such as synaptic or firing rate activity in populations of neurons. "
 
 
-TVB ..\citep{TVB}
 
 "TVB allows the reproduction and evaluation of personalized configurations of the brain by using individual subject data."
 
@@ -769,25 +777,22 @@ TVB ..\citep{TVB}
 "Neural field models have been developed over many years
 for their ability to capture the collective dynamics of relatively large areas of the brain in both analytically and computationally tractable forms (Beurle,
 
-Effectively neural field equations are tissue level models that describe the spatiotempo- ral evolution of coarse grained variables such as synaptic voltage or firing rate activity in populations of neurons. Some
+Effectively neural field equations are tissue level models that describe the spatiotemporal evolution of coarse grained variables such as synaptic voltage or firing rate activity in populations of neurons. Some
 
-The lumped representation of the dynamics of a set of similar neurons via a common variable (e.g., mean firing rate and mean postsy- naptic potential) is known as neural mass modeling
+The lumped representation of the dynamics of a set of similar neurons via a common variable (e.g., mean firing rate and mean postsynaptic potential) is known as neural mass modeling
 
-Both neural field and neural mass model- ing approaches embody the concept from statistical physics that macroscopic physical systems obey laws that are independent of the details of themicroscopic constituents of which they are built.
+Both neural field and neural mass modeling approaches embody the concept from statistical physics that macroscopic physical systems obey laws that are independent of the details of themicroscopic constituents of which they are built.
 
-In TVB, our main interest lies in using the mesoscopic laws governing the behavior of neural populations and uncovering the laws driving the processes on the macroscopic brain network scale. The biophysical mechanisms available tomicroscopic single neuron approaches are absorbed in the mean field parameters on the mesoscopic scale and are not available for exploration other than through variation of the mean field parameters themselves. As a consequence, TVB represents a neuroinformatics tool that is designed to aid in the exploration of large-scale network mecha- nisms of brain functioning [see Ritter et al. (2013) for an example of modeling with TVB].
+In TVB, our main interest lies in using the mesoscopic laws governing the behavior of neural populations and uncovering the laws driving the processes on the macroscopic brain network scale. The biophysical mechanisms available to microscopic single neuron approaches are absorbed in the mean field parameters on the mesoscopic scale and are not available for exploration other than through variation of the mean field parameters themselves. As a consequence, TVB represents a neuroinformatics tool that is designed to aid in the exploration of large-scale network mecha- nisms of brain functioning [see Ritter et al. (2013) for an example of modeling with TVB].
 
 OpenMEEG (Gramfort et al., 2010) was used to generate the
 demonstration projectionmatrix, also known as lead-field or gain matrix, that corresponds to the EEG/MEEG forward solution.
 "
 
 "
-TVB thus represents a unique tool to system-atically investigate the dynamics of the brain, emphasizing its
+TVB thus represents a unique tool to systematically investigate the dynamics of the brain, emphasizing its
 large-scale network nature and moving away from the study
-of isolated regional responses, thereby considering the function
-of each region in terms of the interplay among brain regions."
-
-
+of isolated regional responses, thereby considering the function of each region in terms of the interplay among brain regions."
 
 
 Our approach differs in that it can be used with (pre-existing) biophysically detailed neurons and neural populations, and that it is very flexible and open. 
