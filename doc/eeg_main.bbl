@@ -1,4 +1,4 @@
-\begin{thebibliography}{44}
+\begin{thebibliography}{92}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \expandafter\ifx\csname url\endcsname\relax
   \def\url#1{\texttt{#1}}\fi
@@ -9,11 +9,39 @@ Ahlfors, S.~P., {Wreh II}, C., 2015. Modeling the effect of dendritic input
   location on meg and eeg source dipoles. Med Biol Eng Comput. 53~(9),
   879--887.
 
-\bibitem[{Billeh et~al.(2019)Billeh, Cai, Gratiy, Dai, Iyer, and
-  Gouwens}]{BILLEH2019}
-Billeh, Y.~N., Cai, B., Gratiy, S.~L., Dai, K., Iyer, R., Gouwens, N.~W., 2019.
-  Systematic integration of structural and functional data into multi-scale
-  models of mouse primary visual cortex. bioRxiv, 1--54.
+\bibitem[{Arkhipov et~al.(2018)Arkhipov, Gouwens, Billeh, Gratiy, Iyer, Wei,
+  Xu, Abbasi-Asl, Berg, Buice, Cain, da~Costa, de~Vries, Denman, Durand, Feng,
+  Jarsky, Lecoq, Lee, Li, Mihalas, Ocker, Olsen, Reid, Soler-Llavina, Sorensen,
+  Wang, Waters, Scanziani, and Koch}]{Arkhipov2018}
+Arkhipov, A., Gouwens, N.~W., Billeh, Y.~N., Gratiy, S., Iyer, R., Wei, Z., Xu,
+  Z., Abbasi-Asl, R., Berg, J., Buice, M., Cain, N., da~Costa, N., de~Vries,
+  S., Denman, D., Durand, S., Feng, D., Jarsky, T., Lecoq, J., Lee, B., Li, L.,
+  Mihalas, S., Ocker, G.~K., Olsen, S.~R., Reid, R.~C., Soler-Llavina, G.,
+  Sorensen, S.~A., Wang, Q., Waters, J., Scanziani, M., Koch, C., 2018. {Visual
+  physiology of the layer 4 cortical circuit in silico}. PLOS Computational
+  Biology 14~(11), e1006535.
+\newline\urlprefix\url{http://dx.plos.org/10.1371/journal.pcbi.1006535}
+
+\bibitem[{Billeh et~al.(2020)Billeh, Cai, Gratiy, Dai, Iyer, Gouwens,
+  Abbasi-Asl, Jia, Siegle, Olsen, Koch, Mihalas, and Arkhipov}]{BILLEH2019}
+Billeh, Y.~N., Cai, B., Gratiy, S.~L., Dai, K., Iyer, R., Gouwens, N.~W.,
+  Abbasi-Asl, R., Jia, X., Siegle, J.~H., Olsen, S.~R., Koch, C., Mihalas, S.,
+  Arkhipov, A., 2020. {Systematic Integration of Structural and Functional Data
+  into Multi-Scale Models of Mouse Primary Visual Cortex}. Neuron 106, 1--16.
+\newline\urlprefix\url{https://doi.org/10.1016/j.neuron.2020.01.040}
+
+\bibitem[{Blomquist et~al.(2009)Blomquist, Devor, Indahl, Ulbert, Einevoll, and
+  Dale}]{Blomquist2009}
+Blomquist, P., Devor, A., Indahl, U.~G., Ulbert, I., Einevoll, G.~T., Dale,
+  A.~M., 2009. {Estimation of thalamocortical and intracortical network models
+  from joint thalamic single-electrode and cortical laminar-electrode
+  recordings in the rat barrel system}. PLoS Computational Biology 5~(3).
+
+\bibitem[{Bojak et~al.(2010)Bojak, Oostendorp, Reid, and
+  K{\"{o}}tter}]{Bojak2010}
+Bojak, I., Oostendorp, T.~F., Reid, A.~T., K{\"{o}}tter, R., 2010. {Connecting
+  mean field models of neural activity to EEG and fMRI data}. Brain Topography
+  23~(2), 139--149.
 
 \bibitem[{Brunel(2000)}]{BRUNEL2000}
 Brunel, N., 2000. Dynamics of sparsely connected networls of excitatory and
@@ -28,25 +56,36 @@ Bruyns-Haylett, M., Luo, J., Kennerley, A.~J., Harris, S., Boorman, L., Milne,
   eeg/lfp study. NeuroImage 146, 575--588.
 \newline\urlprefix\url{http://dx.doi.org/10.1016/j.neuroimage.2016.09.034}
 
-\bibitem[{Buzs{\'{a}}ki et~al.(2012)Buzs{\'{a}}ki, Anastassiou, and
-  Koch}]{BUZSAKI2012}
-Buzs{\'{a}}ki, G., Anastassiou, C.~A., Koch, C., jun 2012. The origin of
-  extracellular fields and currents--eeg, ecog, lfp and spikes. Nature reviews.
-  Neuroscience 13~(6), 407--20.
-\newline\urlprefix\url{http://www.ncbi.nlm.nih.gov/pubmed/22595786
-  http://www.nature.com/doifinder/10.1038/nrn3241}
-
 \bibitem[{Carnevale and Hines(2006)}]{CARNEVALE2006}
 Carnevale, N.~T., Hines, M.~L., 2006. The {NEURON} Book. Cambridge University
   Press, Cambridge.
 
+\bibitem[{Chatzikalymniou and Skinner(2018)}]{Chatzikalymniou2018}
+Chatzikalymniou, A.~P., Skinner, F.~K., 2018. {Deciphering the contribution of
+  oriens-lacunosum/ moleculare (OLM) cells to intrinsic $\theta$ rhythms using
+  biophysical local field potential (LFP) models}. eNeuro 5~(4).
+
 \bibitem[{Cohen(2017)}]{COHEN2017}
-Cohen, M.~X., 2017. Where does eeg come from and what does it mean? Trends in
-  Neurosciences.
+Cohen, M.~X., 2017. {Where Does EEG Come From and What Does It Mean?} Trends in
+  Neurosciences 40~(4), 208--218.
+\newline\urlprefix\url{http://linkinghub.elsevier.com/retrieve/pii/S0166223617300243}
+
+\bibitem[{Coombes(2006)}]{Coombes2006}
+Coombes, S., 2006. Neural fields. Scholarpedia 1~(6), 1373, revision \#138631.
 
 \bibitem[{Dale et~al.(1999)Dale, Fischl, and Sereno}]{DALE1999}
 Dale, A.~M., Fischl, B., Sereno, M.~I., 1999. {Cortical Surface-Based Analysis
   Segmentation, I Reconstruction, Surface}. NeuroImage 9, 179--194.
+
+\bibitem[{David and Friston(2003)}]{David2003}
+David, O., Friston, K.~J., 2003. {A neural mass model for MEG/EEG: Coupling and
+  neuronal dynamics}. NeuroImage 20~(3), 1743--1755.
+
+\bibitem[{Deco et~al.(2008)Deco, Jirsa, Robinson, Breakspear, and
+  Friston}]{Deco2008}
+Deco, G., Jirsa, V.~K., Robinson, P.~A., Breakspear, M., Friston, K., 2008.
+  {The dynamic brain: From spiking neurons to neural masses and cortical
+  fields}. PLoS Computational Biology 4~(8).
 
 \bibitem[{Dmochowski et~al.(2017)Dmochowski, Koessler, Norcia, Bikson, and
   Parra}]{Dmochowski2017}
@@ -55,17 +94,47 @@ Dmochowski, J.~P., Koessler, L., Norcia, A.~M., Bikson, M., Parra, L.~C., 2017.
   electrical stimulation. NeuroImage 157~(May), 69--80.
 \newline\urlprefix\url{http://dx.doi.org/10.1016/j.neuroimage.2017.05.059}
 
+\bibitem[{Egger et~al.(2014)Egger, Dercksen, Udvary, Hege, and
+  Oberlaender}]{Egger2014}
+Egger, R., Dercksen, V.~J., Udvary, D., Hege, H.-C., Oberlaender, M., nov 2014.
+  {Generation of dense statistical connectomes from sparse morphological data}.
+  Frontiers in Neuroanatomy 8~(November), 1--18.
+\newline\urlprefix\url{http://www.frontiersin.org/Neuroanatomy/10.3389/fnana.2014.00129/abstract}
+
 \bibitem[{Einevoll et~al.(2019)Einevoll, Destexhe, Diesmann, Gr{\"{u}}n, Jirsa,
   de~Kamps, Migliore, Ness, Plesser, and Sch{\"{u}}rmann}]{EINEVOLL2019}
 Einevoll, G.~T., Destexhe, A., Diesmann, M., Gr{\"{u}}n, S., Jirsa, V.,
   de~Kamps, M., Migliore, M., Ness, T.~V., Plesser, H.~E., Sch{\"{u}}rmann, F.,
   2019. The scientific case for brain simulations. Neuron 102, 735--744.
 
-\bibitem[{Einevoll et~al.(2013)Einevoll, Kayser, Logothetis, and
+\bibitem[{Einevoll et~al.(2013{\natexlab{a}})Einevoll, Kayser, Logothetis, and
   Panzeri}]{EINEVOLL2013REVIEW}
-Einevoll, G.~T., Kayser, C., Logothetis, N.~K., Panzeri, S., 2013. Modelling
-  and analysis of local field potentials for studying the function of cortical
-  circuits. Nature Reviews, Neuroscience 14.
+Einevoll, G.~T., Kayser, C., Logothetis, N.~K., Panzeri, S.,
+  2013{\natexlab{a}}. Modelling and analysis of local field potentials for
+  studying the function of cortical circuits. Nature Reviews, Neuroscience 14.
+
+\bibitem[{Einevoll et~al.(2013{\natexlab{b}})Einevoll, Lind\'{e}n, Tetzlaff,
+  {\L}{\k e}ski, Pettersen, (Ed), and (Ed)}]{EINEVOLL2013BOOKCHAPTER}
+Einevoll, G.~T., Lind\'{e}n, H., Tetzlaff, T., {\L}{\k e}ski, S., Pettersen,
+  K.~H., (Ed), R. Q.~Q., (Ed), S.~P., 2013{\natexlab{b}}. Principles of Neural
+  Coding, Local Field Potentials Biophysical Origin and Analysis. CRC Press,
+  Florida.
+
+\bibitem[{Einevoll et~al.(2007)Einevoll, Pettersen, Devor, Ulbert, Halgren, and
+  Dale}]{Einevoll2007}
+Einevoll, G.~T., Pettersen, K.~H., Devor, A., Ulbert, I., Halgren, E., Dale,
+  A.~M., mar 2007. {Laminar population analysis: estimating firing rates and
+  evoked synaptic activity from multielectrode recordings in rat barrel
+  cortex.} J Neurophysiol 97~(3), 2174--2190.
+\newline\urlprefix\url{http://dx.doi.org/10.1152/jn.00845.2006
+  http://www.ncbi.nlm.nih.gov/pubmed/17182911}
+
+\bibitem[{Eyal et~al.(2018)Eyal, Verhoog, Testa-Silva, Deitcher,
+  Benavides-Piccione, DeFelipe, De~Kock, Mansvelder, and Segev}]{EYAL2018}
+Eyal, G., Verhoog, M.~B., Testa-Silva, G., Deitcher, Y., Benavides-Piccione,
+  R., DeFelipe, J., De~Kock, C.~P., Mansvelder, H.~D., Segev, I., 2018. Human
+  cortical pyramidal neurons: From spines to spikes via models. Frontiers in
+  cellular neuroscience 12, 181.
 
 \bibitem[{Eyal et~al.(2016)Eyal, Verhoog, Testa-Silva, Deitcher, Lodder,
   Benavides-Piccione, Morales, DeFelipe, de~Kock, Mansvelder, and
@@ -74,6 +143,32 @@ Eyal, G., Verhoog, M.~B., Testa-Silva, G., Deitcher, Y., Lodder, J.~C.,
   Benavides-Piccione, R., Morales, J., DeFelipe, J., de~Kock, C.~P.,
   Mansvelder, H.~D., Segev, I., 2016. {Unique Membrane Properties and Enhanced
   Signal Processing in Human Neocortical Neurons}. e-Life.
+
+\bibitem[{Freestone et~al.(2015)Freestone, Karoly, Peterson, Kuhlmann, Lai,
+  Goodarzy, and Cook}]{Freestone2015}
+Freestone, D.~R., Karoly, P.~J., Peterson, A.~D., Kuhlmann, L., Lai, A.,
+  Goodarzy, F., Cook, M.~J., 2015. {Seizure Prediction: Science Fiction or Soon
+  to Become Reality?} Current Neurology and Neuroscience Reports 15~(11).
+
+\bibitem[{Gentet et~al.(2000)Gentet, Stuart, and Clements}]{GENTET2000}
+Gentet, L.~J., Stuart, G.~J., Clements, J.~D., 2000. Direct measurement of
+  specific membrane capacitance in neurons. Biophysical journal 79~(1),
+  314--320.
+
+\bibitem[{Gramfort et~al.(2014)Gramfort, Luessi, Larson, Engemann, Strohmeier,
+  Brodbeck, Parkkonen, and H{\"{a}}m{\"{a}}l{\"{a}}inen}]{Gramfort2014}
+Gramfort, A., Luessi, M., Larson, E., Engemann, D.~A., Strohmeier, D.,
+  Brodbeck, C., Parkkonen, L., H{\"{a}}m{\"{a}}l{\"{a}}inen, M.~S., 2014. {MNE
+  software for processing MEG and EEG data}. NeuroImage 86, 446--460.
+\newline\urlprefix\url{http://dx.doi.org/10.1016/j.neuroimage.2013.10.027}
+
+\bibitem[{Gratiy et~al.(2018)Gratiy, Billeh, Dai, Mitelut, Feng, Gouwens, Cain,
+  Koch, Anastassiou, and Arkhipov}]{Gratiy2018}
+Gratiy, S.~L., Billeh, Y.~N., Dai, K., Mitelut, C., Feng, D., Gouwens, N.~W.,
+  Cain, N., Koch, C., Anastassiou, C.~A., Arkhipov, A., 2018. {BioNet: A Python
+  interface to NEURON for modeling large-scale networks}. PLoS One 13~(8),
+  e0201630.
+\newline\urlprefix\url{http://dx.plos.org/10.1371/journal.pone.0201630}
 
 \bibitem[{Griffiths(1999)}]{GRIFFITHS1999}
 Griffiths, D.~J., 1999. Introduction to electromagnetism. Prentice-Hall,
@@ -109,6 +204,12 @@ Hay, E., Hill, S., Sch{\"u}rmann, F., Markram, H., Segev, I., 2011. Models of
   neocortical layer 5b pyramidal cells capturing a wide range of dendritic and
   perisomatic active properties. PLoS computational biology 7~(7).
 
+\bibitem[{Huang et~al.(2013)Huang, Dmochowski, Su, Datta, Rorden, and
+  Parra}]{HUANG2013}
+Huang, Y., Dmochowski, J.~P., Su, Y., Datta, A., Rorden, C., Parra, L.~C.,
+  2013. Automated mri segmentation for individualized modeling of current flow
+  in the human head. Journal of neural engineering 10~(6), 066004.
+
 \bibitem[{Huang and Parra(2015)}]{HUANG2015}
 Huang, Y., Parra, L.~C., 2015. {Fully automated whole-head segmentation with
   improved smoothness and continuity, with theory reviewed}. PLoS ONE 10~(5),
@@ -120,11 +221,53 @@ Huang, Y., Parra, L.~C., Haufe, S., 2016. The new york head—a precise
   targeting. NeuroImage 140, 150--162.
 \newline\urlprefix\url{http://dx.doi.org/10.1016/j.neuroimage.2015.12.019}
 
+\bibitem[{Ilmoniemi and Sarvas(2019)}]{Ilmoniemi2019}
+Ilmoniemi, R.~J., Sarvas, J., 2019. {Brain Signals: Physics and Mathematics of
+  MEG and EEG}. MIT Press.
+
+\bibitem[{Jackson(1998)}]{JACKSON1998}
+Jackson, J.~D., 1998. {Classical electrodynamics}, 3rd Edition. Wiley.
+
+\bibitem[{Jirsa et~al.(2002)Jirsa, Jantzen, Fuchs, and Kelso}]{Jirsa2002}
+Jirsa, V.~K., Jantzen, K.~J., Fuchs, A., Kelso, J.~A., 2002. {Spatiotemporal
+  forward solution of the EEG and MEG using network modeling}. IEEE
+  Transactions on Medical Imaging 21~(5), 493--504.
+
+\bibitem[{Jones et~al.(2009)Jones, Pritchett, Sikora, Stufflebeam,
+  H{\"{a}}m{\"{a}}l{\"{a}}inen, and Moore}]{Jones2009}
+Jones, S.~R., Pritchett, D.~L., Sikora, M.~a., Stufflebeam, S.~M.,
+  H{\"{a}}m{\"{a}}l{\"{a}}inen, M., Moore, C.~I., dec 2009. {Quantitative
+  analysis and biophysically realistic neural modeling of the MEG mu rhythm:
+  rhythmogenesis and modulation of sensory-evoked responses.} Journal of
+  neurophysiology 102~(6), 3554--72.
+\newline\urlprefix\url{http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2804421{\&}tool=pmcentrez{\&}rendertype=abstract}
+
+\bibitem[{Jones et~al.(2007)Jones, Pritchett, Stufflebeam,
+  H{\"{a}}m{\"{a}}l{\"{a}}inen, and Moore}]{Jones2007}
+Jones, S.~R., Pritchett, D.~L., Stufflebeam, S.~M.,
+  H{\"{a}}m{\"{a}}l{\"{a}}inen, M., Moore, C.~I., 2007. {Neural correlates of
+  tactile detection: A combined magnetoencephalography and biophysically based
+  computational modeling study}. Journal of Neuroscience 27~(40), 10751--10764.
+
 \bibitem[{Kalmbach et~al.(2018)Kalmbach, ..., Koch, Anastassiou, and
   Ting}]{KALMBACH2018}
 Kalmbach, B., ..., Koch, C., Anastassiou, C.~A., Ting, J.~T., 2018. h-channels
   contribute to divergent electrophysiological properties of supragranular
   pyramidal neurons in human versus mouse cerebral cortex. bioRxiv.
+
+\bibitem[{Klimesch et~al.(1998)Klimesch, Doppelmayr, Russegger, Pachinger, and
+  Schwaiger}]{Klimesch1998}
+Klimesch, W., Doppelmayr, M., Russegger, H., Pachinger, T., Schwaiger, J.,
+  1998. {Induced alpha band power changes in the human EEG and attention}.
+  Neuroscience Letters 244~(2), 73--76.
+
+\bibitem[{Koch(1999)}]{Koch1999}
+Koch, C., 1999. {Biophysics of Computation}. Oxford Univ Press, Oxford.
+
+\bibitem[{Light and N{\"{a}}{\"{a}}t{\"{a}}nen(2013)}]{Light2013}
+Light, G.~A., N{\"{a}}{\"{a}}t{\"{a}}nen, R., 2013. {Mismatch negativity is a
+  breakthrough biomarker for understanding and treating psychotic disorders}.
+  PNAS 110~(38), 15175--15176.
 
 \bibitem[{Lind\'{e}n et~al.(2010)Lind\'{e}n, Pettersen, and
   Einevoll}]{LINDEN2010}
@@ -153,15 +296,25 @@ Logg, A., Mardal, K.-a., Wells, G.~N., 2012. Automated Solution of Differential
   Heidelberg.
 \newline\urlprefix\url{http://www.springerlink.com/index/10.1007/978-3-642-23099-8}
 
-\bibitem[{{Lopes da Silva}(2013)}]{SILVA2013}
-{Lopes da Silva}, F., dec 2013. Eeg and meg: Relevance to neuroscience.
+\bibitem[{{Lopes da Silva}(2013)}]{SILVA2013}
+{Lopes da Silva}, F., dec 2013. {EEG} and {MEG}: Relevance to neuroscience.
   Neuron 80~(5), 1112--1128.
 \newline\urlprefix\url{http://linkinghub.elsevier.com/retrieve/pii/S0896627313009203}
 
-\bibitem[{M{\"{a}}ki-marttunen et~al.(2019)M{\"{a}}ki-marttunen, Kaufmann,
+\bibitem[{Luo et~al.(2018)Luo, Macias, Ness, Einevoll, Zhang, and
+  Moss}]{Luo2018}
+Luo, J., Macias, S., Ness, T.~V., Einevoll, G.~T., Zhang, K., Moss, C.~F.,
+  2018. {Neural timing of stimulus events with microsecond precision}. PLoS
+  biology 16~(10), 1--22.
+
+\bibitem[{Mainen and Sejnowski(1996)}]{MAINEN1996}
+Mainen, Z.~F., Sejnowski, T.~J., 1996. Influence of dendritic structure on
+  firing pattern in model neocortical neurons. Nature 382.
+
+\bibitem[{M{\"{a}}ki-Marttunen et~al.(2019)M{\"{a}}ki-Marttunen, Kaufmann,
   Elvs{\aa}shagen, Devor, Djurovic, Westlye, Linne, Rietschel, Schubert,
   Borgwardt, Efrim-budisteanu, Bettella, Halnes, and Hagen}]{MAKI2019}
-M{\"{a}}ki-marttunen, T., Kaufmann, T., Elvs{\aa}shagen, T., Devor, A.,
+M{\"{a}}ki-Marttunen, T., Kaufmann, T., Elvs{\aa}shagen, T., Devor, A.,
   Djurovic, S., Westlye, L.~T., Linne, M.-l., Rietschel, M., Schubert, D.,
   Borgwardt, S., Efrim-budisteanu, M., Bettella, F., Halnes, G., Hagen, E.,
   2019. {Biophysical Psychiatry—How Computational Neuroscience Can Help to
@@ -177,32 +330,69 @@ Malmivuo, J., Plonsey, R., 1995. {Bioelectromagnetism - Principles and
   Bilgili, Buncic, Chalimourda, Chindemi, Courcol, Delalondre, Delattre,
   Druckmann, Dumusc, Dynes, Eilemann, Gal, Gevaert, Ghobril, Gidon, Graham,
   Gupta, Haenel, Hay, Heinis, Hernando, Hines, Kanari, Keller, Kenyon, Khazen,
-  Kim, King, Kisvarday, Kumbhar, Lasserre, {Le B{\'{e}}}, Magalh{\~{a}}es,
+  Kim, King, Kisvarday, Kumbhar, Lasserre, {Le B{\'{e}}}, Magalh{\~{a}}es,
   Merch{\'{a}}n-P{\'{e}}rez, Meystre, Morrice, Muller,
   Mu{\~{n}}oz-C{\'{e}}spedes, Muralidhar, Muthurasa, Nachbaur, Newton, Nolte,
   Ovcharenko, Palacios, Pastor, Perin, Ranjan, Riachi, Rodr{\'{i}}guez,
   Riquelme, R{\"{o}}ssert, Sfyrakis, Shi, Shillcock, Silberberg, Silva,
-  Tauheed, Telefont, Toledo-Rodriguez, Tr{\"{a}}nkler, {Van Geit}, D{\'{i}}az,
+  Tauheed, Telefont, Toledo-Rodriguez, Tr{\"{a}}nkler, {Van Geit}, D{\'{i}}az,
   Walker, Wang, Zaninetta, DeFelipe, Hill, Segev, and
   Sch{\"{u}}rmann}]{MARKRAM2015}
-Markram, H., Muller, E., Ramaswamy, S., Reimann, M., Abdellah, M., Sanchez, C.,
-  Ailamaki, A., Alonso-Nanclares, L., Antille, N., Arsever, S., Kahou, G.,
-  Berger, T., Bilgili, A., Buncic, N., Chalimourda, A., Chindemi, G., Courcol,
-  J.-D., Delalondre, F., Delattre, V., Druckmann, S., Dumusc, R., Dynes, J.,
-  Eilemann, S., Gal, E., Gevaert, M., Ghobril, J.-P., Gidon, A., Graham, J.,
-  Gupta, A., Haenel, V., Hay, E., Heinis, T., Hernando, J., Hines, M., Kanari,
-  L., Keller, D., Kenyon, J., Khazen, G., Kim, Y., King, J., Kisvarday, Z.,
-  Kumbhar, P., Lasserre, S., {Le B{\'{e}}}, J.-V., Magalh{\~{a}}es, B.,
-  Merch{\'{a}}n-P{\'{e}}rez, A., Meystre, J., Morrice, B., Muller, J.,
-  Mu{\~{n}}oz-C{\'{e}}spedes, A., Muralidhar, S., Muthurasa, K., Nachbaur, D.,
-  Newton, T., Nolte, M., Ovcharenko, A., Palacios, J., Pastor, L., Perin, R.,
-  Ranjan, R., Riachi, I., Rodr{\'{i}}guez, J.-R., Riquelme, J., R{\"{o}}ssert,
-  C., Sfyrakis, K., Shi, Y., Shillcock, J., Silberberg, G., Silva, R., Tauheed,
-  F., Telefont, M., Toledo-Rodriguez, M., Tr{\"{a}}nkler, T., {Van Geit}, W.,
-  D{\'{i}}az, J., Walker, R., Wang, Y., Zaninetta, S., DeFelipe, J., Hill, S.,
-  Segev, I., Sch{\"{u}}rmann, F., 2015. Reconstruction and simulation of
-  neocortical microcircuitry. Cell 163~(2), 456--492.
+Markram, H., Muller, E., Ramaswamy, S., Reimann, M.~W., Abdellah, M., Sanchez,
+  C.~A., Ailamaki, A., Alonso-Nanclares, L., Antille, N., Arsever, S., Kahou,
+  G. A.~A., Berger, T.~K., Bilgili, A., Buncic, N., Chalimourda, A., Chindemi,
+  G., Courcol, J.-D., Delalondre, F., Delattre, V., Druckmann, S., Dumusc, R.,
+  Dynes, J., Eilemann, S., Gal, E., Gevaert, M.~E., Ghobril, J.-P., Gidon, A.,
+  Graham, J.~W., Gupta, A., Haenel, V., Hay, E., Heinis, T., Hernando, J.~B.,
+  Hines, M., Kanari, L., Keller, D., Kenyon, J., Khazen, G., Kim, Y., King,
+  J.~G., Kisvarday, Z., Kumbhar, P., Lasserre, S., {Le B{\'{e}}}, J.-V.,
+  Magalh{\~{a}}es, B.~R., Merch{\'{a}}n-P{\'{e}}rez, A., Meystre, J., Morrice,
+  B.~R., Muller, J., Mu{\~{n}}oz-C{\'{e}}spedes, A., Muralidhar, S., Muthurasa,
+  K., Nachbaur, D., Newton, T.~H., Nolte, M., Ovcharenko, A., Palacios, J.,
+  Pastor, L., Perin, R., Ranjan, R., Riachi, I., Rodr{\'{i}}guez, J.-R.,
+  Riquelme, J.~L., R{\"{o}}ssert, C., Sfyrakis, K., Shi, Y., Shillcock, J.~C.,
+  Silberberg, G., Silva, R., Tauheed, F., Telefont, M., Toledo-Rodriguez, M.,
+  Tr{\"{a}}nkler, T., {Van Geit}, W., D{\'{i}}az, J.~V., Walker, R., Wang, Y.,
+  Zaninetta, S.~M., DeFelipe, J., Hill, S.~L., Segev, I., Sch{\"{u}}rmann, F.,
+  2015. Reconstruction and simulation of neocortical microcircuitry. Cell
+  163~(2), 456--492.
 \newline\urlprefix\url{http://linkinghub.elsevier.com/retrieve/pii/S0092867415011915}
+
+\bibitem[{Mazzoni et~al.(2015)Mazzoni, Lind{\`{e}}n, Cuntz, Lansner, Panzeri,
+  and Einevoll}]{Mazzoni2015}
+Mazzoni, A., Lind{\`{e}}n, H., Cuntz, H., Lansner, A., Panzeri, S., Einevoll,
+  G.~T., 2015. {Computing the Local Field Potential (LFP) from
+  Integrate-and-Fire Network Models}. PLOS Computational Biology 11~(12),
+  e1004584.
+\newline\urlprefix\url{http://dx.plos.org/10.1371/journal.pcbi.1004584}
+
+\bibitem[{McColgan et~al.(2017)McColgan, Liu, Kuokkanen, Carr, Wagner, and
+  Kempter}]{McColgan2017}
+McColgan, T., Liu, J., Kuokkanen, P.~T., Carr, C.~E., Wagner, H., Kempter, R.,
+  2017. {Dipolar extracellular potentials generated by axonal projections}.
+  eLife 6, e26106.
+\newline\urlprefix\url{https://elifesciences.org/articles/26106}
+
+\bibitem[{Murakami et~al.(2003)Murakami, Hirose, and Okada}]{Murakami2003}
+Murakami, S., Hirose, A., Okada, Y.~C., dec 2003. {Contribution of ionic
+  currents to magnetoencephalography (MEG) and electroencephalography (EEG)
+  signals generated by guinea-pig CA3 slices.} The Journal of physiology
+  553~(Pt 3), 975--85.
+\newline\urlprefix\url{http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2343617{\&}tool=pmcentrez{\&}rendertype=abstract}
+
+\bibitem[{Murakami and Okada(2006)}]{Murakami2006}
+Murakami, S., Okada, Y., sep 2006. {Contributions of principal neocortical
+  neurons to magnetoencephalography and electroencephalography signals.} The
+  Journal of physiology 575~(Pt 3), 925--36.
+\newline\urlprefix\url{http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=1995687{\&}tool=pmcentrez{\&}rendertype=abstract}
+
+\bibitem[{Murakami et~al.(2002)Murakami, Zhang, Hirose, and
+  Okada}]{Murakami2002}
+Murakami, S., Zhang, T., Hirose, a., Okada, Y.~C., aug 2002. {Physiological
+  origins of evoked magnetic fields and extracellular field potentials produced
+  by guinea-pig CA3 hippocampal slices}. The Journal of Physiology 544~(1),
+  237--251.
+\newline\urlprefix\url{http://www.jphysiol.org/cgi/doi/10.1113/jphysiol.2002.027094}
 
 \bibitem[{Ness et~al.(2016)Ness, Remme, and Einevoll}]{NESS2016}
 Ness, T.~V., Remme, M. W.~H., Einevoll, G.~T., 2016. Active subthreshold
@@ -216,6 +406,19 @@ Ness, T.~V., Remme, M. W.~H., Einevoll, G.~T., 2018. h-type membrane current
   Journal of Neuroscience 38~(26), 6011--6024.
 \newline\urlprefix\url{http://www.jneurosci.org/lookup/doi/10.1523/JNEUROSCI.3278-17.2018}
 
+\bibitem[{Neymotin et~al.(2020)Neymotin, Daniels, Caldwell, McDougal,
+  Carnevale, Jas, Moore, Hines, H{\"a}m{\"a}l{\"a}inen, and
+  Jones}]{NEYMOTIN2020}
+Neymotin, S.~A., Daniels, D.~S., Caldwell, B., McDougal, R.~A., Carnevale,
+  N.~T., Jas, M., Moore, C.~I., Hines, M.~L., H{\"a}m{\"a}l{\"a}inen, M.,
+  Jones, S.~R., 2020. Human neocortical neurosolver (hnn), a new software tool
+  for interpreting the cellular and network origin of human meg/eeg data. eLife
+  9, e51214.
+
+\bibitem[{Niedermeyer(2003)}]{Niedermeyer2003}
+Niedermeyer, E., 2003. {The clinical relevance of EEG interpretation}.
+  International Journal of Diabetes in Developing Countries 34~(3), 93--98.
+
 \bibitem[{Nunez and Srinivasan(2006)}]{NUNEZ2006}
 Nunez, P.~L., Srinivasan, R., 2006. Electric Fields of the Brain, 2nd Edition.
   Oxford University Press, New York.
@@ -225,6 +428,19 @@ Nunez, P.~L., Srinivasan, R., 2006. Electric Fields of the Brain, 2nd Edition.
 Næss, S., Chintaluri, C., Ness, T.~V., M.Dale, A., Einevoll, G.~T.,
   W{\'o}jcik, D., 2017. Four-sphere head model for {EEG} signals revisited.
   Frontiers in Human Neuroscience.
+
+\bibitem[{Palva and Palva(2011)}]{Palva2011}
+Palva, S., Palva, J.~M., 2011. {Functional roles of alpha-band phase
+  synchronization in local and large-scale cortical networks}. Frontiers in
+  Psychology 2~(SEP), 1--15.
+
+\bibitem[{Pesaran et~al.(2018)Pesaran, Vinck, Einevoll, Sirota, Fries, Siegel,
+  Truccolo, Schroeder, and Srinivasan}]{Pesaran2018}
+Pesaran, B., Vinck, M., Einevoll, G.~T., Sirota, A., Fries, P., Siegel, M.,
+  Truccolo, W., Schroeder, C.~E., Srinivasan, R., 2018. {Investigating
+  large-scale brain dynamics using field potential recordings : Analysis and
+  interpretation}. Nature Neuroscience 21, 903--919.
+\newline\urlprefix\url{http://dx.doi.org/10.1038/s41593-018-0171-8}
 
 \bibitem[{Pettersen et~al.(2014)Pettersen, Lind\'{e}n, Tetzlaff, and
   Einevoll}]{PETTERSEN2014}
@@ -237,29 +453,93 @@ Pettersen, K., Lind\'{e}n, H., Tetzlaff, T., Einevoll, G.~T., 2014. Power laws
 Pettersen, K.~H., Einevoll, G.~T., 2008. Amplitude variability and
   extracellular low-pass filtering of neuronal spikes. Biophysical Journal 94.
 
+\bibitem[{Pettersen et~al.(2012)Pettersen, Lind{\'e}n, Dale, and
+  Einevoll}]{PETTERSEN2012}
+Pettersen, K.~H., Lind{\'e}n, H., Dale, A.~M., Einevoll, G.~T., 2012.
+  Extracellular spikes and {CSD}. Handbook of Neural Activity Measurement.
+
 \bibitem[{Potjans and Diesmann(2014)}]{POTJANS2014}
 Potjans, T.~C., Diesmann, M., mar 2014. The cell-type specific cortical
   microcircuit: relating structure and activity in a full-scale spiking network
   model. Cerebral cortex 24~(3), 785--806.
 \newline\urlprefix\url{http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=3920768{\&}tool=pmcentrez{\&}rendertype=abstract}
 
-\bibitem[{Sanzleon et~al.(2013)Sanzleon, Knock, Woodman, Domide, Mersmann,
+\bibitem[{Reimann et~al.(2013)Reimann, Anastassiou, Perin, Hill, Markram, and
+  Koch}]{Reimann2013}
+Reimann, M.~W., Anastassiou, C.~A., Perin, R., Hill, S.~L., Markram, H., Koch,
+  C., jul 2013. {A biophysically detailed model of neocortical local field
+  potentials predicts the critical role of active membrane currents}. Neuron
+  79~(2), 375--390.
+\newline\urlprefix\url{http://linkinghub.elsevier.com/retrieve/pii/S0896627313004431}
+
+\bibitem[{Reimann et~al.(2019)Reimann, Gevaert, Shi, Lu, Markram, and
+  Muller}]{Reimann2019}
+Reimann, M.~W., Gevaert, M., Shi, Y., Lu, H., Markram, H., Muller, E., 2019. {A
+  null model of the mouse whole-neocortex micro-connectome}. Nature
+  communications 10~(3903), 1--38.
+
+\bibitem[{Ritter et~al.(2013)Ritter, Schirner, Mcintosh, and
+  Jirsa}]{Ritter2013}
+Ritter, P., Schirner, M., Mcintosh, A.~R., Jirsa, V.~K., 2013. {The Virtual
+  Brain Integrates Computational Modeling and Multimodal Neuroimaging}. Brain
+  Connectivity 3~(2), 121--145.
+
+\bibitem[{Rush and Driscoll(1969)}]{RUSH1969}
+Rush, S., Driscoll, D.~A., 1969. Eeg electrode sensitivity-an application of
+  reciprocity. IEEE transactions on biomedical engineering BME-16~(1), 15--22.
+
+\bibitem[{Sahin et~al.(2019)Sahin, Jones, Sweeney, Berry-Kravis, Connors, Ewen,
+  Hartman, Levin, Potter, and Mamounas}]{Sahin2019}
+Sahin, M., Jones, S.~R., Sweeney, J.~A., Berry-Kravis, E., Connors, B.~W.,
+  Ewen, J.~B., Hartman, A.~L., Levin, A.~R., Potter, W.~Z., Mamounas, L.~A.,
+  2019. {Discovering translational biomarkers in neurodevelopmental disorders}.
+  Nature Reviews Drug Discovery 18, 235--236.
+
+\bibitem[{Sanz-Leon et~al.(2015)Sanz-Leon, Knock, Spiegler, and
+  Jirsa}]{Sanz-Leon2015}
+Sanz-Leon, P., Knock, S.~A., Spiegler, A., Jirsa, V.~K., 2015. {Mathematical
+  framework for large-scale brain network modeling in The Virtual Brain}.
+  NeuroImage 111, 385--430.
+\newline\urlprefix\url{http://dx.doi.org/10.1016/j.neuroimage.2015.01.002}
+
+\bibitem[{Sanz-Leon et~al.(2013)Sanz-Leon, Knock, Woodman, Domide, Mersmann,
   Mcintosh, and Jirsa}]{TVB}
-Sanzleon, P., Knock, S.~A., Woodman, M.~M., Domide, L., Mersmann, J., Mcintosh,
-  A.~R., Jirsa, V., 2013. The virtual brain: A simulator of primate brain
-  network dynamics. Frontiers in Neuroinformatics 7~(10).
+Sanz-Leon, P., Knock, S.~A., Woodman, M.~M., Domide, L., Mersmann, J.,
+  Mcintosh, A.~R., Jirsa, V., 2013. The virtual brain: A simulator of primate
+  brain network dynamics. Frontiers in Neuroinformatics 7~(10).
 
 \bibitem[{Schmidt et~al.(2018)Schmidt, Bakker, Shen, Bezgin, Diesmann, and van
   Albada}]{SCHMIDT2018}
 Schmidt, M., Bakker, R., Shen, K., Bezgin, G., Diesmann, M., van Albada, S.~J.,
   2018. A multi-scale layer-resolved spiking network model of resting-state
-  dynamics in macaque visual cortical areas. Vol.~14.
+  dynamics in macaque visual cortical areas. PLoS Computational Biology 14,
+  1--38.
 
 \bibitem[{Senk et~al.(2018)Senk, Hagen, van Albada, and Diesmann}]{SENK2018}
 Senk, J., Hagen, E., van Albada, S.~J., Diesmann, M., 2018. {Reconciliation of
   weak pairwise spike-train correlations and highly coherent local field
   potentials across space}. arXiv, 1--44.
 \newline\urlprefix\url{http://arxiv.org/abs/1805.10235}
+
+\bibitem[{Siegel et~al.(2012)Siegel, Donner, and Engel}]{Siegel2012}
+Siegel, M., Donner, T.~H., Engel, A.~K., 2012. {Spectral fingerprints of
+  large-scale neuronal interactions}. Nature Reviews Neuroscience 13~(2),
+  121--134.
+
+\bibitem[{Skaar et~al.(2020)Skaar, Stasik, Hagen, Ness, and
+  Einevoll}]{Skaar2020}
+Skaar, J.-E.~W., Stasik, A.~J., Hagen, E., Ness, T.~V., Einevoll, G.~T., 2020.
+  {Estimation of neural network model parameters from local field potentials
+  (LFPs)}. PLoS Computational Biology 16~(3), e1007725.
+\newline\urlprefix\url{http://dx.doi.org/10.1101/564765{\%}0Ahttps://www.biorxiv.org/content/10.1101/564765v1}
+
+\bibitem[{Sliva et~al.(2018)Sliva, Black, Bowary, Agrawal, Santoyo, Philip,
+  Greenberg, Moore, and Jones}]{Sliva2018}
+Sliva, D.~D., Black, C.~J., Bowary, P., Agrawal, U., Santoyo, J.~F., Philip,
+  N.~S., Greenberg, B.~D., Moore, C.~I., Jones, S.~R., 2018. {A prospective
+  study of the impact of transcranial alternating current stimulation on EEG
+  correlates of somatosensory perception}. Frontiers in Psychology 9~(NOV),
+  1--17.
 
 \bibitem[{Srinivasan et~al.(1998)Srinivasan, Nunez, and
   Silberstein}]{SRINIVASAN1998}
@@ -285,11 +565,46 @@ Tele{\'{n}}czuk, B., Baker, S.~N., Kempter, R., Curio, G., 2015. {Correlates of
   357--367.
 \newline\urlprefix\url{http://linkinghub.elsevier.com/retrieve/pii/S1053811914010623}
 
-\bibitem[{Vorwerk et~al.(2014)Vorwerk, Cho, Rampp, Hamer, Knösche, and
+\bibitem[{Tele{\'{n}}czuk et~al.(2017)Tele{\'{n}}czuk, Quyen, Cash,
+  Hatsopoulos, Destexhe, Neurosciences, National, and
+  Recherche}]{TELENCZUK2016}
+Tele{\'{n}}czuk, B., Quyen, M. L.~V., Cash, S.~S., Hatsopoulos, N.~G.,
+  Destexhe, A., Neurosciences, D., National, C., Recherche, D., 2017. {Local
+  field potentials primarily reflect inhibitory neuron activity in human and
+  monkey cortex}. Scientific Reports 7~(40211), 1--16.
+\newline\urlprefix\url{http://dx.doi.org/10.1038/srep40211}
+
+\bibitem[{Tele{\'{n}}czuk et~al.(2020)Tele{\'{n}}czuk, Tele{\'{n}}czuk, and
+  Destexhe}]{Telenczuk2020}
+Tele{\'{n}}czuk, B., Tele{\'{n}}czuk, M., Destexhe, A., 2020. {A kernel-based
+  method to calculate local field potentials from networks of spiking neurons}.
+  bioRxiv, 1--20.
+
+\bibitem[{Tele{\'{n}}czuk et~al.(2019)Tele{\'{n}}czuk, Tele{\'{n}}czuk, and
+  Destexhe}]{Telenczuk2019}
+Tele{\'{n}}czuk, M., Tele{\'{n}}czuk, B., Destexhe, A., 2019. {Modeling unitary
+  fields and the single-neuron contribution to local field potentials in the
+  hippocampus}. bioRxiv, 602953.
+\newline\urlprefix\url{https://www.biorxiv.org/content/10.1101/602953v2}
+
+\bibitem[{Uhlirova et~al.(2016)Uhlirova, Kılıc, Tian, Sakadz, Saisan, Gagnon,
+  Thunemann, Nizar, Yasseen, Jr, Vandenberghe, Djurovic, Andreassen, Silva,
+  Masliah, Kleinfeld, Vinogradov, Buxton, Einevoll, Boas, Dale, Devor, and
+  Devor}]{Uhlirova2016}
+Uhlirova, H., Kılıc, K., Tian, P., Sakadz, S., Saisan, P.~A., Gagnon, L.,
+  Thunemann, M., Nizar, K., Yasseen, M.~A., Jr, D. J.~H., Vandenberghe, M.,
+  Djurovic, S., Andreassen, O.~A., Silva, G.~A., Masliah, E., Kleinfeld, D.,
+  Vinogradov, S., Buxton, R.~B., Einevoll, G.~T., Boas, D.~A., Dale, A.~M.,
+  Devor, A., Devor, A., 2016. {The roadmap for estimation of cell-type-
+  specific neuronal activity from non- invasive measurements}. Proceedings Of
+  The Royal Society Of London. Series B Biological Sciences 371~(August).
+
+\bibitem[{Vorwerk et~al.(2014)Vorwerk, Cho, Rampp, Hamer, Kn{\"{o}}sche, and
   Wolters}]{VORWERK2014}
-Vorwerk, J., Cho, J.-H., Rampp, S., Hamer, H., Knösche, T.~R., Wolters, C.~H.,
-  2014. A guideline for head volume conductor modeling in {EEG} and {MEG}.
-  NeuroImage 100~(0).
+Vorwerk, J., Cho, J.~H., Rampp, S., Hamer, H., Kn{\"{o}}sche, T.~R., Wolters,
+  C.~H., 2014. A guideline for head volume conductor modeling in eeg and meg.
+  NeuroImage 100, 590--607.
+\newline\urlprefix\url{http://dx.doi.org/10.1016/j.neuroimage.2014.06.040}
 
 \bibitem[{Ziegler et~al.(2014)Ziegler, Chellappa, Gaggioni, Ly, Vandewalle,
   Andr{\'{e}}, Geuzaine, and Phillips}]{Ziegler2014}
