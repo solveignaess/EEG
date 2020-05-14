@@ -83,7 +83,7 @@ def set_parameters(morphology, cell_model=None):
 
     synapse_parameters = {'e': 0., # reversal potential
                       # 'tau': 5., # synapse time constant (first fig version)
-                      'weight': 0.002, # 0.001, # synapse weight
+                      'weight': 0.05, # 0.001, # synapse weight
                       'record_current': True, # record synapse current
                       # parameters not included in first version of fig
                       'syntype': 'Exp2Syn',
@@ -176,7 +176,7 @@ if __name__ == '__main__':
                              # '2013_03_06_cell08_876_H41_05_Cell2.ASC'#,
                              # '2013_03_06_cell11_1125_H41_06.ASC'
                              ],
-                  'active_models': [None #'cell0603_03_model_476',
+                  'active_models': ['cell0603_03_model_476', #None
                                     # 'cell1303_03_model_448',
                                     # 'cell1303_05_model_643',
                                     # 'cell1303_06_model_263',
@@ -190,7 +190,8 @@ if __name__ == '__main__':
                            # np.array([0., 0., 77947.])#,
                            # np.array([0., 0., 77747.])
                            ],
-                   'syn_idcs': [# to right side for active 3a
+                   'syn_idcs': [[0]
+                                # to right side for active 3a
                                 #[0,416,418,420,422,424,426,428,430,432,434,436,
                                 #438,440,442,444,446,521,523,525,527,529,531,
                                 #542,544,546,548,550,552],
@@ -201,11 +202,11 @@ if __name__ == '__main__':
                                 #  707,708,709,710,711,712,713,714,715,716,717,
                                 #  718,719,720,721,722,723,724,725,726,727,735,
                                 #  736,737,738,739,740]
-                                 # straight for passive 3a:
-                                 [0,338,340,342,344,346,348,349,350,351,352,353,354,
-                                  355,469,470,471,472,473,563,564,565,566,567,
-                                  568,569,570,571,572,573,574,575,576,577,578,
-                                  579,580,586,587,588,589,590]
+                                 # # straight for passive 3a:
+                                 # [0,338,340,342,344,346,348,349,350,351,352,353,354,
+                                 #  355,469,470,471,472,473,563,564,565,566,567,
+                                 #  568,569,570,571,572,573,574,575,576,577,578,
+                                 #  579,580,586,587,588,589,590]
                                                                    # [0,339,341,343,345,347,349,350,351,352,353,354,
                                                                    #  355,469,470,471,472,473,563,564,565,566,567,
                                                                    #  568,569,570,571,572,573,574,575,576,577,578,
@@ -237,8 +238,8 @@ if __name__ == '__main__':
     sigmas = [0.3, 1.5, 0.015, 0.3]  #
     radii = [79000., 80000., 85000., 90000.]
 
-    # active = True
-    active = False
+    active = True
+    # active = False
 
     # make electrode array params
     num_electrodes = 40
@@ -397,13 +398,10 @@ if __name__ == '__main__':
         zips = []
         for x, z in cell.get_idx_polygons():
             zips.append(list(zip(x, z)))
-        # zips_yz = []
-        # for y, z in cell.get_idx_polygons(projection=('y', 'z')):
-        #     zips_yz.append(list(zip(y, z)))
-        #
         zmax = np.max(cell.zend)
+        soma_vmem = cell.vmem[0]
 
-        filename = './data/data_fig2_segev_' + cell_dict['cellnames'][i] + 'active_' + str(active) + 'std_pms2'
+        filename = './data/data_fig2_segev_' + cell_dict['cellnames'][i] + 'spike' #active_' + str(active) + 'std_pms2'
         np.savez(filename,
                  lfp_multi = lfp_multi_dip_list,
                  lfp_single = lfp_single_dip_list,
@@ -421,7 +419,13 @@ if __name__ == '__main__':
                  tvec = cell.tvec,
                  t_max_list = t_max_list,
                  electrode_locs = electrode_locs,
-                 Pz_traces = Pz_traces)
+                 Pz_traces = Pz_traces,
+                 soma_vmem = soma_vmem)
+
+
+        # zips_yz = []
+        # for y, z in cell.get_idx_polygons(projection=('y', 'z')):
+        #     zips_yz.append(list(zip(y, z)))
 
         # # plot morph with synlocs and vmem in soma
         # tvec = cell.tvec
@@ -449,13 +453,13 @@ if __name__ == '__main__':
         #
         # ax_v_t.plot(tvec, cell.vmem[0])
         # ax_v_t.set_xlim([tvec[0], tvec[-1]])
-        # ax_v_t.set_ylim([-90, 40])
+        # ax_v_t.set_ylim([-100, 60])
         # ax_v_t.set_xlabel('t (ms)')
         # ax_v_t.set_ylabel('V(t) in soma (mV)')
         #
         # title = 'weight = 0.002'
         # fig.text(0.2, 0.9, title)
         #
-        # filename = './figures/test_figs/fig_test_synlocs_segev2018_' + cell_dict['cellnames'][i] + '.png'
+        # filename = './figures/test_figs/fig_test_synlocs_segev2018_spike' + cell_dict['cellnames'][i] + '.png'
         # print(filename)
         # plt.savefig(filename, dpi=300)
