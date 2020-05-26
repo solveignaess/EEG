@@ -1,4 +1,3 @@
-% !TEX root = /Users/solveig/Documents/PhD/EEG/doc/eeg_main.tex
 \documentclass[preprint,10pt,authoryear]{elsarticle}
 \pdfoutput=1
 \pdfminorversion=4
@@ -58,7 +57,9 @@
 \newcommand{\tvnnote}[1]{\color{white}{\hlg{TVN: #1 }}\color{black}}
 \newcommand{\tvntxt}[1]{{\color{Emerald}#1}}
 \newcommand{\gtenote}[1]{\color{white}{\hlp{GTE: #1 }}\color{black}}
-\newcommand{\gtetxt}[1]{{\color{Purple}#1}}
+\newcommand{\gen}[1]{\color{white}{\hlp{GTE: #1 }}\color{black}}
+\newcommand{\gtetxt}[1]{{\color{Orange}#1}}
+\newcommand{\gex}[1]{{\color{Orange}#1}}
 \usepackage{ulem} % for deleting = strike out
 
 
@@ -67,7 +68,7 @@
 \begin{frontmatter}
 	%\linenumbers
 	
-	\title{Biophysical modeling of ECoG, EEG and MEG signals\tvnnote{Alternativ tittel: 
+	\title{Biophysical modeling of \gex{the neural origin of EEG, ECoG and MEG} signals\tvnnote{Alternativ tittel: 
 			1) Towards a model-based understanding of the EEG signals.
 			2) Towards accurate detailed biophysical modeling of EEG signals.
 	}}
@@ -91,7 +92,7 @@
 	%\date{\today}
 	
 	\begin{abstract}
-	\tvnnote{This is not done yet}
+	\tvnnote{This is not done yet} \gen{Have not looked at this}
 		Many important brain signals, like the LFP, ECoG, EEG and MEG are thought to primarily reflect synaptic input to populations of geometrically aligned pyramidal neurons. Therefore, it is important to get a better understanding of the biophysics underlying the synaptic contribution to these brain signals. For a pyramidal neuron receiving a single synaptic input, it is well established that the ensuing extracellular potential will take the shape of a dipole in the far field limit, i.e., sufficiently far away from the neuron. This can potentially greatly simplify the link between the measured brain signals and the underlying neural sources, but this link has not yet been taken full advantage of in the framework of detailed biophysical forward modeling of brain signals. 
 		Here we present a framework for reducing complex simulated neural activity to simple dipoles, and test the applicability of the approach. We find that the framework works excellently for calculating EEG signals, but not ECoG signals. We demonstrate how this approach can greatly simplify the link between the experimentally measurable EEG signal and the underlying neural sources, in a manner that is firmly grounded in the underlying biophysics. We demonstrate the power of this approach by showing that the EEG contribution from a neural population can be well represented by reducing it to a single dipole, based on the average obtained from the cells in the neural population. Such current dipoles can easily be used in both generic and complex head models, allowing for easy simulation and clean analysis of the neural origin of the EEG signal.
 	\end{abstract}
@@ -111,6 +112,9 @@
 	%\caption{\textbf{Graphical abstract}.}
 
 \tvnnote{NeuroImage har graphical abstracts, så det bør vi tenke på! Her er en kladd.}
+\gen{Fin figur. Noen kommentarer: (1) Er litt usikker paa ordet "automatic" i "automatic reduction". Den er vel ikke mer "automatic" enn
+andre "computational schemes" (med mindre vi lager en easy-to-use toolbox som brukerne kan bruke som en "black box")? (2) Er ogsaa litt usikker paa "realistic" i "realistic head models". Jeg synes "detailed" er bedre siden det er litt mindre "value judgement" i ordet. (3) Kanskje ogsaa "simplified" er bedre enn "generic"? (Og det staar "realsitic" istedenfor "realistic" et sted.)}
+
 %\label{fig:graphical_abstract}
 \end{figure}
 
@@ -118,11 +122,16 @@
 
 \section*{Higlights}
 \tvnnote{NeuroImage vil ha Highlights med 3-5 bullet points}
+\gen{Vi maa jobbe litt mer med disse}
 \begin{itemize}
 \item Arbitrary simulated neural activity can be automatically reduced to current dipoles
+\gex{Current dipoles are computed from simulated neuron and network activity}  
 \item Such current dipoles can be used with generic or realistic head models for calculation of EEG or MEG signals
-\item Allows easy simulation of EEG signals from both single cells and large-scale neural networks
+\gex{Extracted current dipoles used in computation of EEG and MEG signals in simplified and detailed head models}  
+\item \sout{Allows easy simulation of EEG signals from both single cells and large-scale neural networks}
+\gen{One-liner about ECoG signal}
 \item Gives clean way of studying the neural origin of EEG signals
+\gex{Method provides biophysics-based link between neural activity and systems-level signals}
 \end{itemize}
 
 
