@@ -139,16 +139,18 @@ andre "computational schemes" (med mindre vi lager en easy-to-use toolbox som br
 
 %\tvnnote{To include references to the relevant literature, we should read through BUZSAKI2012,SILVA2013, COHEN2017 and find appropriate papers to cite.}
 
-Electroencephalography (EEG) is one of the most important non-invasive methods for studying human cognitive function and diagnosing brain diseases \citep{COHEN2017, Pesaran2018}.  Yet, we know surprisingly little about the neural origin of these electric scalp potentials \citep{COHEN2017}: On the one hand, we have a relatively good understanding of the biophysics EEGs, knowing that these signals mainly originate from large numbers of synaptic inputs to cortical pyramidal cell populations \citep{NUNEZ2006, SILVA2013, Pesaran2018, Ilmoniemi2019}.
+Electroencephalography (EEG) is one of the most important non-invasive methods for studying human cognitive function and diagnosing brain diseases \citep{COHEN2017, Pesaran2018}.  Yet, we know surprisingly little about the neural origin of these electric scalp potentials \citep{COHEN2017}: On the one hand, we have a relatively good understanding of the biophysics \gex{of} EEGs, knowing that these signals mainly originate from large numbers of synaptic inputs to cortical pyramidal cell populations \citep{NUNEZ2006, SILVA2013, Pesaran2018, Ilmoniemi2019}.
 On the other hand, we know very little about exactly which types of neural activity that cause even the most well-studied characteristics of the EEG signal, such as different types of oscillations (e.g., alpha, beta, and gamma waves) and stereotyped EEG-shapes in response to sensory stimuli (event-related potentials, ERPs) \citep{COHEN2017}. Importantly, these different EEG characteristics are affected in predictable ways by various brain conditions, such as sleep and attention \citep{Klimesch1998, Palva2011, Siegel2012}, and by brain disorders including epilepsy and schizophrenia \citep{Niedermeyer2003, Light2013, Freestone2015, MAKI2019}. 
 In other words, a better insight into how different types of brain activity is reflected in EEG signals could help us in understanding the human brain and curing brain diseases  \citep{Uhlirova2016, COHEN2017, MAKI2019}.
+\gen{I also think the possibility for making better inverse models could be mentioned as a motivation.}
 
 The reason why we lack understanding of the neural origin of EEG signals is multifaceted. Among the main causes are (i) strong ethical constraints on invasive human brain measurements and (ii) the high number of neurons that contribute to the signal. However, in recent years there have been major advances in several relevant branches of neuroscience, meaning that a better understanding of the EEG signal may now be within reach \citep{Uhlirova2016, COHEN2017}.
 
 To bypass challenge (i), we look to the rapid development in the technology and methods used to study neural activity in lab animals. The possibility to control and manipulate neural activity, while simultaneously recording both intracranial signals like the local field potential (LFP) \citep{Einevoll2007, Blomquist2009} and extracranial non-invasive signals like the EEG \citep{BRUYNS2017}, can be expected to make important contributions to our understanding of non-invasive measurements of human brain activity \citep{SILVA2013, Uhlirova2016, COHEN2017, Pesaran2018}. 
-Furthermore, detailed biophysical modeling of neural activity has become an important tool for understanding intracranial LFP measurements \citep{EINEVOLL2013REVIEW, Pesaran2018}. Given that EEG is expected to reflect the same basic process as LFP, that is, large numbers of synaptic input to geometrically aligned pyramidal cells \citep{NUNEZ2006, Pesaran2018}, it seems likely that detailed biophysical modeling can also help shed light on the neural origin of EEG signals.
+Furthermore, detailed biophysical modeling of neural activity has become an important tool for understanding intracranial LFP measurements \citep{EINEVOLL2013REVIEW, Pesaran2018}. Given that EEG is expected to reflect the same basic process as LFP, that is, large numbers of synaptic input to geometrically aligned pyramidal cells \citep{NUNEZ2006, Pesaran2018}, \gen{I suggest we here also add a reference to the review paper in Nature Reviews Neuroscience of Buzsaki et al in 2012.} it seems likely that detailed biophysical modeling can also help shed light on the neural origin of EEG signals.
 
-As indicated in challenge (ii), EEG signals are expected to reflect the activity of much larger neural populations than the LFPs, making the simulations computationally demanding. Biophysically detailed large-scale simulations of neural networks have, however, been gaining substantial momentum in recent years, thanks to large ongoing neuroscience initiatives like the Allen Institute for Brain Science, and the Human Brain Project \citep{EINEVOLL2019}. The possibility to calculate EEG signals from such existing and future large-scale biophysically detailed neural simulations could lead to valuable insights into the neural origin of the EEG.
+As indicated in challenge (ii), EEG signals are expected to reflect the activity of much larger neural populations than the LFPs, making the simulations computationally demanding. Biophysically detailed large-scale simulations of neural networks have, however, been gaining substantial momentum in recent years, thanks to large ongoing neuroscience initiatives like \gex{Project MindScope at the Allen Institute for Brain Science, the Blue Brain Project
+and the EU} Human Brain Project \citep{EINEVOLL2019}. The possibility to calculate EEG signals from such existing and future large-scale biophysically detailed neural simulations could lead to valuable insights into the neural origin of the EEG.
 
 Another complicating aspect of EEG modeling, is that these predictions in general require a head model to account for the widely different electrical conductivities of the brain, cerebrospinal fluid (CSF), skull and scalp \citep{NUNEZ2006, Ilmoniemi2019}. While many such head models exist, they tend to take current dipoles as input \citep{NUNEZ2006, Pesaran2018}, instead of the transmembrane currents that are available from biophysical neural simulations and that form the basis for modeling LFPs \citep{EINEVOLL2013BOOKCHAPTER}. 
 
@@ -158,7 +160,10 @@ Another complicating aspect of EEG modeling, is that these predictions in genera
 
 %Important advances has also been made on the modeling side there has been great development in the tools needed \citep{TVB, HAGEN2018, NEYMOTIN2020} and in available computing power \citep{EINEVOLL2019}.
 
-Here, we introduce an approach for automated reduction of arbitrary biophysically detailed simulated neural activity to current dipoles, and verify its applicability for EEG signal calculations. Further, we show how the approach is useful for investigating the origin of EEG signals, before demonstrating how our methods can be applied for pre-existing large-scale network models. Finally, we show how current dipoles can be combined with realistic and complex head models, which enables simulation of EEG signals with unprecedented biophysical detail.  
+Here, we introduce an approach for \sout{automated} \gen{Synes kanskje ikke "automated" er nodvendig.} reduction of arbitrary biophysically detailed simulated neural activity to current dipoles, and verify its applicability for EEG signal calculations. Further, we show how the approach is useful for investigating the origin of EEG signals, before demonstrating how our methods can be applied for pre-existing large-scale network models. Finally, we show how current dipoles can be combined with realistic and complex head models, which enables simulation of EEG signals with unprecedented biophysical detail.  
+
+\gen{We should also mention ECoG and MEG}
+
 
 
 % Torbjørn's first draft:
@@ -182,16 +187,16 @@ Here, we introduce an approach for automated reduction of arbitrary biophysicall
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%METHODS%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Methods}\label{sec:methods}
-Neural activity generates electric currents in the brain, which in turn create electromagnetic fields. In this section, we explain how electric brain signals can be modeled in simple and more complex volume conductors.
+Neural activity generates electric currents in the brain, which in turn create electromagnetic fields. In this section, we explain how electric brain signals can be modeled \gex{both} in simple and more complex volume conductors.
 
 \subsection{Forward modeling of electric potentials}
-Due to negligibility of capacitive effects in the head, electric and magnetic signals effectively decouple, and we can apply the quasistatic approximation of Maxwell's equations for calculating these signals \citep{HAMALAINEN1993,NUNEZ2006}. In other words, for computing extracellular electric potentials, we envision the head as a 3D volume conductor, and combining Maxwell's equations with the current conservation law, we obtain the Poisson Equation for computing extracellular potentials \cite{GRIFFITHS1999}:
-
-
+Due to negligibility of capacitive effects in the head, electric and magnetic signals effectively decouple, and we can apply the quasistatic approximation of Maxwell's equations for calculating these signals \citep{HAMALAINEN1993,NUNEZ2006}. In other words, for computing extracellular electric potentials, we envision the head as a 3D volume conductor, and combining Maxwell's equations with the current conservation law, we obtain the Poisson \gex{e}quation for computing extracellular potentials \cite{GRIFFITHS1999}:
+%%%
 \begin{equation} \label{eq:poisson}
-\mathbf{\nabla} \mathbf{J^p} = \mathbf{\nabla} (\sigma \mathbf{\nabla} \phi)~,
+\mathbf{\nabla} \mathbf{J}^p = \mathbf{\nabla} (\sigma \mathbf{\nabla} \phi)~,
 \end{equation}
-where $\mathbf{J^p}$ is the primary current density, $\sigma$ is the extracellular conductivity and $\phi$ is the electric potential. The Poisson equation can be solved analytically for simple, symmetric head models, such as an infinitely big space and spherically symmetric models. For more complex head models, numerical methods such as the Finite Element Method (FEM) can be applied.
+where $\mathbf{J}^p$ is the primary current density, $\sigma$ is the extracellular conductivity and $\phi$ is the electric potential.
+\gen{Her maa vi spesifisere hva som menes med primary current density i vaar kontekst.} The Poisson equation can be solved analytically for simple, symmetric head models, such as an infinitely big space and spherically symmetric models. For more complex head models, numerical methods such as the Finite Element Method (FEM) can be applied.
 
 \subsubsection{Compartment-based approach}\label{subsubsec:multicomp}
 Extracellular potentials generated by transmembrane currents can be calculated with a well-founded biophysical two-step forward-modeling scheme. The first step involves \textit{multicompartmental modeling} and incorporates the details of reconstructed neuron morphologies for calculating transmembrane currents \citep{STERRATT2011}. In the second step, Equation~\eqref{eq:poisson} is solved under the assumption that the extracellular medium is an infinitely large, linear, ohmic, isotropic, homogeneous and frequency-independent volume conductor. The transmembrane currents entering and escaping the extracellular medium can be seen as current sources and sinks, and give the extracellular potential $\phi$ at the electrode location $\mathbf{r}$,
@@ -203,7 +208,7 @@ where $\mathbf{r}_n$ is the location of transmembrane current $I_n$, $N$ is the 
 This scheme is here referred to as the compartment-based approach, and was applied using the Python package \texttt{LFPy 2.0} running NEURON under the hood \citep{HAGEN2018,CARNEVALE2006}.
 
 \subsubsection{Current dipole approximation}\label{subsec:cda}
-Analogous to how electric charges can create charge multipoles, a combination of current sinks and sources can set up \textit{current} multipoles \citep{NUNEZ2006}. From electrodynamics, we know that extracellular potentials from a volume of current sinks and sources can be precisely described by expressing Equation~\ref{eq:point_source} as a multipole expansion \citep{NUNEZ2006}:
+Analogous to how electric charges can create charge multipoles, a combination of current sinks and ources can set up \textit{current} multipoles \citep{NUNEZ2006}. From electrodynamics, we know that extracellular potentials from a volume of current sinks and sources can be precisely described by expressing Equation~\ref{eq:point_source} as a multipole expansion \citep{NUNEZ2006}:
 \begin{equation}\label{eq:multipole_expansion}
 \phi(R) = \frac{C_{\text{monopole}}}{R} + \frac{C_{\text{dipole}}}{R^2} + \frac{C_{\text{quadrupole}}}{R^3} + ...~,
 \end{equation}
@@ -212,13 +217,17 @@ when the distance R from the center of the volume to the measurement point is la
 %\tvnnote{Usikker på om vi bør bruke denne referansen, da litt av poenget i den artikkelen er at de ser monopoler? Har vi en annen? Se Gratiy, Pettersen, Einevoll, Dale (2013) Pitfalls in the interpretation of multielectrode data: on the infeasibility of the neuronal current-source monopoles. J Neurophysiol 109:1681–1682.} 
 %\snnote{Aha!! Dette hadde jeg ikke fått med meg! Helt enig! Jeg klarer ikke å finne noen kilde som oppgir disse leddene for strømkilder (ikke ladninger). Går vel kanskje greit å ikke sitere noen her?} \tvnnote{Ja, kanskje bare evt legge inn sitering til bok-kapittelet vårt senere :-)}
 %\snnote{smart!}
-In neural tissue, the current monopole contribution is zero due to current conservation, since the transmembrane currents sum to zero at all times \citep{Koch1999, PETTERSEN2012}. Further, the quadrupole, octopole and higher order terms are negligible to the current dipole contribution when $R$ is sufficiently large.  Therefore, the extracellular potential from a neuron simulation can be estimated with the second term of the current multipole expansion; an approximation known as the \textit{current dipole approximation} \citep{PETTERSEN&EINEVOLL2008,PETTERSEN2014,NUNEZ2006}:
+In neural tissue, the current monopole contribution is zero due to current conservation, since the transmembrane currents sum to zero at all times \citep{Koch1999, PETTERSEN2012}. Further, the quadrupole, octopole and higher order terms are negligible \gex{compared} to the current dipole contribution when $R$ is sufficiently large.  Therefore, the extracellular potential from a neuron simulation can be estimated with the second term of the current multipole expansion; an approximation known as the \textit{current dipole approximation} \citep{PETTERSEN&EINEVOLL2008,PETTERSEN2014,NUNEZ2006}:
+%%%
 \begin{equation}\label{eq:dipole_approx}
-\phi(\mathbf{r}) = \frac{C_{\text{dipole}}}{R^2} =\frac{1}{4 \pi \sigma} \frac{|\mathbf{p}| \cos \theta}{|{\bf r} - {\bf r}_p|^2}~.
+\phi(\mathbf{r}) = \frac{C_{\text{dipole}}}{R^2} =\frac{1}{4 \pi \sigma} \frac{|\mathbf{p}| \cos \theta}{|{\bf r} - {\bf r}_\mathrm{p}|^2}~.
 \end{equation}
-Here, $\mathbf{p}$ is the current dipole moment in a medium with conductivity $\sigma$, $R = |{\bf R}| = |{\bf r} - {\bf r}_p|$ is the distance between the current dipole moment at ${\bf r}_p$ and the electrode location ${\bf r}$, and $\theta$ denotes the angle between $\mathbf{p}$ and $\mathbf{R}$.
+%%%
+Here, $\mathbf{p}$ is the current dipole moment in a medium with conductivity $\sigma$, $R = |{\bf R}| = |{\bf r} - {\bf r}_\mathrm{p}|$ is the distance between the current dipole moment at ${\bf r}_\mathrm{p}$ and the electrode location ${\bf r}$, and $\theta$ denotes the angle between $\mathbf{p}$ and $\mathbf{R}$.
 The current dipole moment ${\bf p}$ can be calculated from an axial current $I$ inside a neuron and the distance vector ${\bf d}$ traveled by the axial current: ${\bf p} = I{\bf d}$, analogous to a charge dipole moment. 
-The current dipole approximation is applicable in the far-field limit, that is when $R$ is much larger than the dipole length $d = |{\bf d}|$, $R > 3d$ or $4d$ \citep{NUNEZ2006}.
+The current dipole approximation is applicable in the far-field limit, that is when $R$ is much larger than the dipole length 
+$d = |{\bf d}|$ \sout{, $R > 3d$ or $4d$} \citep{NUNEZ2006}. 
+\gen{Synes ikke disse omtrentlige maalene for "applicable" (for what?) er nodvendige.}
 
 %\snnote{I think I've been a bit back and forth regarding how exact the multi-dipole strategy is. Here's a summary after my final derivations: When inserting dipoles generated from a single current sink and a single current source into eq.4, you get no quadrupole,hexadecapol contribution, etc.. But there will be an octopole contribution (and a  $1/R^6$-contribtuion, $1/R^8$-contribution, etc). The multi-dipole approach is therefore not mathematically equivalent to the compartment-based approach (it is based on the current-dipole aproximation, after all). However, since the dipoles are tiny, the distance from the cell giving a neglibible octopole term is much closer here than for the big dipole length in the single-dipole approximation. I'm still not sure whether it would be better to call it the multi-dipole \textit{approach} or \textit{approximation}, since this is an approximation after all...}
 
@@ -226,11 +235,12 @@ The current dipole approximation is applicable in the far-field limit, that is w
 
 From some multicompartmental neuron simulations (Figure \ref{fig:dipole_field}- \ref{fig:eeg_compare_cell_types}), we computed multiple current dipole moments, i.e., one for each axial current flowing between neighboring compartments in the neuron:
 \begin{equation}
-{\bf p}_k = I_k^{axial} {\bf d}_k.
+{\bf p}_k = I_k^{\mathrm{axial}} {\bf d}_k.
 \end{equation}
-Here, $I_k^{axial}$ is an axial current traveling along distance vector ${\bf d}_k$, resulting in a current dipole moment ${\bf p}_k$.
+Here, $I_k^{\mathrm{axial}}$ is an axial current traveling along distance vector ${\bf d}_k$, resulting in a current dipole moment ${\bf p}_k$.
 %\tvntxt{\sout{Each of these current dipole moments contributes to the extracellular potential. }}
-By inserting all the current dipole moments from a neuron simulation into the current dipole approximation (Equation~\ref{eq:dipole_approx}), we get a good estimate of the extracellular potential at any electrode location where the distance between the electrode and the nearest dipole is shorter than three or four times this dipole's length \citep{NUNEZ2006}.
+By inserting all the current dipole moments from a neuron simulation into the current dipole approximation (Equation~\ref{eq:dipole_approx}), we get a good estimate of the extracellular potential at any electrode location where the distance between the electrode and the nearest dipole is 
+\gex{sufficiently large} \sout{shorter than three or four times this dipole's length} \citep{NUNEZ2006}.
 Note that the length of each (multi-)dipole is equal to half the length of its corresponding neuronal compartment. %This means that each dipole is quite short (normally on the scale of a few tens of micrometers), meaning that the multi-dipole approach is normally a very good approximation at distances larger than 50-100 $\si{\mu m}$ from the neuron. \tvnnote{Tenker egentlig vi kan droppe siste setning} \snnote{Ja!}
 
 
@@ -243,15 +253,16 @@ Note that the length of each (multi-)dipole is equal to half the length of its c
 From each multicompartmental neuron simulation, we computed one single current dipole moment. This can either be done by summing up the multiple current dipole moments,
 
 \begin{equation}\label{eq:dip_sum_axial}
-\mathbf{p}(t) = \sum_{k=1}^{M} {\bf p}_k(t) = \sum_{i=1}^{M} I_k^{axial}(t) \mathbf{d}_k,
+\mathbf{p}(t) = \sum_{k=1}^{M} {\bf p}_k(t) = \sum_{i=1}^{M} I_k^{\mathrm{axial}}(t) \mathbf{d}_k,
 \end{equation}
 where $M$ is the number of axial currents,
 or equivalently from a position-weighted sum of all the transmembrane currents \citep{LINDEN2010, HAGEN2018}:
 
 \begin{equation}\label{eq:dip_sum_trans}
-\mathbf{p}(t) = \sum_{k=1}^{N} I_k^{trans}(t) \mathbf{r}_k,
+\mathbf{p}(t) = \sum_{k=1}^{N} I_k^{\mathrm{trans}}(t) \mathbf{r}_k,
 \end{equation}
-where N is the number of compartments in the multicompartmental neuron model and ${\bf r}_k$ is the position of transmembrane current $I_k^{trans}(t)$.
+where N is the number of compartments in the multicompartmental neuron model and ${\bf r}_k$ is the position of transmembrane 
+current $I_k^{\mathrm{trans}}(t)$.
 The calculation of current-dipole moments from simulated neural activity was implemented in LFPy 2.0, and can used through \texttt{Cell.current\_dipole\_moment}  \citep{HAGEN2018}.
 
 
@@ -310,7 +321,8 @@ Electric potentials will be affected by the geometries and conductivities of the
 The four-sphere head model is a simple analytical model consisting of four concentric shells: brain tissue, cerebrospinal (CSF) fluid, skull and scalp, where the conductivity can be set individually for each shell, \citep{SRINIVASAN1998,NUNEZ2006}. The model solution is given in \cite{NAESS2017} and is found by solving the Poisson equation subject to boundary conditions ensuring continuity of current and electric potentials over the boundaries, as well as no current escaping the outer shell. This model is based on the current dipole approximation.
 
 \subsubsection{New York Head model}\label{subsubsec:NYH}
-The New York Head model is a realistic head model based on high-resolution, anatomical MRI-data from 152 adult heads \citep{HUANG2015}. The model was constructed by taking advantage of the reciprocity theorem, stating that the position of the electrode and the dipolar source can be switched without affecting the measured potential \citep{RUSH1969}. This means, that virtually injecting current at the locations of the EEG electrodes and using the finite element method \citep{LOGG2012} to compute the resulting potential anywhere in the brain, gives the link between current dipoles in the brain and the resulting EEG signals. This link was captured in a matrix known as the \textit{lead field} ${\bf L}$: 
+The New York Head model is a \sout{realistic} \gex{detailed head} model based on high-resolution, anatomical MRI-data from 152 adult heads \citep{HUANG2015}. The model was constructed by taking advantage of the reciprocity theorem, stating that the position of the electrode and the dipolar source can be switched without affecting the measured potential \citep{RUSH1969}. This means, that virtually injecting current at the locations of the EEG electrodes and using the finite element method \citep{LOGG2012} to compute the resulting potential anywhere in the brain, gives the link between current dipoles in the brain and the resulting EEG signals. 
+\gen{Ja, det er kanskje saa enkelt?} This link was captured in a matrix known as the \textit{lead field} ${\bf L}$: 
 
 \begin{equation}
 {\bf L} = \frac{{\bf E}}{I}
