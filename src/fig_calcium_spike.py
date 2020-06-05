@@ -131,7 +131,7 @@ def run_cell_simulation(make_ca_spike, dt, cell_name="hay"):
                 'v_init': -62,
                 'passive': False,
                 'nsegs_method': None,
-                'dt': 2**-4,  # [ms] Should be a power of 2
+                'dt': dt,  # [ms] Should be a power of 2
                 'tstart': -200,  # [ms] Simulation start time
                 'tstop': T,  # [ms] Simulation end time
                 'custom_code': [join('cell_model.hoc')] # Loads model specific code
@@ -286,7 +286,6 @@ def simulate_spike_current_dipole_moment():
         'y': grid_y.flatten(),
         'z': grid_z.flatten()
     }
-
 
     elec_x = np.array([30, ])
     elec_y = np.array([0, ])
