@@ -68,10 +68,7 @@
 \begin{frontmatter}
 	%\linenumbers
 	
-	\title{Biophysical modeling of \gex{the neural origin of EEG, ECoG and MEG} signals
-	\snnote{Detailed biophysical modeling of EEG and MEG signals}
-	\snnote{Bridging the gap between complex neural simulations and EEG and MEG signals with biophysical modeling}
-	\snnote{Biophysical modeling of EEG and MEG signals based on detailed neural simulations}
+	\title{Biophysical modeling of the neural origin of EEG and MEG signals
 %	\tvnnote{Alternativ tittel: 
 %%			1) Towards a model-based understanding of the EEG signals.
 %%			2) Towards accurate detailed biophysical modeling of EEG signals.}
@@ -87,7 +84,7 @@
 	\author{Torbj\o{}rn V. Ness\fnref{label2}}
 	
 	\address[label1]{Department of Informatics, University of Oslo, Oslo, Norway}
-	\address[label2]{Department of Mathematical Sciences and Technology, Norwegian University of Life Sciences, Ås, Norway}
+	\address[label2]{Faculty of Science and Technology, Norwegian University of Life Sciences, Ås, Norway}
 	\address[label3]{Department of Radiology, University of California, San Diego, CA, USA}
 	\address[label4]{Departments of Neurosciences and Radiology, University of California, San Diego, CA, USA}
 	\address[label5]{Department of Physics, University of Oslo, Oslo, Norway}
@@ -129,13 +126,14 @@
 
 \section{Introduction}\label{sec:introduction}
 
-Electroencephalography (EEG) is one of the most important non-invasive methods for studying human cognitive function and diagnosing brain diseases \citep{COHEN2017, Pesaran2018}.  Yet, we know surprisingly little about the neural origin of these electric scalp potentials \citep{COHEN2017}: On the one hand, we have a relatively good understanding of the biophysics of EEGs, \tvntxt{in that we know that these signals originate from cortical current dipoles, and we have a well-defined framework for linking such cortical dipoles to electric scalp potentials} \citep{NUNEZ2006}. \sntxt{This has been taken advantage of for a long time in source localization, by inverse modeling of the underlying cortical current dipoles from EEG data. On the other hand, even though these cortical dipoles are assumed to mainly originate from }
-large numbers of synaptic inputs to cortical pyramidal cell populations \citep{NUNEZ2006, SILVA2013, Pesaran2018, Ilmoniemi2019},
+Electroencephalography (EEG) is one of the most important non-invasive methods for studying human cognitive function and diagnosing brain diseases \citep{COHEN2017, Pesaran2018}.  Yet, we know surprisingly little about the neural origin of these electric scalp potentials \citep{COHEN2017}: On the one hand, we have a relatively good understanding of the biophysics of EEGs, \tvntxt{in \sntxt{knowing} that these signals originate from cortical current dipoles, and \sntxt{having \sout{ we have}} a well-defined framework for linking such cortical dipoles to electric scalp potentials} \citep{NUNEZ2006}. \sntxt{This has been taken advantage of for a long time in source localization, by inverse modeling of the underlying cortical current dipoles from EEG data. On the other hand, even though these cortical dipoles are assumed to mainly originate from }
+large numbers of synaptic input to cortical pyramidal cell populations \citep{NUNEZ2006, SILVA2013, Pesaran2018, Ilmoniemi2019},
 \sntxt{the precise link between cortical dipoles and the underlying neural activity has remained unclear. In other words, w}e know very little about exactly which types of neural activity that cause even the most well-studied characteristics of the EEG signal, such as different types of oscillations (e.g., alpha, beta, and gamma waves) and stereotyped EEG-shapes in response to sensory stimuli (event-related potentials, ERPs) \citep{COHEN2017}. Importantly, these different EEG characteristics are affected in predictable ways by various brain conditions, such as sleep and attention \citep{Klimesch1998, Palva2011, Siegel2012}, and by brain disorders including epilepsy and schizophrenia \citep{Niedermeyer2003, Light2013, Freestone2015, MAKI2019}. 
 This means that a better insight into how different types of brain activity is reflected in \tvntxt{\sout{EEG signals} cortical current dipoles} could help us in \tvntxt{making better inverse models, } understanding the human brain and curing brain diseases  \citep{Uhlirova2016, COHEN2017, MAKI2019}.
 \gen{I also think the possibility for making better inverse models could be mentioned as a motivation.}
-\snnote{Har prøvd å bake dette inn, nå, litt implisitt kanskje?}
+\snnote{Har prøvd å bake dette inn nå, litt implisitt kanskje?}
 \tvnnote{Hva med dette?}
+\snnote{Ja, mye bedre!=)}
 
 The reason why we lack understanding of the neural origin of EEG signals is multifaceted. Among the main causes are (i) strong ethical constraints on invasive human brain measurements and (ii) the high number of neurons that contribute to the signal. However, in recent years there have been major advances in several relevant branches of neuroscience, meaning that a better understanding of the EEG signal may now be within reach \citep{Uhlirova2016, COHEN2017}.
 
@@ -296,7 +294,7 @@ The calculation of current-dipole moments from simulated neural activity was imp
 Electric potentials will be affected by the geometries and conductivities of the various parts of the head \citep{NUNEZ2006}, which is especially important for electrode locations outside of the brain. This can be incorporated into our extracellular potential calculations by applying simplified or complex head models.
 
 \subsubsection{Four-sphere model}\label{subsubsec:4S}
-The four-sphere head model is a simple analytical model consisting of four concentric shells: brain tissue, cerebrospinal (CSF) fluid, skull and scalp, where the conductivity can be set individually for each shell, \citep{SRINIVASAN1998,NUNEZ2006}. The model solution is given in \cite{NAESS2017} and is found by solving the Poisson equation subject to boundary conditions ensuring continuity of current and electric potentials over the boundaries, as well as no current escaping the outer shell. This model is based on the current dipole approximation.
+The four-sphere head model is a simple analytical model consisting of four concentric shells: brain tissue, cerebrospinal (CSF) fluid, skull and scalp, where the conductivity can be set individually for each shell \citep{SRINIVASAN1998,NUNEZ2006}\sntxt{, see Table~\ref{tab:4sphere} for parameters used in this paper.} The model solution is given in \cite{NAESS2017} and is found by solving the Poisson equation subject to boundary conditions ensuring continuity of current and electric potentials over the boundaries, as well as no current escaping the outer shell. This model is based on the current dipole approximation.
 
 
 \begin{table*}[ht]
@@ -311,7 +309,7 @@ The four-sphere head model is a simple analytical model consisting of four conce
     Scalp & 9.0 & 0.3 \\ 
     \hline
   \end{tabular}
-  \caption{\textbf{Radii and electrical conductivities used in the four-sphere model.} The radius of each spherical shell in the four-sphere model is given in centimeters, while $\sigma$ denotes the respective electrical conductivity in the unit of \si{S/m}.} 
+  \caption{\sntxt{\textbf{Radii and electrical conductivities used in the four-sphere model.} The radius of each spherical shell in the four-sphere model is given in centimeters, while $\sigma$ denotes the respective electrical conductivity in the unit of \si{S/m}.}}
   \label{tab:4sphere}
 \end{table*}
 
@@ -360,7 +358,7 @@ Simulation code to reproduce all figures in this paper is freely available from 
 \section{Results}\label{sec:results}
 \normalsize
 
-We introduce an approach for modeling \tvntxt{electrocorticography (ECoG), electroencephalography (EEG), and magnetoencephalography (MEG) \sout{electroencephalography (EEG)}} signals from detailed biophysical multicompartment cell models. For illustration, we first consider single synaptic input to single neurons in an infinite homogeneous head model, before moving on to a simple, generic head model. \tvntxt{\sout{We also look into the possibility for ECoG modeling with this approach.}}Finally, we study EEGs from \tvntxt{large-scale simulated network} activity, also applying a realistic head model. 
+We introduce an approach for modeling \tvntxt{electrocorticography (ECoG), electroencephalography (EEG), and magnetoencephalography (MEG) \sout{electroencephalography (EEG)}} signals from detailed biophysical multicompartment cell models. For illustration, we first consider single synaptic input to single neurons in an infinite homogeneous head model, before moving on to a simple, generic head model. Finally, we study EEGs from \tvntxt{large-scale simulated network} activity, also applying a realistic head model. 
 %Note that while we will only consider EEG signals, the general approach is equally valid for MEG signals. 
 %\gen{ECoG modelleringen boer vel ogsaa nevnes her.}
 
@@ -510,8 +508,8 @@ For a rat cortical layer-5 pyramidal cell model (Fig.~\ref{fig:eeg_compare_cell_
 Lastly, we used a rat cortical layer-5 interneuron model (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{A}, green; \cite{MARKRAM2015}), but since the dendrites of interneurons are not structured into the same distinctive zones as pyramidal cells, the synaptic input caused very small net current dipole moments.
 
 We calculated the EEG signals with the four-sphere head model, using both the multi-dipole (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{D}, dotted lines) and the single-dipole (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{D}, solid lines) approach.
-\tvntxt{\sout{In order t}To compare the approaches, we computed the \sout{global} relative error, as \sout{meaning} the absolute difference between the results from the two approaches, normalized by the \sout{global} maximum EEG magnitude computed with the multi-dipole approach.}
-The single-dipole approach gave a maximum \sout{global}
+\tvntxt{To compare the approaches, we computed the relative error, as the absolute difference between the results from the two approaches, normalized by the maximum EEG magnitude computed with the multi-dipole approach.}
+The single-dipole approach gave a maximum 
 %\gen{"global error" maa forklares} 
 error of  2.2$\%$, 3.5$\%$ and 0.34$\%$ for the human layer-5 cell, the rat layer-5 cell and the rat interneuron, respectively.
 %\sout{In all three cases, we found the single-dipole approximation to be in excellently agreement with the multi-dipole approach, demonstrating that}  
@@ -562,8 +560,9 @@ This demonstrates that dendritic calcium spikes are much more capable of summing
 
 \tvntxt{The amplitude of the slow component of the current dipole moment from the calcium spike was about 0.5~$\si{\uA}\cdot\si{\um}$ (Fig.~\ref{fig:ca_spike}\textbf{C3}), and later (Sec.~\ref{subsec:populations}) we will present results from a simulated neural network where the average event-related current dipole moment of layer 5 pyramidal cells were found to be about 0.1~$\si{\uA}\cdot\si{\um}$ (Fig.~\ref{fig:population}{\bf D}, bottom left). This indicates that our results are compatible with the claim by \cite{SUZUKI2017} that signal amplitudes from calcium spikes could be similar in amplitude to contributions from synaptic input.
 }
-\tvnnote{1 uA * um ~-> 1 nV, so 10000 Ca spikes gives ~10 uV EEG.} 
-%\tvnnote{Although our Ca-spikes appear quite different in shape to the ones demonstrated by Suzuki and Larkum (2017), who (in defence of our results) reported an 'unexpected shape'}
+
+\tvnnote{1 $\mu$A * $\mu$m ~-> 1 nV, so 10000 Ca spikes gives ~10 $\mu$V EEG.} 
+
 
 It might initially seem surprising that the dendritic calcium spike is so strongly reflected in the single-cell current dipole moment, given that the transmembrane currents associated with the somatic action potential are much larger than those associated with the dendritic calcium spike: the maximum amplitude of the transmembrane currents of the somatic compartment was 45.1~$\si{\nA}$, compared to just 0.30~$\si{\nA}$ for the compartment in the apical dendrite (Fig.~\ref{fig:ca_spike}{\bf A}, blue and orange dots). 
 \gen{Blir denne sammenligningen illustrativ naar det er saa stor forskjell paa arealet kompartmentene?} 
