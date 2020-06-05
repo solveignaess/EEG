@@ -187,7 +187,7 @@ def run_cell_simulation(make_ca_spike, dt, cell_name="hay"):
     return cell, idx_clr, plot_idxs
 
 
-def simulate_spike_current_dipole_moment():
+def animate_ca_spike():
 
     dt = 2**-5
     cell_name = 'hay'
@@ -195,7 +195,100 @@ def simulate_spike_current_dipole_moment():
     jitter_std = 10
     num_trials = 1000
 
-    elec_x = np.array([30,])
+    # Create a grid of measurement locations, in (mum)
+    grid_x, grid_z = np.mgrid[-750:751:25, -750:1301:25]
+    grid_y = np.zeros(grid_x.shape)
+
+    # Define electrode parameters
+    grid_elec_params = {
+        'sigma': 0.3,      # extracellular conductivity
+        'x': grid_x.flatten(),  # electrode requires 1d vector of positions
+        'y': grid_y.flatten(),
+        'z': grid_z.flatten()
+    }
+
+    elec_x = np.array([30, ])
+    elec_y = np.array([0, ])
+    elec_z = np.array([0, ])
+
+    num = 11
+    levels = np.logspace(-2.5, 0, num=num)
+    scale_max = 100.
+
+    levels_norm = scale_max * np.concatenate((-levels[::-1], levels))
+    bwr_cmap = plt.cm.get_cmap('bwr_r')  # rainbow, spectral, RdYlBu
+
+    colors_from_map = [bwr_cmap(i * np.int(255 / (len(levels_norm) - 2))) for i in range(len(levels_norm) - 1)]
+    colors_from_map[num - 1] = (1.0, 1.0, 1.0, 1.0)
+
+    cell, idx_clr, plot_idxs = run_cell_simulation(make_ca_spike=False, dt=dt, cell_name=cell_name)
+    grid_electrode = LFPy.RecExtElectrode(cell, **grid_elec_params)
+    grid_electrode.calc_lfp()
+    grid_LFP = 1e3 * grid_electrode.LFP
+
+    grid_LFP -= grid_LFP[:, 0, None]
+    for time_idx in range(len(cell.tvec))[2000:]:
+        plt.close("all")
+        fig = plt.figure(figsize=[5, 4])
+        fig.text(0.5, 0.95, "T={:1.1f} ms".format(cell.tvec[time_idx]), ha="center")
+        ax_ = fig.add_axes([0.4, 0.14, 0.6, 0.88], xticks=[], yticks=[], aspect=1, frameon=False)
+        cax = fig.add_axes([0.5, 0.15, 0.4, 0.01])
+        ax_vm = fig.add_axes([0.25, 0.65, 0.2, 0.3], ylabel="membrane\npotential\n(mV)", xlabel="time (ms)")
+        ax_cdm = fig.add_axes([0.25, 0.2, 0.2, 0.3], ylabel="current dipole\nmoment\n($\mu$A$\cdot\mu$m)", xlabel="time (ms)")
+        grid_LFP_ = grid_LFP[:, time_idx].reshape(grid_x.shape)
+        [ax_.plot([cell.xstart[idx], cell.xend[idx]],
+        [cell.zstart[idx], cell.zend[idx]], c='gray')
+            for idx in range(cell.totnsegs)]
+        ax_.plot([350, 350], [-540, -640], c='k', lw=2)
+        ax_.text(360, -590, "100 $\mu$m", va='center')
+        ep_intervals = ax_.contourf(grid_x, grid_z, grid_LFP_,
+                                   zorder=-2, colors=colors_from_map,
+                                   levels=levels_norm, extend='both')
+
+        ax_.contour(grid_x, grid_z, grid_LFP_, colors='k', linewidths=(1), zorder=-2,
+                   levels=levels_norm)
+
+        cbar = fig.colorbar(ep_intervals, cax=cax, orientation='horizontal',
+                            format='%.0E', extend='max')
+
+        cbar.set_ticks(np.array([-1, -0.1, -0.01, 0, 0.01,  0.1, 1]) * scale_max)
+        cax.set_xticklabels(np.array(np.array([-1, -0.1, -0.01, 0, 0.01, 0.1, 1]) * scale_max, dtype=int),
+                            fontsize=7, rotation=45)
+        cbar.set_label('$\phi$ ($\mu$V)', labelpad=-5)
+        [ax_vm.plot(cell.tvec, cell.vmem[idx], c=idx_clr[idx]) for idx in plot_idxs]
+        ax_cdm.plot(cell.tvec, cell.current_dipole_moment[:, 2], c='k')
+        ax_vm.axvline(cell.tvec[time_idx], c='gray', lw=1, ls='--')
+        ax_cdm.axvline(cell.tvec[time_idx], c='gray', lw=1, ls='--')
+        simplify_axes([ax_vm, ax_cdm])
+        anim_fig_folder = "anim_no_ca"
+        os.makedirs(anim_fig_folder, exist_ok=True)
+        plt.savefig(join(anim_fig_folder, "cell_ca_cont_{:04d}.png".format(time_idx)))
+
+
+def simulate_spike_current_dipole_moment():
+
+    dt = 2**-2
+    cell_name = 'hay'
+
+    jitter_std = 10
+    num_trials = 1000
+
+    # Create a grid of measurement locations, in (mum)
+    grid_x, grid_z = np.mgrid[-650:651:25, -400:1301:25]
+    # grid_x, grid_z = np.mgrid[-75:76:50, -75:76:50]
+    # grid_x, grid_z = np.mgrid[-75:76:50, -75:251:50]
+    grid_y = np.zeros(grid_x.shape)
+
+    # Define electrode parameters
+    grid_elec_params = {
+        'sigma': 0.3,      # extracellular conductivity
+        'x': grid_x.flatten(),  # electrode requires 1d vector of positions
+        'y': grid_y.flatten(),
+        'z': grid_z.flatten()
+    }
+
+
+    elec_x = np.array([30, ])
     elec_y = np.array([0, ])
     elec_z = np.array([0, ])
 
@@ -211,11 +304,11 @@ def simulate_spike_current_dipole_moment():
     cell_woca, idx_clr, plot_idxs = run_cell_simulation(make_ca_spike=False, dt=dt, cell_name=cell_name)
     cell_wca, idx_clr, plot_idxs = run_cell_simulation(make_ca_spike=True, dt=dt, cell_name=cell_name)
 
-    fig = plt.figure(figsize=[7, 7])
+    fig = plt.figure(figsize=[8, 7])
     fig.subplots_adjust(hspace=0.5, left=0.0, wspace=0.4, right=0.96,
                         top=0.97, bottom=0.1)
 
-    ax_m = fig.add_axes([-0.01, 0.05, 0.3, 0.97], aspect=1, frameon=False,
+    ax_m = fig.add_axes([-0.01, 0.05, 0.25, 0.97], aspect=1, frameon=False,
                         xticks=[], yticks=[])
     [ax_m.plot([cell_wca.xstart[idx], cell_wca.xend[idx]],
               [cell_wca.zstart[idx], cell_wca.zend[idx]], c='k')
@@ -227,17 +320,53 @@ def simulate_spike_current_dipole_moment():
     ax_top = 0.98
     ax_h = 0.15
     h_space = 0.1
-    ax_w = 0.2
-    ax_left = 0.42
+    ax_w = 0.17
+    ax_left = 0.37
+    num = 15
+
+    levels = np.logspace(-3, 0, num=num)
+    scale_max = 75.
+
+    levels_norm = scale_max * np.concatenate((-levels[::-1], levels))
+    bwr_cmap = plt.cm.get_cmap('bwr_r')  # rainbow, spectral, RdYlBu
+
+    colors_from_map = [bwr_cmap(i * np.int(255 / (len(levels_norm) - 2))) for i in range(len(levels_norm) - 1)]
+    colors_from_map[num - 1] = (1.0, 1.0, 1.0, 1.0)
+
 
     summed_cdm_max = np.zeros(2)
     for plot_row, cell in enumerate([cell_woca, cell_wca]):
-        ax_left += plot_row * 0.3
+        ax_left += plot_row * 0.25
 
         elec = LFPy.RecExtElectrode(cell, **electrode_parameters)
         elec.calc_lfp()
 
         elec.LFP -= elec.LFP[:, 0, None]
+
+        if plot_row == 1:
+            spike_plot_time_idxs = [np.argmax(cell.vmem[idx]) for idx in plot_idxs]
+            print(cell.tvec[spike_plot_time_idxs])
+
+            grid_electrode = LFPy.RecExtElectrode(cell, **grid_elec_params)
+            grid_electrode.calc_lfp()
+            grid_LFP = 1e3 * grid_electrode.LFP
+
+            grid_LFP -= grid_LFP[:, 0, None]
+
+            for c_idx, time_idx in enumerate(spike_plot_time_idxs):
+                grid_LFP_ = grid_LFP[:, time_idx].reshape(grid_x.shape)
+                ax_ = fig.add_axes([0.85, 0.4 + c_idx / 4, 0.12, 0.2], xticks=[], yticks=[], aspect=1)
+                [ax_.plot([cell_wca.xstart[idx], cell_wca.xend[idx]],
+                [cell.zstart[idx], cell.zend[idx]], c='k')
+                    for idx in range(cell_wca.totnsegs)]
+                ep_intervals = ax_.contourf(grid_x, grid_z, grid_LFP_,
+                                           zorder=-2, colors=colors_from_map,
+                                           levels=levels_norm, extend='both')
+
+                ax_.contour(grid_x, grid_z, grid_LFP_, colors='k', linewidths=(1), zorder=-2,
+                           levels=levels_norm)
+
+
         cell.current_dipole_moment -= cell.current_dipole_moment[0, :]
 
         sum_tvec, summed_cdm = sum_jittered_cdm(cell.current_dipole_moment[:, 2],
@@ -291,8 +420,8 @@ def simulate_spike_current_dipole_moment():
     mark_subplots([ax_m], xpos=0.1, ypos=0.95)
     simplify_axes(fig.axes)
 
-    plt.savefig(join("figures", 'ca_spike_{}.png'.format(cell_name)))
-    plt.savefig(join("figures", 'ca_spike_{}.pdf'.format(cell_name)))
+    plt.savefig(join("figures", 'ca_spike_{}_mod.png'.format(cell_name)))
+    plt.savefig(join("figures", 'ca_spike_{}_mod.pdf'.format(cell_name)))
 
 
 def simulate_laminar_LFP():
@@ -420,6 +549,7 @@ def sum_jittered_cdm(cdm, dt, jitter_std, num_trials):
 
 if __name__ == '__main__':
 
-    #simulate_spike_current_dipole_moment()
-    simulate_laminar_LFP()
+    # simulate_spike_current_dipole_moment()
+    animate_ca_spike()
+    # simulate_laminar_LFP()
 
