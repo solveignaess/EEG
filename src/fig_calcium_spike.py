@@ -267,14 +267,14 @@ def animate_ca_spike():
 
 def simulate_spike_current_dipole_moment():
 
-    dt = 2**-2
+    dt = 2**-5
     cell_name = 'hay'
 
     jitter_std = 10
     num_trials = 1000
 
     # Create a grid of measurement locations, in (mum)
-    grid_x, grid_z = np.mgrid[-650:651:25, -400:1301:25]
+    grid_x, grid_z = np.mgrid[-750:751:25, -750:1301:25]
     # grid_x, grid_z = np.mgrid[-75:76:50, -75:76:50]
     # grid_x, grid_z = np.mgrid[-75:76:50, -75:251:50]
     grid_y = np.zeros(grid_x.shape)
@@ -322,10 +322,10 @@ def simulate_spike_current_dipole_moment():
     h_space = 0.1
     ax_w = 0.17
     ax_left = 0.37
-    num = 15
 
-    levels = np.logspace(-3, 0, num=num)
-    scale_max = 75.
+    num = 11
+    levels = np.logspace(-2.5, 0, num=num)
+    scale_max = 100.
 
     levels_norm = scale_max * np.concatenate((-levels[::-1], levels))
     bwr_cmap = plt.cm.get_cmap('bwr_r')  # rainbow, spectral, RdYlBu
@@ -333,7 +333,7 @@ def simulate_spike_current_dipole_moment():
     colors_from_map = [bwr_cmap(i * np.int(255 / (len(levels_norm) - 2))) for i in range(len(levels_norm) - 1)]
     colors_from_map[num - 1] = (1.0, 1.0, 1.0, 1.0)
 
-
+    spike_plot_time_idxs = [1030, 1151]
     summed_cdm_max = np.zeros(2)
     for plot_row, cell in enumerate([cell_woca, cell_wca]):
         ax_left += plot_row * 0.25
@@ -343,28 +343,28 @@ def simulate_spike_current_dipole_moment():
 
         elec.LFP -= elec.LFP[:, 0, None]
 
-        if plot_row == 1:
-            spike_plot_time_idxs = [np.argmax(cell.vmem[idx]) for idx in plot_idxs]
-            print(cell.tvec[spike_plot_time_idxs])
+        time_idx = spike_plot_time_idxs[plot_row]
+        print(cell.tvec[time_idx])
 
-            grid_electrode = LFPy.RecExtElectrode(cell, **grid_elec_params)
-            grid_electrode.calc_lfp()
-            grid_LFP = 1e3 * grid_electrode.LFP
+        grid_electrode = LFPy.RecExtElectrode(cell, **grid_elec_params)
+        grid_electrode.calc_lfp()
+        grid_LFP = 1e3 * grid_electrode.LFP
 
-            grid_LFP -= grid_LFP[:, 0, None]
+        grid_LFP -= grid_LFP[:, 0, None]
 
-            for c_idx, time_idx in enumerate(spike_plot_time_idxs):
-                grid_LFP_ = grid_LFP[:, time_idx].reshape(grid_x.shape)
-                ax_ = fig.add_axes([0.85, 0.4 + c_idx / 4, 0.12, 0.2], xticks=[], yticks=[], aspect=1)
-                [ax_.plot([cell_wca.xstart[idx], cell_wca.xend[idx]],
-                [cell.zstart[idx], cell.zend[idx]], c='k')
-                    for idx in range(cell_wca.totnsegs)]
-                ep_intervals = ax_.contourf(grid_x, grid_z, grid_LFP_,
-                                           zorder=-2, colors=colors_from_map,
-                                           levels=levels_norm, extend='both')
 
-                ax_.contour(grid_x, grid_z, grid_LFP_, colors='k', linewidths=(1), zorder=-2,
-                           levels=levels_norm)
+        grid_LFP_ = grid_LFP[:, time_idx].reshape(grid_x.shape)
+        ax_ = fig.add_axes([0.75, 0.55 - plot_row * 0.46, 0.3, 0.45], xticks=[], yticks=[], aspect=1, frameon=False)
+        mark_subplots(ax_, [["D1"], ["D2"]][plot_row], ypos=0.95, xpos=0.35)
+        [ax_.plot([cell_wca.xstart[idx], cell_wca.xend[idx]],
+        [cell.zstart[idx], cell.zend[idx]], c='k')
+            for idx in range(cell_wca.totnsegs)]
+        ep_intervals = ax_.contourf(grid_x, grid_z, grid_LFP_,
+                                   zorder=-2, colors=colors_from_map,
+                                   levels=levels_norm, extend='both')
+
+        ax_.contour(grid_x, grid_z, grid_LFP_, colors='k', linewidths=(1), zorder=-2,
+                   levels=levels_norm)
 
 
         cell.current_dipole_moment -= cell.current_dipole_moment[0, :]
@@ -549,7 +549,7 @@ def sum_jittered_cdm(cdm, dt, jitter_std, num_trials):
 
 if __name__ == '__main__':
 
-    # simulate_spike_current_dipole_moment()
-    animate_ca_spike()
+    simulate_spike_current_dipole_moment()
+    # animate_ca_spike()
     # simulate_laminar_LFP()
 
