@@ -355,7 +355,7 @@ def simulate_spike_current_dipole_moment():
 
         grid_LFP_ = grid_LFP[:, time_idx].reshape(grid_x.shape)
         ax_ = fig.add_axes([0.75, 0.55 - plot_row * 0.46, 0.3, 0.45], xticks=[], yticks=[], aspect=1, frameon=False)
-        mark_subplots(ax_, [["D1"], ["D2"]][plot_row], ypos=0.95, xpos=0.35)
+        mark_subplots(ax_, [["D"], ["E"]][plot_row], ypos=0.95, xpos=0.35)
         [ax_.plot([cell_wca.xstart[idx], cell_wca.xend[idx]],
         [cell.zstart[idx], cell.zend[idx]], c='k')
             for idx in range(cell_wca.totnsegs)]
@@ -366,7 +366,15 @@ def simulate_spike_current_dipole_moment():
         ax_.contour(grid_x, grid_z, grid_LFP_, colors='k', linewidths=(1), zorder=-2,
                    levels=levels_norm)
 
+        if plot_row == 1:
+            cax = fig.add_axes([0.82, 0.12, 0.16, 0.01])
+            cbar = fig.colorbar(ep_intervals, cax=cax, orientation='horizontal',
+                                format='%.0E', extend='max')
 
+            cbar.set_ticks(np.array([-1, -0.1, -0.01, 0, 0.01,  0.1, 1]) * scale_max)
+            cax.set_xticklabels(np.array(np.array([-1, -0.1, -0.01, 0, 0.01, 0.1, 1]) * scale_max, dtype=int),
+                                fontsize=11, rotation=45)
+            cbar.set_label('$\phi$ ($\mu$V)', labelpad=-5)
         cell.current_dipole_moment -= cell.current_dipole_moment[0, :]
 
         sum_tvec, summed_cdm = sum_jittered_cdm(cell.current_dipole_moment[:, 2],
@@ -404,6 +412,8 @@ def simulate_spike_current_dipole_moment():
         mark_subplots(ax_cdm, [["B3"], ["C3"]][plot_row], xpos=-0.35, ypos=0.97)
         mark_subplots(ax_cdm_sum, [["B4"], ["C4"]][plot_row], xpos=-0.3, ypos=0.93)
         [ax_vm.plot(cell.tvec, cell.vmem[idx], c=idx_clr[idx]) for idx in plot_idxs]
+        ax_vm.axvline(cell.tvec[time_idx], ls='--', c='gray')
+
         # ax_cdm_sum = fig.add_subplot(524, ylim=[-1.1, 1.1], xlim=[0, 80],
         #                       ylabel="Membrane\ncurrents\n(normalized)")
         # [ax_cdm_sum.plot(cell.tvec, cell.imem[idx] / np.max(np.abs(cell.imem[idx])), c=idx_clr[idx])
