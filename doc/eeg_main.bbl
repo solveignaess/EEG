@@ -1,4 +1,4 @@
-\begin{thebibliography}{92}
+\begin{thebibliography}{96}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \expandafter\ifx\csname url\endcsname\relax
   \def\url#1{\texttt{#1}}\fi
@@ -55,6 +55,14 @@ Bruyns-Haylett, M., Luo, J., Kennerley, A.~J., Harris, S., Boorman, L., Milne,
   Riera, J., Zheng, Y., 2017. The neurogenesis of p1 and n1: a concurrent
   eeg/lfp study. NeuroImage 146, 575--588.
 \newline\urlprefix\url{http://dx.doi.org/10.1016/j.neuroimage.2016.09.034}
+
+\bibitem[{Buzs{\'{a}}ki et~al.(2012)Buzs{\'{a}}ki, Anastassiou, and
+  Koch}]{BUZSAKI2012}
+Buzs{\'{a}}ki, G., Anastassiou, C.~A., Koch, C., jun 2012. The origin of
+  extracellular fields and currents--eeg, ecog, lfp and spikes. Nature reviews.
+  Neuroscience 13~(6), 407--20.
+\newline\urlprefix\url{http://www.ncbi.nlm.nih.gov/pubmed/22595786
+  http://www.nature.com/doifinder/10.1038/nrn3241}
 
 \bibitem[{Carnevale and Hines(2006)}]{CARNEVALE2006}
 Carnevale, N.~T., Hines, M.~L., 2006. The {NEURON} Book. Cambridge University
@@ -204,6 +212,10 @@ Hay, E., Hill, S., Sch{\"u}rmann, F., Markram, H., Segev, I., 2011. Models of
   neocortical layer 5b pyramidal cells capturing a wide range of dendritic and
   perisomatic active properties. PLoS computational biology 7~(7).
 
+\bibitem[{Holt and Koch(1999)}]{HOLT1999}
+Holt, G.~R., Koch, C., 1999. Electrical interactions via the extracellular
+  potential near cell bodies. Journal of Computational Neuroscience 6.
+
 \bibitem[{Huang et~al.(2013)Huang, Dmochowski, Su, Datta, Rorden, and
   Parra}]{HUANG2013}
 Huang, Y., Dmochowski, J.~P., Su, Y., Datta, A., Rorden, C., Parra, L.~C.,
@@ -311,15 +323,25 @@ Luo, J., Macias, S., Ness, T.~V., Einevoll, G.~T., Zhang, K., Moss, C.~F.,
 Mainen, Z.~F., Sejnowski, T.~J., 1996. Influence of dendritic structure on
   firing pattern in model neocortical neurons. Nature 382.
 
-\bibitem[{M{\"{a}}ki-Marttunen et~al.(2019)M{\"{a}}ki-Marttunen, Kaufmann,
-  Elvs{\aa}shagen, Devor, Djurovic, Westlye, Linne, Rietschel, Schubert,
-  Borgwardt, Efrim-budisteanu, Bettella, Halnes, and Hagen}]{MAKI2019}
+\bibitem[{M{\"{a}}ki-Marttunen et~al.(2019{\natexlab{a}})M{\"{a}}ki-Marttunen,
+  Kaufmann, Elvs{\aa}shagen, Devor, Djurovic, Westlye, Linne, Rietschel,
+  Schubert, Borgwardt, Efrim-budisteanu, Bettella, Halnes, and
+  Hagen}]{MAKI2019}
 M{\"{a}}ki-Marttunen, T., Kaufmann, T., Elvs{\aa}shagen, T., Devor, A.,
   Djurovic, S., Westlye, L.~T., Linne, M.-l., Rietschel, M., Schubert, D.,
   Borgwardt, S., Efrim-budisteanu, M., Bettella, F., Halnes, G., Hagen, E.,
-  2019. {Biophysical Psychiatry—How Computational Neuroscience Can Help to
-  Understand the Complex Mechanisms of Mental Disorders}. Frontiers in
-  Psychiatry 10~(534), 1--14.
+  2019{\natexlab{a}}. {Biophysical Psychiatry—How Computational Neuroscience
+  Can Help to Understand the Complex Mechanisms of Mental Disorders}. Frontiers
+  in Psychiatry 10~(534), 1--14.
+
+\bibitem[{M{\"{a}}ki-Marttunen et~al.(2019{\natexlab{b}})M{\"{a}}ki-Marttunen,
+  Krull, Bettella, Hagen, N{\ae}ss, Ness, Moberget, Elvs{\aa}shagen, Metzner,
+  Devor, et~al.}]{MAKI2019b}
+M{\"{a}}ki-Marttunen, T., Krull, F., Bettella, F., Hagen, E., N{\ae}ss, S.,
+  Ness, T.~V., Moberget, T., Elvs{\aa}shagen, T., Metzner, C., Devor, A.,
+  et~al., 2019{\natexlab{b}}. Alterations in schizophrenia-associated genes can
+  lead to increased power in delta oscillations. Cerebral Cortex 29~(2),
+  875--891.
 
 \bibitem[{Malmivuo and Plonsey(1995)}]{Malmivuo1995}
 Malmivuo, J., Plonsey, R., 1995. {Bioelectromagnetism - Principles and
@@ -448,6 +470,15 @@ Pettersen, K., Lind\'{e}n, H., Tetzlaff, T., Einevoll, G.~T., 2014. Power laws
   from linear neuronal cable theory: Power spectral densities of the soma
   potential, soma membrane current and single-neuron contribution to the {EEG}.
   PLoS Comput Biol 10.
+
+\bibitem[{Pettersen et~al.(2006)Pettersen, Devor, Ulbert, Dale, and
+  Einevoll}]{Pettersen2006}
+Pettersen, K.~H., Devor, A., Ulbert, I., Dale, A.~M., Einevoll, G.~T., jun
+  2006. {Current-source density estimation based on inversion of electrostatic
+  forward solution: effects of finite extent of neuronal activity and
+  conductivity discontinuities.} Journal of neuroscience methods 154~(1-2),
+  116--33.
+\newline\urlprefix\url{http://www.ncbi.nlm.nih.gov/pubmed/16436298}
 
 \bibitem[{Pettersen and Einevoll(2008)}]{PETTERSEN&EINEVOLL2008}
 Pettersen, K.~H., Einevoll, G.~T., 2008. Amplitude variability and
