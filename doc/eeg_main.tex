@@ -98,7 +98,10 @@ Detailed biophysical modeling has played an important role in exploring the neur
 
 \snnote{Forslag: bytte ut "framework" her med "method", for å spare "framework" til siste setning, der vi snakker om modellering av hele prosessen fra nervecelleaktivitet til EEG/MEG?}
 Here\sntxt{,} we present a \sntxt{\sout{framework} method} for reducing arbitrary simulated neural activity to simple current dipoles.
-We find that the \sntxt{\sout{framework} method} is applicable for calculating extracranial signals, but less suited for calculating intracranial ECoG signals. We demonstrate that this approach can serve as a powerful tool for investigating the neural origin of EEG/MEG signals. This is done through example studies of the putative EEG contribution from calcium spikes, and from calculating EEG signals from biophysically detailed large-scale neural network simulations. We also demonstrate how the simulated current dipoles can be used directly in combination with detailed head models, allowing for simulated EEG signals with an unprecedented level of biophysical details. 
+\gen{Jeg synes "single" er bedre enn "simple" (som i grunn ikke sier saa mye).}
+We find that the \sntxt{\sout{framework} method} is applicable for calculating extracranial signals, but less suited for calculating intracranial ECoG signals. We demonstrate that this approach can serve as a powerful tool for investigating the neural origin of EEG/MEG signals. This is done through example studies of the putative EEG contribution from calcium spikes, 
+\gen{Kan vel ogsaa nevne det foerste eksemplet med single-neuron EEG contribution?} and from calculating EEG signals from biophysically detailed large-scale neural network simulations.
+\gen{Kanskje bedre aa droppe "biophysically detailed" her?}  We also demonstrate how the simulated current dipoles can be used directly in combination with detailed head models, allowing for simulated EEG signals with an unprecedented level of biophysical details. 
 
 In conclusion, this paper presents a framework for biophysically detailed modeling of EEG and MEG signals, which can be used to better our understanding of non-inasively measured neural activity in humans.
 
@@ -125,9 +128,9 @@ In conclusion, this paper presents a framework for biophysically detailed modeli
 
 \section*{Higlights}
 \begin{itemize}
-\item Current dipoles are computed from biophysically detailed simulated neuron and network activity
-\item Extracted current dipoles used in computation of EEG and MEG signals in simplified and detailed head models
-\item Method is not suitable for calculating ECoG signals \tvnnote{passer det som Highlight?}
+\item Current dipoles are computed from biophysically-detailed simulated neuron and network activity
+\item Extracted current dipoles \gex{allow for accurate} computation of EEG and MEG signals in simplified and detailed head models
+\item  \gex{Current-diplole approximation generally not suitable for accurate calculations of ECoG signals} 
 \item Method provides biophysics-based link between detailed neural activity and systems-level signals
 \end{itemize}
 
@@ -136,12 +139,12 @@ In conclusion, this paper presents a framework for biophysically detailed modeli
 
 Electroencephalography (EEG) is one of the most important non-invasive methods for studying human cognitive function and diagnosing brain diseases \citep{COHEN2017, Pesaran2018}.  Yet, we know surprisingly little about the neural origin of these electric scalp potentials \citep{COHEN2017}: On the one hand, we have a relatively good understanding of the biophysics of EEGs, \tvntxt{in \sntxt{knowing} that these signals originate from cortical current dipoles, and \sntxt{having \sout{ we have}} a well-defined framework for linking such cortical dipoles to electric scalp potentials} \citep{NUNEZ2006}. \sntxt{This has been taken advantage of for a long time in source localization, by inverse modeling of the underlying cortical current dipoles from EEG data. On the other hand, even though these cortical dipoles are assumed to mainly originate from }
 large numbers of synaptic input to cortical pyramidal cell populations \citep{NUNEZ2006, SILVA2013, Pesaran2018, Ilmoniemi2019},
-\sntxt{the precise link between cortical dipoles and the underlying neural activity has remained unclear. In other words, w}e know very little about exactly which types of neural activity that cause even the most well-studied characteristics of the EEG signal, such as different types of oscillations (e.g., alpha, beta, and gamma waves) and stereotyped EEG-shapes in response to sensory stimuli (event-related potentials, ERPs) \citep{COHEN2017}. Importantly, these different EEG characteristics are affected in predictable ways by various brain conditions, such as sleep and attention \citep{Klimesch1998, Palva2011, Siegel2012}, and by brain disorders including epilepsy and schizophrenia \citep{Niedermeyer2003, Light2013, Freestone2015, MAKI2019}. 
-This means that a better insight into how different types of brain activity is reflected in \tvntxt{\sout{EEG signals} cortical current dipoles} could help us in \tvntxt{making better inverse models, } understanding the human brain and curing brain diseases  \citep{Uhlirova2016, COHEN2017, MAKI2019}.
-\gen{I also think the possibility for making better inverse models could be mentioned as a motivation.}
-\snnote{Har prøvd å bake dette inn nå, litt implisitt kanskje?}
-\tvnnote{Hva med dette?}
-\snnote{Ja, mye bedre!=)}
+\sntxt{the precise link between cortical dipoles and the underlying neural activity has remained unclear. In other words, w}e know very little about exactly which types of neural activity that cause even the most well-studied characteristics of the EEG signal, such as different types of oscillations (e.g., alpha, beta, and gamma waves) and stereotyped EEG shapes in response to sensory stimuli (event-related potentials, ERPs) \citep{COHEN2017}. Importantly, these different EEG characteristics are affected in predictable ways by various brain conditions, such as sleep and attention \citep{Klimesch1998, Palva2011, Siegel2012}, and by brain disorders including epilepsy and schizophrenia \citep{Niedermeyer2003, Light2013, Freestone2015, MAKI2019}. 
+This means that a better insight into how different types of brain activity is reflected in cortical current dipoles could help us \gex{not only in making better inverse models for source localization,  but also in providing a better understanding of the mechanisms of human cortical activity and possibly curing brain diseases}  \citep{Uhlirova2016, COHEN2017, MAKI2019}.
+%\gen{I also think the possibility for making better inverse models could be mentioned as a motivation.}
+%\snnote{Har prøvd å bake dette inn nå, litt implisitt kanskje?}
+%\tvnnote{Hva med dette?}
+%\snnote{Ja, mye bedre!=)}
 
 The reason why we lack understanding of the neural origin of EEG signals is multifaceted. Among the main causes are (i) strong ethical constraints on invasive human brain measurements and (ii) the high number of neurons that contribute to the signal. However, in recent years there have been major advances in several relevant branches of neuroscience, meaning that a better understanding of the EEG signal may now be within reach \citep{Uhlirova2016, COHEN2017}.
 
@@ -155,12 +158,12 @@ and the EU Human Brain Project \citep{EINEVOLL2019}. The possibility to calculat
 
 Another complicating aspect of EEG modeling, is that these predictions in general require a head model to account for the widely different electrical conductivities of the brain, cerebrospinal fluid (CSF), skull and scalp \citep{NUNEZ2006, Ilmoniemi2019}. While many such head models exist, they tend to take current dipoles as input \citep{NUNEZ2006, Pesaran2018}, instead of the transmembrane currents that are available from biophysical neural simulations and that form the basis for modeling LFPs \citep{EINEVOLL2013BOOKCHAPTER}. 
 
-Here, we introduce an approach for reducing arbitrary biophysically detailed simulated neural activity to current dipoles, \sntxt{which represents an enormous reduction of complexity. We verify that the approach is useful} for calculating EEG signals\sntxt{, but less so for ECoG signals. Next, we look into} how the approach can be applied for investigating the origin of EEG signals, \tvntxt{with a particular focus on calcium spikes,} before demonstrating how our methods can be applied for pre-existing large-scale network models. Finally, we show how current dipoles can be combined with \tvntxt{detailed} head models, which enables simulation of EEG signals with unprecedented biophysical detail.  
+Here, we introduce an approach for reducing arbitrary biophysically detailed simulated neural activity to current dipoles, \gex{which represents an enormous reduction in term of model complexity when computing brain signals}. We verify that the approach gives \gex{accurate results when calculating EEG signals, but less so for ECoG signals. Next, we look into} how the approach can be applied for investigating the origin of EEG signals, \tvntxt{with a particular focus on calcium spikes,} before demonstrating how our methods can be applied for pre-existing large-scale network models. Finally, we show how current dipoles can be combined with \tvntxt{detailed} head models, which enables simulation of EEG signals with unprecedented biophysical detail.  
 
 %\sntxt{Modeling of measurable brain signals applying two separated steps, that is i) current dipole modeling from neural simulations and ii) using a head model to predict measurable brain signals from current dipoles, is common for both EEG and MEG predictions \citep{Ilmoniemi2019}. The general methods presented here can, therefore, analogously be applied for MEG signals.}
 
 
-\tvntxt{Note that the clear separation between calculation of current dipoles and the corresponding EEG is equally valid for magnetoencephalography (MEG) signals. While we here focus mostly on EEG, the presented approach for calculating current dipoles from neural activity is equally valid for MEG signals, through using an appropriate forward model \citep{Ilmoniemi2019}.}
+\tvntxt{Note that the clear separation between calculation of current dipoles and the corresponding EEG is equally valid for magnetoencephalography (MEG) signals. While we here focus mostly on EEG, the presented approach for calculating current dipoles from neural activity is equally valid for MEG signals, through \gex{use of an} appropriate forward model \citep{Ilmoniemi2019}.}
 
 %\gen{We should also mention ECoG and MEG}
 
@@ -318,6 +321,7 @@ The four-sphere head model is a simple analytical model consisting of four conce
     \hline
   \end{tabular}
   \caption{\sntxt{\textbf{Radii and electrical conductivities used in the four-sphere model.} The radius of each spherical shell in the four-sphere model is given in centimeters, while $\sigma$ denotes the respective electrical conductivity in the unit of \si{S/m}.}}
+  \gen{Kanskje ikke noedvendig aa nevne enheter i caption naar det staar i tabellen, men det skader vel ikke.}
   \label{tab:4sphere}
 \end{table*}
 
@@ -366,7 +370,10 @@ Simulation code to reproduce all figures in this paper is freely available from 
 \section{Results}\label{sec:results}
 \normalsize
 
-We introduce an approach for modeling \tvntxt{electrocorticography (ECoG), electroencephalography (EEG), and magnetoencephalography (MEG) \sout{electroencephalography (EEG)}} signals from detailed biophysical multicompartment cell models. For illustration, we first consider single synaptic input to single neurons in an infinite homogeneous head model, before moving on to a simple, generic head model. Finally, we study EEGs from \tvntxt{large-scale simulated network} activity, also applying a realistic head model. 
+We introduce an approach for modeling \tvntxt{electroencephalography (EEG) and magnetoencephalography (MEG)} 
+signals from detailed biophysical multicompartment cell models.  \gex{The approach involves two steps: First, current dipole moments are extracted from activity
+in neurons or networks. Second, the extracted current dipoles are used as sources in established forward models. Here we only demonstrate the approach by computing EEG signals, but the current dipoles are equally applicable for computing MEG signals using the appropriate magnetic-field forward models~\citep{Ilmoniemi2019}.
+For illustration, we first consider EEG signals stemming from single synaptic input onto single neurons in an infinite homogeneous head model, before moving on to a simple, generic head model. Finally, we study EEGs from \tvntxt{large-scale simulated network} activity, also applying a realistic head model.}  \gen{Tok bort ECoG her i introen siden det ikke gav saa gode resultater}
 %Note that while we will only consider EEG signals, the general approach is equally valid for MEG signals. 
 %\gen{ECoG modelleringen boer vel ogsaa nevnes her.}
 
@@ -405,7 +412,7 @@ For the sake of comparing these modeling approaches, we have assumed that the ce
 	\centering
 	\includegraphics[width=1.0\textwidth]{fig_dipole_field_passiveTrue_single_syn481}
 	\caption{\textbf{Extracellular potentials become dipolar in the far field limit}. 
-		\textbf{A}: Passive layer 2/3 pyramidal cell from human \citep{EYAL2016} with an excitatory, conductance-based, two-exponential synapse placed on apical dendrite (red dot), see \ref{subsec:simulation}. The resulting transmembrane currents for each compartment are shown as a blue arrow (input current) and red arrows (return currents).
+		\textbf{A}: Passive layer 2/3 pyramidal cell from human \citep{EYAL2016} with an excitatory, conductance-based, two-exponential synapse placed on apical dendrite (red dot), see \gex{Methods (\ref{subsec:simulation}) for parameters}. The resulting transmembrane currents for each compartment are shown as a blue arrow (input current) and red arrows (return currents).
 %		\gen{Kanskje bedre aa si at all returstrom er positiv (roed), og at kun synapsestroemmen er negativ (blaa)?}
 %		\gen{Maa spesifisere synaptisk str{\o}m. DC?}
 		\textbf{B}: Green arrows represent the multiple current dipole moments between neighboring neural compartments.
@@ -438,7 +445,7 @@ We found that calculating EEG signals with the single-dipole approximation gave 
 but note that these synaptic input locations also gave relatively weak EEG signals (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{E}).
 This demonstrates that the relative error of the single-dipole approximation is negatively correlated with the amplitude of the scalp potential (Fig.~\ref{fig:compare_multi_single_dipole}\textbf{F}).
 This is as expected, given that the strongest EEG signals are expected to be caused by dipole-like source/sink distributions (section \ref{subsec:cda}).
-\sntxt{In summary, the single-dipole approximation can result in substantial errors at the position of the ECoG electrodes, but give small errors at the position of the EEG electrodes for synaptic locations leading to strong EEG signals.}
+\sntxt{In summary, the single-dipole approximation can result in substantial errors at the position of the ECoG electrodes, but gives small errors at the position of the EEG electrodes for synaptic locations leading to strong EEG signals.}
 
 
 
@@ -455,10 +462,10 @@ This is as expected, given that the strongest EEG signals are expected to be cau
 		\textbf{E}: Magnitude of EEG signal, $|\text{EEG}|$, as function of distance from soma to synaptic input location.
 %		\tvnnote{Hadde det kanskje egentlig gitt mer mening å plotte EEG amplitude her? Kanskje mer ryddig å vise (enklere å forklare) at feilen i EEG-signalet er omvent korrelert med EEG amplitude?}
 		\textbf{F}: Relative error, RE, showing how EEG calculations performed with the single-dipole approximation deviates from multi-dipole approach as a function of amplitude of the EEG signal, $|\text{EEG}|$.
-		\gen{Fin figur, men jeg tror noe av skriften boer gjoeres litt stoerre. Og den fargede teksten i panel C er litt svak og vanskelig aa se.}
+		%\gen{Fin figur, men jeg tror noe av skriften boer gjoeres litt stoerre. Og den fargede teksten i panel C er litt svak og vanskelig aa se.}
 %		\gen{Siden vi nevner spesifikke tall (prosenter) for avvik i teksten, saa synes jeg tallene til denne hjernemodellen maa spesifiseres i detalj, kanskje i Methods? Dessuten boer vi nevne presist hvilken posisjon soma har.} 
-		\gen{Kanskje vi kunne hatt enheter paa y-aksen i inset i A? Og det skal vel vaere $p_z$ ikke $\mathbf{p}_z$?}
-		\snnote{Ok?}
+		%\gen{Kanskje vi kunne hatt enheter paa y-aksen i inset i A? Og det skal vel vaere $p_z$ ikke $\mathbf{p}_z$?}
+		%\snnote{Ok?}
 		%		\tvnnote{Kanskje du kan skrive navnet på de forskellige regionene med tilhørende farge over panel C eller noe slikt? }
 		%	\tvnnote{Suggestion: How about running another simulation with all synapses active simulataneously, calculate the relative error, and add it to this panel (F) as a horizontal line? We would expect this to give a small error, helping to illustrate our point of the EEG being dominated by low-error dipoles.}
 	}
@@ -485,7 +492,7 @@ For a rat cortical layer-5 pyramidal cell model (Fig.~\ref{fig:eeg_compare_cell_
 Lastly, we used a rat cortical layer-5 interneuron model (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{A}, green; \cite{MARKRAM2015}), but since the dendrites of interneurons are not structured into the same distinctive zones as pyramidal cells, the synaptic input caused very small net current dipole moments.
 
 We calculated the EEG signals with the four-sphere head model, using both the multi-dipole (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{D}, dotted lines) and the single-dipole (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{D}, solid lines) approach.
-\tvntxt{To compare the approaches, we computed the relative error, as the absolute difference between the results from the two approaches, normalized by the maximum EEG magnitude computed with the multi-dipole approach.}
+\tvntxt{To compare the approaches, we computed the relative error, \gex{that is}, the absolute difference between the results from the two approaches, normalized by the maximum EEG magnitude computed with the multi-dipole approach.}
 The single-dipole approach gave a maximum 
 %\gen{"global error" maa forklares} 
 error of  2.2$\%$, 3.5$\%$ and 0.34$\%$ for the human layer-5 cell, the rat layer-5 cell and the rat interneuron, respectively.
@@ -501,10 +508,11 @@ Importantly, the EEG signal is essentially fully described by the $z$-component 
 	\caption{\textbf{EEG signals and current dipole moment from three different cell types with various synaptic input}.
 		\textbf{A}: The morphologies of a human L2/3 pyramidal cell (purple; \cite{EYAL2016}), a rat L5 pyramidal cell (blue; \cite{HAY2011}), and a rat L5 interneuron (green; \cite{MARKRAM2015}). The remaining panels display data connected to each cell type, see cell-specific colors.
 		\textbf{B}: Each dot represents an excitatory synaptic input at a specific time (x-axis) at a specific height of the neuron (z-axis, corresponding to panel A) for a specific cell type (color). The crosses mark inhibitory synaptic input. The four input bulks represent 1) 100 apical excitatory synapses, 2) 100 basal excitatory input, 3) 400 homogeneously spread-out excitatory synapses and 4) 400 homogeneously spread-out excitatory synapse and inhibitory basal synapses. The synaptic weights sum to 0.01~\si{\mu S} for all sets of excitatory/ inhibitory synapses in each wave. For the interneuron, which doesn't have typical "apical" or "basal" zones, the synapses were spread out all over the morphology for all input types.
-		\textbf{C}: The x-, y- and z-components of the current dipole moment $\mathbf{p}$ for the three different cell types.
+		\textbf{C}: The $x$-, $y$- and $z$-components of the current dipole moment $\mathbf{p}$ for the three different cell types.
 		\textbf{D}: EEG signals, $\phi$ from the three cell types computed with the four-sphere model.
 		\gen{Synes spesifikasjon av synaptisk stroem maa vaere med et sted.}
 		\snnote{Spesifisert i metode og i figurteksten til Fig. 1. Ok?}
+		\gen{Ja det er OK, men da boer det refereres til ett av stedene her.}
 %		\tvnnote{Nevne hvordan det er gjort for internevronet som ikke har apic og basal?}
 %		\snnote{Har prøvd litt forskjellige løsninger her, men fant ut at det greieste var å ikke gjøre forskjell på apical/basal/uniform.}
 	}
@@ -526,25 +534,27 @@ The previously introduced rat layer-5 cortical pyramidal cell model from \cite{H
 When this cell model received a single excitatory synaptic input to the soma (Fig.~\ref{fig:ca_spike}\textbf{A}, blue dot), strong enough to elicit a somatic action potential (Fig.~\ref{fig:ca_spike}\textbf{B1}, blue), a small depolarization was also visible in the apical dendrite (Fig.~\ref{fig:ca_spike}\textbf{B1}, orange). Even so, this did not initiate any dendritic calcium spike. However, when combining the same somatic synaptic input with an additional excitatory synaptic input to the apical dendrite, 400~$\si{\um}$ away from the soma (Fig.~\ref{fig:ca_spike}\textbf{A}, orange dot), we observed a dendritic calcium spike. This calcium spike did, in turn, induce two additional somatic spikes (Fig.~\ref{fig:ca_spike}\textbf{C1}).
 For both synaptic input strategies described above, the extracellular potential simulated 30~$\si{\um}$ away from the soma took the shape of stereotypical extracellular action potentials: that is, a sharp negative peak followed by a broader and weaker positive peak (Fig.~\ref{fig:ca_spike}\textbf{B2, C2}). Further, we observed that the slow dendritic calcium spike was not reflected in the extracellular potential close to the soma (Fig.~\ref{fig:ca_spike}\textbf{C2}).
 We found that for the case with only a somatic spike and no calcium spike, the single-cell current dipole moment resembled the inverse of the extracellular potential (Fig.~\ref{fig:ca_spike}\textbf{B3}), while for the case with both somatic and dendritic spiking, a pronounced slow component was also present in the single-cell current dipole moment (Fig.~\ref{fig:ca_spike}\textbf{C3}).
-\tvntxt{\sout{Note that s}S}omatic action potentials are typically not expected to contribute significantly to EEG signals (but see \cite{TELENCZUK2015}), because the very short duration of spikes with both a positive and a negative phase implies that extreme synchrony is needed for spikes to sum constructively\tvntxt{, and spikes that are only partially overlapping tend to sum destructively. The same can not be expected to hold for the calcium spikes, which predominately cause a negative response in the current current dipole moment}. 
+\tvntxt{\sout{Note that s}S}omatic action potentials are typically not expected to contribute significantly to EEG signals (but see \cite{TELENCZUK2015}), because the very short duration of spikes with both a positive and a negative phase implies that extreme synchrony is needed for spikes to sum constructively\tvntxt{, and spikes that are only partially overlapping tend to sum destructively. The same cannot be expected to hold for the calcium spikes, which \gex{are not only longer-lasting but also} predominately cause a negative response in the current current dipole moment}. 
 \tvntxt{To mimic a neural network scenario with multiple cells spiking at slightly different times, we calculated the sum of 1000 instances of the single-cell current dipole moment that was jittered (shifted) in time (normally distributed, standard deviation=10~ms).
-We found that the case with the dendritic calcium spike had a $6.6$-fold larger maximum amplitude than the case with
+We found that the case with the dendritic calcium spike \gex{now} had a $6.6$-fold larger maximum amplitude than the case with
 only the somatic spike (Fig.~\ref{fig:ca_spike} \textbf{B4} versus \textbf{C4}, 
 $\mathrm{max}|\mathbf{p}$| = 30.8~$\si{\uA}\cdot\si{\um}$ and 204.2~$\si{\uA}\cdot\si{\um}$ respectively).}
+\gen{$\si{\uA}\cdot\si{\um}$ ser litt rart ut med prikken i midten, hva med $\si{\uA}\,\si{\um}$}
 %\snnote{It is hard to read these numbers out from the plots.. Something odd with the axes here?}
-\gen{Synes det boer sies litt klarere ett sted at "jittered"-effekten er en nettverkseffekt.} \tvnnote{OK?}
+%\gen{Synes det boer sies litt klarere ett sted at "jittered"-effekten er en nettverkseffekt.} \tvnnote{OK?}
 This demonstrates that dendritic calcium spikes are much more capable of summing constructively for a population of cells, and substantiates the role of dendritic calcium spikes in affecting ECoG/EEG/MEG recordings. 
 
 \tvntxt{The amplitude of the slow component of the current dipole moment from the calcium spike was about 0.5~$\si{\uA}\cdot\si{\um}$ (Fig.~\ref{fig:ca_spike}\textbf{C3}), and later (Sec.~\ref{subsec:populations}) we will present results from a simulated neural network where the average event-related current dipole moment of layer 5 pyramidal cells were found to be about 0.1~$\si{\uA}\cdot\si{\um}$ (Fig.~\ref{fig:population}{\bf D}, bottom left). This indicates that our results are compatible with the claim by \cite{SUZUKI2017} that signal amplitudes from calcium spikes could be similar in amplitude to contributions from synaptic input.
 }
 
-\tvnnote{1 $\mu$A * $\mu$m ~-> 1 nV, so 10000 Ca spikes gives ~10 $\mu$V EEG.} 
+\tvnnote{1 $\mu$A * $\mu$m ~-> 1 nV, so 10000 Ca spikes gives ~10 $\mu$V EEG.} \\
+\gen{?, 1 $\mu$A * $\mu$m ~-> 1 pV!}
 
 
 It might initially seem surprising that the dendritic calcium spike is so strongly reflected in the single-cell current dipole moment, given that the transmembrane currents associated with the somatic action potential are much larger than those associated with the dendritic calcium spike: the maximum amplitude of the transmembrane currents of the somatic compartment was 45.1~$\si{\nA}$, compared to just 0.30~$\si{\nA}$ for the compartment in the apical dendrite (Fig.~\ref{fig:ca_spike}{\bf A}, blue and orange dots). 
-\gen{Blir denne sammenligningen illustrativ naar det er saa stor forskjell paa arealet kompartmentene?} 
-\tvnnote{Ikke helt sikker på hva du mener her?}
-\gen{Og er ikke den storste stroemmen i akkurat disse kompartmentene den fra de synaptiske inputstroemmen og ikke en returstroem?} \tvnnote{I begge tilfeller er nok største strøm som følge av spikene, som kanskje er litt illustrert i B1 og C1, der vi ser at membranpotensialet først å fremst reflekterer spikes, og ikke synaptisk input. Bør vi utbrodere mer her?}
+%\gen{Blir denne sammenligningen illustrativ naar det er saa stor forskjell paa arealet kompartmentene?} 
+%\tvnnote{Ikke helt sikker på hva du mener her?}
+%\gen{Og er ikke den storste stroemmen i akkurat disse kompartmentene den fra de synaptiske inputstroemmen og ikke en returstroem?} \tvnnote{I begge tilfeller er nok største strøm som følge av spikene, som kanskje er litt illustrert i B1 og C1, der vi ser at membranpotensialet først å fremst reflekterer spikes, og ikke synaptisk input. Bør vi utbrodere mer her?}
 However, the current dipole moment is given as the product between the amplitude of the current and the separation between the source and sink ($\mathbf{p}=I\mathbf{d}$; Equation \ref{eq:dip_sum_axial}), and while the currents associated with the somatic action potential will for the most part be contained within the somatic region, giving very small sink/source separations, the currents associated with the dendritic calcium spike will be distributed over a much larger part of the cell membrane.
 \tvntxt{This effect can be illustrated by comparing the spatial profile of the extracellular potentials around the neuron at a snapshot in time during a somatic spike or during a calcium spike (Fig.~\ref{fig:ca_spike} {\bf D} versus {\bf E}).}
 
@@ -625,7 +635,7 @@ several such pre-solved complex head models are freely available, and one exampl
 
 To illustrate the use of pre-solved complex head-models, we inserted the current dipole moment obtained in section~\ref{subsec:populations} into the New York Head model (Fig.~\ref{fig:compare_head_models}\textbf{A}), at two manually chosen positions: one in the parietal lobe, and one in the occipital lobe, see stars in Fig.~\ref{fig:compare_head_models}\textbf{C, E}, respectively.
 	In both cases, the current dipole moment was oriented along the normal vector of the brain surface, and the EEG signal was calculated.
-\sntxt{For comparison with a simplified head model, we inserted the same current dipole moment into the four-sphere head model  (Fig.~\ref{fig:compare_head_models}\textbf{B}) at locations comparable to the dipole positions chosen in the occipital and parietal lobe in the NYH model: the locations in the four-sphere model were chosen close to the brain surface, such that the distance from dipole position to closest electrode (Fig.~\ref{fig:compare_head_models}\textbf{D, F}, stars) and the brain surface normal vectors were similar to the respective positions in the NYH model.}
+\sntxt{For comparison with a simplified head model, we inserted the same current dipole moment into the four-sphere head model  (Fig.~\ref{fig:compare_head_models}\textbf{B}) at locations comparable to the dipole positions chosen in the occipital and parietal lobe in the NYH model: the locations in the four-sphere model were chosen close to the brain surface, such that the distance from dipole position to the closest electrode (Fig.~\ref{fig:compare_head_models}\textbf{D, F}, stars) and the brain surface normal vectors were similar to the respective positions in the NYH model.}
 %	We then found dipole positions in the four-sphere head model (Fig.~\ref{fig:compare_head_models}\textbf{B}) with the same brain surface normal vectors
 %\gen{Hva menes her?}	
 %	 and comparable distances to closest EEG electrode (Fig.~\ref{fig:compare_head_models}\textbf{D, F}, stars), and
@@ -698,7 +708,7 @@ In this paper, we have introduced an approach for reducing arbitrary simulated n
 %Note that we have implemented all methods into the open-source python tool LFPy 2.0 and that the exact implementation presented here has already been used by \cite{HAGEN2018} and \cite{MAKI2019}. 
 We verified that the approach was applicable for calculating EEG, but \gex{generally not for} ECoG signals (Fig.~\ref{fig:compare_multi_single_dipole}-\ref{fig:eeg_compare_cell_types}), and gave examples of how reducing neural activity to a single dipole can be a powerful tool for investigating and understanding single-cell EEG contributions (Fig.~\ref{fig:eeg_compare_cell_types}-\ref{fig:ca_spike}). Furthermore, we demonstrated that the presented approach could easily be integrated with existing large-scale simulations of neural activity. Moreover, it was shown how single dipoles are useful for constructing compact representations of the EEG contributions from entire neural populations, with methods still firmly grounded in the underlying biophysics (Fig.~\ref{fig:population}). Finally, we demonstrated how the simulated current dipoles, from single cells or large neural populations, can be directly inserted into complex head models for calculating more realistic EEG signals (Fig.~\ref{fig:compare_head_models}).
 
-\subsection{Application of current dipoles \gex{for computing MEG and ECoG signals}}
+\subsection{Application of current dipoles \gex{for computing EEG, MEG and ECoG signals}}
 We have highlighted that the calculation of current dipoles from neural activity is cleanly separated from the calculation of the ensuing EEG signals. 
 \gex{Since MEG sensors like EEG electrodes are positioned far away from the neural sources, the same is true for MEG signals. The} calculated current dipoles can therefore also be used in combination with simplified or detailed frameworks for calculation of MEG signals, for example by following methods outlined in \cite{Ilmoniemi2019}.
 
@@ -710,6 +720,7 @@ account the discontinuity of electrical conductivity at the cortical surface \ci
 
 \gen{Kan dette avsnittet flyttes hit eller et annet sted? Jeg synes ikke det passet inn paa slutten av "outlook" hvor vi loeftet fram engler og basuner ...}
 \snnote{Ja, det passer vel greit inn i applications, men da synes jeg kanskje vi burde endre underoverskriften tilbake igjen, siden LFPy har vel så mye med EEG å gjøre?}
+\gen{Enig. Endret naa.}
 \gex{
 Note that while we here used LFPy 2.0 \citep{HAGEN2018, HAGEN2019}, a python interface to NEURON \citep{CARNEVALE2006}, calculation of current dipole moments can easily be implemented into any framework where the transmembrane currents are available, through the simple formula given in eq.~(\ref{eq:dip_sum_trans}).} 
 
@@ -758,7 +769,7 @@ The approach for calculating EEG/MEG signals in this paper should therefore idea
 
 \snnote{I neste avsnitt har vi kun snakket om EEG. Disse tingene gjelder vel også for MEG?}
 Today, we have a reasonably good understanding of how single neurons operate, that is, how they respond to synaptic input, and how multitudes of synaptic inputs combine to produce action potentials \citep{EINEVOLL2019}.
-Similarly, we can, to a high degree, explain the measurement physics of \sntxt{\sout{the}} EEG\sntxt{/MEG \sout{signal}}, that is, how neural currents affect \sntxt{\sout{electric potentials} electromagnetic brain signals} recorded outside of the head \citep{NUNEZ2006, COHEN2017}\sntxt{\citep{Ilmoniemi2019}}.
+Similarly, we can, to a high degree, explain the measurement physics of \sntxt{\sout{the}} EEG\sntxt{/MEG \sout{signal}}, that is, how neural currents affect \sntxt{\sout{electric potentials} electromagnetic brain signals} recorded outside of the head \citep{NUNEZ2006, COHEN2017,Ilmoniemi2019}.
 The challenge of understanding EEG\sntxt{/MEG} signals is therefore closely related to the greatest challenge in modern neuroscience: understanding neural networks. 
 Making sense of such complicated dynamical systems typically requires computational modeling \citep{EINEVOLL2019}, but the complexity of neurons, and the complexity and size of the neural networks involved in even the simplest of cognitive tasks, makes this a daunting challenge.
 The steady increase in available computing power, in combination with the ever-increasing knowledge on synaptic connectivity patterns is, however, making this approach more and more attractive \citep{Reimann2013, Egger2014, MARKRAM2015, HAGEN2016, Gratiy2018, Arkhipov2018, Reimann2019, BILLEH2019}: Today, there are several ongoing research projects pursuing such modeling efforts, like the Allen Institute for Brain Science and the Human Brain Project \citep{EINEVOLL2019}.
@@ -774,7 +785,7 @@ We \gex{thus hope} that the work \sntxt{\sout{potentially}} help us to take full
 \snnote{Forsøk 2:}
 \sntxt{The presently described method enables EEG/MEG simulations combining detailed neural simulations with realistic head models. We believe that this approach will help shedding light on the neural origin of EEG/MEG signals, and help us take full advantage of these important brain signals in the future.}
 
-
+\gen{Enig. Ydmykhet er for pingler :-) Jeg likte Forsoek 2 best.} 
 
 %In this paper we have introduced an approach for reducing arbitrary simulated neural activity to single current dipoles (Fig.~\ref{fig:dipole_field}), and implemented the approach into the open-source python tool LFPy 2.0 (note that exact implementation presented here has already been used by \cite{HAGEN2018} and \cite{MAKI2019}). We verified that the approach was applicable for calculating EEG, but not ECoG signals (Fig.~\ref{fig:compare_multi_single_dipole}-\ref{fig:eeg_compare_cell_types}), and showed examples of how this approach can be a powerful tool for investigating and understanding single-cell EEG contributions (Fig.~\ref{fig:eeg_compare_cell_types}-\ref{fig:ca_spike}). Furthermore, we demonstrated that the presented approach could be easily integrated with existing large-scale simulations of neural activity, and how it can be used to construct compact representations of the EEG contributions from entire neural populations, while still firmly grounded in the underlying biophysics (Fig.~\ref{fig:population}). Finally, we demonstrated how the simulated current dipoles, from single cells or large neural populations, can be direcly inserted into complex head models for calculating more realistic EEG signals (Fig.~\ref{fig:compare_head_models}).
 
