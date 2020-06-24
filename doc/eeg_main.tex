@@ -215,9 +215,10 @@ or equivalently from a position-weighted sum of all the transmembrane currents \
 \begin{equation}\label{eq:dip_sum_trans}
 \mathbf{p}(t) = \sum_{k=1}^{N} I_k^{\mathrm{trans}}(t) \mathbf{r}_k,
 \end{equation}
-where N is the number of compartments in the multicompartmental neuron model and ${\bf r}_k$ is the position of transmembrane 
+where $N$ is the number of compartments in the multicompartmental neuron model and ${\bf r}_k$ is the position of transmembrane 
 current $I_k^{\mathrm{trans}}(t)$.
-The calculation of current-dipole moments from simulated neural activity was implemented in LFPy 2.0, and can be used through \texttt{Cell.current\_dipole\_moment}  \citep{HAGEN2018}.
+For calculating EEG signals a location for the current dipole must be chosen, and unless otherwise specified we positioned the dipole halfway between the soma and the synaptic input. Note, however, that the large distance from the neuron to the EEG electrode ($\sim$10~mm) implies that the EEG signal is relatively insensitive to small changes in the dipole location within cortex.  
+The calculation of current-dipole moments from simulated neural activity was implemented in LFPy 2.0, and can be used through \texttt{Cell.current\_dipole\_moment}  \citep{HAGEN2018}. 
 
 
 \subsection{Head models}
