@@ -119,9 +119,9 @@ In conclusion, this paper presents a framework for biophysically detailed modeli
 
 
 
-\section*{Higlights}
+\section*{Highlights}
 \begin{itemize}
-\item Current dipoles are computed from biophysically-detailed simulated neuron and network activity
+\item Current dipoles are computed from biophysically detailed simulated neuron and network activity
 \item Extracted current dipoles allow for accurate computation of EEG and MEG signals in simplified and detailed head models
 \item Current-diplole approximation generally not suitable for accurate calculations of ECoG signals
 \item Method provides biophysics-based link between detailed neural activity and systems-level signals
@@ -157,12 +157,12 @@ Note that the clear separation between calculation of current dipoles and the co
 Neural activity generates electric currents in the brain, which in turn create electromagnetic fields. In this section, we explain how electric brain signals can be modeled in both simple and more complex volume conductors.
 
 \subsection{Forward modeling of electric potentials}
-Due to the negligibility of capacitive effects in the head \citep{Pfurtscheller1975, Ranta2017, Miceli2017} and that electric and magnetic signals effectively decouple, we can apply the quasistatic approximation of Maxwell's equations for calculating these signals \citep{HAMALAINEN1993, NUNEZ2006}. In other words, for computing extracellular electric potentials, we envision the head as a 3D volume conductor, and combining Maxwell's equations with the current conservation law, we obtain the Poisson equation for computing extracellular potentials \citep{GRIFFITHS1999}:
+We assume negligible capacitive effects in the head \citep{Pfurtscheller1975, Ranta2017, Miceli2017} and that electric and magnetic signals effectively decouple. We can then apply the quasistatic approximation of Maxwell's equations for calculating these signals \citep{HAMALAINEN1993, NUNEZ2006}. In other words, for computing extracellular electric potentials, we envision the head as a 3D volume conductor, and combining Maxwell's equations with the current conservation law, we obtain the Poisson equation for computing extracellular potentials \citep{GRIFFITHS1999}:
 %%%
 \begin{equation} \label{eq:poisson}
 \mathbf{\nabla} \cdot \mathbf{J} = \mathbf{\nabla}  \cdot (\sigma \mathbf{\nabla} \phi)~,
 \end{equation}
-where $\mathbf{J}$ is the electric current density in extracellular space, $\sigma$ is the extracellular conductivity and $\phi$ is the extracellular, electric potential.
+where $\mathbf{J}$ is the electric current density in extracellular space, $\sigma$ is the extracellular conductivity and $\phi$ is the extracellular electric potential.
 The Poisson equation can be solved analytically for simple, symmetric head models, such as an infinitely big space and spherically symmetric models. For more complex head models, numerical methods such as the Finite Element Method (FEM) can be used \citep{LOGG2012, VORWERK2014, Haufe2015, Seo2016, Vorwerk2019}.
 
 \subsubsection{Compartment-based approach}\label{subsubsec:multicomp}
@@ -208,7 +208,7 @@ The calculation of multi-dipoles from simulated neural activity was implemented 
 From each multicompartmental neuron simulation, we computed one single current dipole moment. This can either be done by summing up the multiple current dipole moments,
 
 \begin{equation}\label{eq:dip_sum_axial}
-\mathbf{p}(t) = \sum_{k=1}^{M} {\bf p}_k(t) = \sum_{i=1}^{M} I_k^{\mathrm{axial}}(t) \mathbf{d}_k,
+\mathbf{p}(t) = \sum_{k=1}^{M} {\bf p}_k(t) = \sum_{k=1}^{M} I_k^{\mathrm{axial}}(t) \mathbf{d}_k,
 \end{equation}
 where $M$ is the number of axial currents,
 or equivalently from a position-weighted sum of all the transmembrane currents \citep{LINDEN2010, HAGEN2018}:
@@ -218,7 +218,7 @@ or equivalently from a position-weighted sum of all the transmembrane currents \
 \end{equation}
 where $N$ is the number of compartments in the multicompartmental neuron model and ${\bf r}_k$ is the position of transmembrane 
 current $I_k^{\mathrm{trans}}(t)$.
-For calculating EEG signals a location for the current dipole must be chosen, and unless otherwise specified we positioned the dipole halfway between the soma and the synaptic input. Note, however, that the large distance from the neuron to the EEG electrode ($\sim$10~mm) implies that the EEG signal is relatively insensitive to small changes in the dipole location within cortex.  
+For calculating EEG signals a location for the current dipole must be chosen, and unless otherwise specified we positioned the dipole halfway between the position of the soma and the position of the synaptic input (for multiple synaptic inputs, we used the average position of the synaptic inputs). Note, however, that the large distance from the neuron to the EEG electrode ($\sim$10~mm) implies that the EEG signal is relatively insensitive to small changes in the dipole location within cortex.  
 The calculation of current-dipole moments from simulated neural activity was implemented in LFPy 2.0, and can be used through \texttt{Cell.current\_dipole\_moment}  \citep{HAGEN2018}. 
 
 
@@ -293,7 +293,7 @@ For illustration, we first consider EEG signals stemming from single synaptic in
 When modeling electric potentials within the brain, we can apply the well-established compartment-based approach assuming a homogeneous volume conductor (section \ref{subsubsec:multicomp}) \citep{EINEVOLL2013REVIEW,HOLT1999}.
 However, this assumption is no longer valid when it comes to modeling EEG signals on the scalp, which calls for an inhomogeneous head model \citep{Ilmoniemi2019}. Such head models typically take current dipoles as input, as opposed to individual current sinks/sources, and must be based on the current dipole approximation \citep{NUNEZ2006}. Here, we introduce an approach for computing current dipoles from arbitrary simulated neural activity, and compare current-based and dipole-based modeling of electric potentials generated by a single cell receiving excitatory synaptic input.
 Excitatory synaptic input initiates a negative current at the synapse location, since positive ions flow into the cell. Due to current conservation \citep{Koch1999}, this negative current is exactly balanced by spatially distributed positive currents along the cellular membrane, as illustrated in Fig.~\ref{fig:dipole_field}\textbf{A} for a single apical excitatory synaptic input to a passive human cortical layer-2/3 pyramidal cell model \citep{EYAL2016}. See Methods \ref{subsec:simulation} for simulation details.
-In the standard procedure for modeling extracellular potentials, here referred to as the {\it compartment-based approach}, the transmembrane current in each cellular compartment corresponds to a point current source/sink. Another strategy is to consider the axial current of each cellular compartment as a small current dipole (see Equation~\eqref{eq:dip_sum_axial}), which we will refer to as the {\it multi-dipole approach} (Fig.~\ref{fig:dipole_field}\textbf{B}). By vector summation of all these dipoles into one single dipole at a specific position, we obtain the {\it single-dipole approximation} (Fig.~\ref{fig:dipole_field}\textbf{C}).
+In the standard procedure for modeling extracellular potentials, here referred to as the {\it compartment-based approach}, the transmembrane current in each cellular compartment corresponds to a point current source/sink. Another strategy is to consider the axial current of each cellular compartment as a small current dipole (see Equation~\eqref{eq:dip_sum_axial}), which we refer to as the {\it multi-dipole approach} (Fig.~\ref{fig:dipole_field}\textbf{B}). By vector summation of all these dipoles into one single dipole at a specific position, we obtain the {\it single-dipole approximation} (Fig.~\ref{fig:dipole_field}\textbf{C}).
 For the sake of comparing these modeling approaches, we have assumed that the cell is positioned in an infinite homogeneous electric medium. Very close to the neuron, the extracellular potential will strongly depend on the exact distribution of transmembrane currents across the cellular morphology and  will, therefore, typically not take a purely dipolar shape (Fig.~\ref{fig:dipole_field} \textbf{D,E} versus \textbf{F}). However, since the dipole contribution will dominate when we are further away from the current sources (see Equation~\ref{eq:multipole_expansion}), the extracellular potential becomes more and more dipolar with increasing distance from the cell \citep{LINDEN2010}. This implies that for the purpose of calculating extracellular potentials far away from the cell, the single-dipole approximation might be well justified (Fig.~\ref{fig:dipole_field}\textbf{G-I}). Note that there can be small differences between the results from the compartment-based and the multi-dipole approaches for electrode locations in the immediate vicinity of the current sources, due to the approximations inherent in using the current dipole model (Fig.~\ref{fig:dipole_field}D versus Fig.~\ref{fig:dipole_field}E).
 
 	
@@ -362,7 +362,7 @@ For a rat cortical layer-5 pyramidal cell model (Fig.~\ref{fig:eeg_compare_cell_
 Lastly, we used a rat cortical layer-5 interneuron model (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{A}, green; \cite{MARKRAM2015}), but since the dendrites of interneurons are not structured into the same distinctive zones as pyramidal cells, the synaptic input caused very small net current dipole moments.
 
 We calculated the EEG signals with the four-sphere head model, using both the multi-dipole (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{D}, dotted lines) and the single-dipole (Fig.~\ref{fig:eeg_compare_cell_types}\textbf{D}, solid lines) approach.
-To compare the approaches, we computed the relative error, that is, the absolute difference between the results from the two approaches, normalized by the maximum EEG magnitude computed with the multi-dipole approach.
+To compare the approaches, we computed the relative error over time, that is, the absolute difference between the results from the two approaches, normalized by the maximum EEG magnitude computed with the multi-dipole approach.
 The single-dipole approach gave a maximum 
 error of  2.2$\%$, 3.5$\%$ and 0.34$\%$ for the human layer-5 cell, the rat layer-5 cell and the rat interneuron, respectively.
 Importantly, the EEG signal is essentially fully described by the $z$-component of the current dipole moment $p_z$, that is, a single time-dependent variable. This reduction in signal description represents a massive simplification in the understanding of the biophysical origin of the EEG signal, compared to considering the transmembrane currents and position of each cellular compartment. 
@@ -563,6 +563,12 @@ The steady increase in available computing power, in combination with the ever-i
 While biophysically detailed, large-scale neural simulations are still in their infancy, we expect these simulations to become an increasingly important research tool in neuroscience \citep{EINEVOLL2019}.
 The presently described method enables EEG/MEG simulations combining detailed neural simulations with realistic head models. We believe that this approach will help shedding light on the neural origin of EEG/MEG signals, and help us take full advantage of these important brain signals in the future.
 
+\section*{Acknowledgements}
+This work received funding from the European Union Horizon 2020 Research and Innovation Programme under 
+Grant Agreement No. 785907 and No. 945539 [Human Brain Project (HBP) SGA2 and SGA3], 
+the Norwegian Ministry of Education and Research through the SUURPh Programme and the Norwegian Research Council (NFR) 
+through COBRA (No. 250128), NOTUR (No. NN4661K) and DigiBrain (No: 248828).
+
 
 % \appendix
 % \section{Point-Source vs. Line-Source Dipole Moment} \label{sec:point_line_cdm}
@@ -603,7 +609,7 @@ The presently described method enables EEG/MEG simulations combining detailed ne
 % \end{align}
 % 
 % Hence, we have found that the point-source and the line-source approximations will give the exact same results when calculating current dipole moments. The simpler point-source approximation is therefore preferable.
-\section*{References}
+%\section*{References}
 \footnotesize
 \bibliography{eeg_main}
 \end{document}
