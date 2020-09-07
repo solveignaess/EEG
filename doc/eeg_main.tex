@@ -204,8 +204,18 @@ From some multicompartmental neuron simulations (Figure \ref{fig:dipole_field}- 
 Here, $I_k^{\mathrm{axial}}$ is an axial current traveling along distance vector ${\bf d}_k$, resulting in a current dipole moment ${\bf p}_k$.
 By inserting all the current dipole moments from a neuron simulation into the current dipole approximation (Equation~\ref{eq:dipole_approx}), we get a good estimate of the extracellular potential at any electrode location where the distance between the electrode and the nearest dipole is sufficiently large 
 \citep{NUNEZ2006}.
+\newtxt{See Fig.~\ref{fig:illustration} for an illustration of the relation between these different approached for calculating extracellular potentials.}
 Note that the length of each (multi-)dipole is equal to half the length of its corresponding neuronal compartment. 
 The calculation of multi-dipoles from simulated neural activity was implemented in LFPy~2.0, and can be used through the function \texttt{Cell.get\_multi\_current\_dipole\_moments} \citep{HAGEN2018}.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{illustration_imem_iaxial.pdf}
+	\caption{\textbf{\newtxt{Illustration of relation between transmembrane currents, axial currents, sources and sinks}.} 
+	\newtxt{
+ {\bf A}: Schematic illustration of a cell model with three cellular compartments. An excitatory synaptic input initiates a flow of positive ions (e.g., Na+) across the membrane and into the neuron, which by convention is a negative transmembrane current (It), also referred to as a current sink. This changes the membrane potential at the location of the synaptic input, initiating axial currents (Ia), that is, currents inside the neuron. The very strong electromagnetic attraction of opposite and repulsion of equal electric charges effectively prevents any charge accumulation, ensuring current conservation. This implies that the same amount of current that goes into a cellular compartment, must also leave the same cellular compartment, enforcing a simple relationship between transmembrane currents and axial currents. Current conservation also ensures that the sum of all transmembrane currents at any given time must sum to zero, which implies that a negative transmembrane current caused by an excitatory synaptic input (current sink), must be exactly balanced by positive transmembrane currents elsewhere on the cell (current sources). {\bf B, C}: The extracellular potential around the cell can be calculated either from the transmembrane currents (B, Eq.~\ref{eq:point_source}), or from the axial currents (C, Eq.~\ref{eq:dipole_approx}) (see main text for discussion of the validity of this). This schematic example of a neuron only has three compartments, but biophysically detailed cell models typically have ~600-1200 compartments, which is sufficient to give very similar results from the two approaches in B and C. 
+}}
+\label{fig:illustration}
+\end{figure}
 
 
 \paragraph{Single-dipole approximation}\label{par:single_dip}
