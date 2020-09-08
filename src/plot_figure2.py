@@ -1,6 +1,7 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib
+matplotlib.use("AGG")
+import matplotlib.pyplot as plt
 from matplotlib import colorbar
 from matplotlib.collections import PolyCollection
 from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
@@ -17,20 +18,20 @@ def plot_neuron(axis, zips = None, cell=None, syn=False, lengthbar=False):
     polycol = PolyCollection(list(zips), edgecolors = 'none', facecolors = 'k')
     axis.add_collection(polycol)
 
-
-    plt.axis('tight')
-
     # small length reference bar
     if lengthbar:
         axis.plot([-500, -500], [-100, 900], 'k', lw=2, clip_on=False)
         axis.text(-430, 400, r'$1 \mathsf{mm}$', size = 8, va='center', ha='center', rotation = 'vertical')
-    plt.axis('tight')
+    # plt.axis('tight')
 
 if __name__ == '__main__':
     # load data from file
     # data = np.load('./data/compare_multi_single_dipole_segev_syns_from_path_passiveTrue_Segev2018_cell11.npz')
     # data = np.load('./data/data_fig2_segev_3a.npz')
     data = np.load('./data/data_fig2_segev_3aactive_Falsestd_pms2.npz')
+    for item, value in data.items():
+        print(item, value)
+
     # data = np.load('./data/data_fig2_segev_8.npz')
     # data = np.load('./data/compare_multi_single_dipole_segev_syns_from_path_passiveTrue_new_diploc.npz')
     # data = np.load('./data/compare_multi_single_dipole_segev_syns_from_path_passiveTrue.npz')
@@ -69,7 +70,8 @@ if __name__ == '__main__':
     EEG = np.array(lfp_multi_dip_list).reshape(num_syns, len(electrode_locs))[:, -1]*k_eeg
 
     plt.close('all')
-    fig = plt.figure()
+    fig = plt.figure(figsize=[8., 7.])
+    fig.subplots_adjust(wspace=0.65, hspace=0.4, left=0.09, right=0.98, bottom=0.08, top=0.97)
     # line colors
     clrs = plt.cm.viridis(np.linspace(0,0.8,num=num_syns))
     # head color
@@ -77,8 +79,8 @@ if __name__ == '__main__':
 
     # define axes
     # ax_setup = plt.subplot2grid((3,4),(0,0), colspan=2)
-    ax_setup = fig.add_axes([0.07, 0.67, 0.25, 0.27])
-    ax_cdm = fig.add_axes([0.377, 0.7, 0.072, 0.09])
+    ax_setup = fig.add_axes([0.07, 0.67, 0.25, 0.29], aspect=1, frameon=False, xticks=[], yticks=[])
+    ax_cdm = fig.add_axes([0.345, 0.70, 0.072, 0.11])
     ax_pot = plt.subplot2grid((3,4),(1,0), colspan=2)
     ax_pot_RE = plt.subplot2grid((3,4),(2,0), colspan=2)
     ax_RE_EEG = plt.subplot2grid((3,4),(0,2), colspan=2)
@@ -128,8 +130,8 @@ if __name__ == '__main__':
     plot_neuron(ax_setup, zips=zips)
     ax_setup.plot(0,0,'o', ms = 1e-4)
     # zoom in on neuron:
-    zoom_ax = zoomed_inset_axes(ax_setup, 110, bbox_to_anchor=(2200, 4120)) # zoom = 6
-    x1, x2, y1, y2 = -1000, 1000, 76000, 79200
+    zoom_ax = zoomed_inset_axes(ax_setup, 110, bbox_to_anchor=(290, 500))
+    x1, x2, y1, y2 = -350, 350, 77700, 78900
     zoom_ax.set_facecolor(head_colors[0])
     zoom_ax.set_xlim(x1, x2)
     zoom_ax.set_ylim(y1, y2)
@@ -144,25 +146,29 @@ if __name__ == '__main__':
     zoom_ax.yaxis.set_ticklabels([])
 
     # syns_to_plot = np.array([-9, 2])
-    syns_to_plot = np.array([-7, 6])
+    syns_to_plot = np.array([-7, 4])
 
     # plot p(t) mini panel
     # k_nA_to_pA = 1e3
     for i in syns_to_plot:
-        ax_cdm.plot(tvec, np.abs(Pz_traces[i]), c = clrs[i], lw=1, clip_on=False)
+        ax_cdm.plot(tvec, np.abs(Pz_traces[i]), c = clrs[i], lw=1.5, clip_on=False)
+        ax_RE_EEG.scatter(syn_loc_zs[i], RE_EEG[i], s = 70., c = clrs[i], clip_on=False)
+        ax_EEG.scatter(syn_loc_zs[i], np.abs(EEG[i]), s = 70., c = clrs[i])
+        ax_RE_EEG_EEG.scatter(np.abs(EEG[i]), RE_EEG[i], s = 70., c = clrs[i], clip_on=False)
+
     # ax_cdm.axvline(np.argmax(P_25), ls='--', c='gray')
-    ax_cdm.set_ylabel(r'$|p_z|$ (nAµm)', fontsize = 8)
+    ax_cdm.set_ylabel(r'$|p_z|$ (nAµm)', fontsize = 8, labelpad=15)
     # fig.text(0.47, 0.76,'$t$', fontsize = 'xx-small')
     ax_cdm.spines['top'].set_visible(False)
     ax_cdm.spines['right'].set_visible(False)
     ax_cdm.get_xaxis().tick_bottom()
     ax_cdm.set_xticks([20, 100])
-    ax_cdm.set_xticklabels([20, 100], fontsize=5)
+    ax_cdm.set_xticklabels([20, 100], fontsize=8)
     ax_cdm.set_xlim([0,100])
     ax_cdm.set_xlabel('t (ms)', fontsize=8)
     ax_cdm.xaxis.set_label_coords(.6, -.28)
     ax_cdm.set_yticks([10.])
-    ax_cdm.set_yticklabels(['10'], fontsize=5)
+    ax_cdm.set_yticklabels(['10'], fontsize=8)
     ax_cdm.set_ylim([0,10])
     ax_cdm.yaxis.set_label_coords(-.13, .43)
     # ax_cdm.annotate('', xy = (0,1), xycoords=('data', 'axes fraction'),
@@ -173,9 +179,9 @@ if __name__ == '__main__':
     #                 arrowprops=dict(arrowstyle='<-', facecolor='black'))
 
 
-    plt.axis('tight')
-    ax_setup.axis('off')
-    ax_setup.set_aspect('equal')
+    # plt.axis('tight')
+    # ax_setup.axis('off')
+    # ax_setup.set_aspect('equal')
 
     electrode_locs_z = electrode_locs[:,2] - zmax
     # syns_to_plot = np.arange(0, num_syns, 5)
@@ -184,7 +190,7 @@ if __name__ == '__main__':
     electrode_locs_z = electrode_locs_z*k1
 
     for syn in range(num_syns):
-        zoom_ax.plot(synlocs[syn][0], synlocs[syn][2], 'o', color=clrs[syn], ms = .5)
+        zoom_ax.plot(synlocs[syn][0], synlocs[syn][2], 'o', color=clrs[syn], ms = 1)
 
     k_100 = 100
     layer_dist_from_neuron = [(r - zmax)*k1 for r in radii]
@@ -202,7 +208,7 @@ if __name__ == '__main__':
         print('RE for synapse idx', i, 'at ECoG location:', RE[ecog_idx][0] ,'%.')
         print('RE for synapse idx', i, 'at EEG location:', RE[eeg_idx][0] ,'%.')
         ax_pot_RE.semilogx(electrode_locs_z, RE, color = clrs[i], label=str(i), linewidth=1.)
-        zoom_ax.plot(synlocs[i][0], synlocs[i][2], 'o', color=clrs[i], ms = 3)
+        zoom_ax.plot(synlocs[i][0], synlocs[i][2], 'o', color=clrs[i], ms = 5)
     ax_pot.plot(100, 0, 'k--', label='multi-dipole', lw=0.8)
     ax_pot.plot(100, 0, 'k-', label='single-dipole', lw=0.8)
     ax_pot.legend(loc=1, fontsize=8, frameon=False)
@@ -227,24 +233,18 @@ if __name__ == '__main__':
     ax_pot_RE.set_ylabel(r'RE (%)', fontsize=10, labelpad=9)
     ax_pot_RE.set_xlabel(r'distance from top of neuron to electrode (mm)', fontsize=10)
     # mark ECoG and EEG locations
-    plt.text(0.147, 0.608, 'ECoG', fontsize=9, transform=plt.gcf().transFigure)
-    plt.text(0.466, 0.609, 'EEG', fontsize=9, transform=plt.gcf().transFigure)
+    plt.text(0.13, 0.65, 'ECoG', fontsize=9, transform=plt.gcf().transFigure)
+    plt.text(0.47, 0.65, 'EEG', fontsize=9, transform=plt.gcf().transFigure)
 
     # mark 4-sphere head model layers
-    txt_brain = plt.text(0.12, 0.3, 'brain', fontweight='bold', fontsize=8, transform=plt.gcf().transFigure, color=head_colors[0])
-    txt_brain.set_path_effects([path_effects.Stroke(linewidth=.6, foreground='black'), path_effects.Normal()])
-    txt_csf = plt.text(0.219, 0.3, 'CSF', fontweight='bold', fontsize=8, transform=plt.gcf().transFigure, color=head_colors[1])
-    txt_csf.set_path_effects([path_effects.Stroke(linewidth=.7, foreground='black'), path_effects.Normal()])
-    txt_skull = plt.text(0.354, 0.3, 'skull', fontweight='bold', fontsize=8, transform=plt.gcf().transFigure, color=head_colors[2])
-    txt_skull.set_path_effects([path_effects.Stroke(linewidth=.8, foreground='black'), path_effects.Normal()])
-    txt_scalp = plt.text(0.438, 0.3, 'scalp', fontweight='bold', fontsize=8, transform=plt.gcf().transFigure, color=head_colors[3])
-    txt_scalp.set_path_effects([path_effects.Stroke(linewidth=.9, foreground='black'), path_effects.Normal()])
-    # plt.text(0.117, 0.27, 'brain', fontsize=8, transform=plt.gcf().transFigure, color='k')#head_colors[0])
-    # plt.text(0.218, 0.27, 'CSF', fontsize=8, transform=plt.gcf().transFigure, color='k')#head_colors[1])
-    # plt.text(0.354, 0.27, 'skull', fontsize=8, transform=plt.gcf().transFigure, color='k')#head_colors[2])
-    # plt.text(0.439, 0.27, 'scalp', fontsize=8, transform=plt.gcf().transFigure, color='k')#head_colors[3])
-
-
+    txt_brain = plt.text(0.1, 0.295, 'brain', fontweight='bold', fontsize=8, transform=plt.gcf().transFigure, color='k')
+    # txt_brain.set_path_effects([path_effects.Stroke(linewidth=.6, foreground='black'), path_effects.Normal()])
+    txt_csf = plt.text(0.2, 0.295, 'CSF', fontweight='bold', fontsize=8, transform=plt.gcf().transFigure, color='k')
+    # txt_csf.set_path_effects([path_effects.Stroke(linewidth=.7, foreground='black'), path_effects.Normal()])
+    txt_skull = plt.text(0.35, 0.295, 'skull', fontweight='bold', fontsize=8, transform=plt.gcf().transFigure, color='k')
+    # txt_skull.set_path_effects([path_effects.Stroke(linewidth=.8, foreground='black'), path_effects.Normal()])
+    txt_scalp = plt.text(0.44, 0.295, 'scalp', fontweight='bold', fontsize=8, transform=plt.gcf().transFigure, color='k')
+    # txt_scalp.set_path_effects([path_effects.Stroke(linewidth=.9, foreground='black'), path_effects.Normal()])
 
     for ax in [ax_EEG, ax_RE_EEG]:
         ax.set_xlim([-20, 800])
@@ -274,14 +274,14 @@ if __name__ == '__main__':
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
 
-    fig.tight_layout(pad=0.5, h_pad=.1, w_pad=-1.)
-    fig.set_size_inches(8., 7.)
-    fig.subplots_adjust(bottom=.08, top=.91)
+    # fig.tight_layout(pad=0.5, h_pad=.1, w_pad=-1.)
+    # fig.set_size_inches(8., 7.)
+    # fig.subplots_adjust(bottom=.08, top=.91)
     # plotting_convention.mark_subplots(fig.axes[:-1], xpos=-0.25)
 
     # label axes
-    xpos = [0.0438, 0.0438, 0.0438, 0.5485, 0.5485, 0.5485]
-    ypos = [0.95, 0.634, 0.326, 0.95, 0.634, 0.326]
+    xpos = [0.04, 0.04, 0.04, 0.53, 0.53, 0.53]
+    ypos = [0.97, 0.68, 0.35, 0.97, 0.68, 0.35]
     letters = 'ABCDEF'
     for i in range(len(letters)):
         fig.text(xpos[i], ypos[i], letters[i],
@@ -292,4 +292,5 @@ if __name__ == '__main__':
 
     # plt.savefig('./figures/figure2_passiveTrue_Hay.png', dpi=600)
     # plt.savefig('./figures/figure2_passiveTrue_segev_new_diploc.png', dpi=600)
-    plt.savefig('./figures/figure2_eeg.png', dpi=600)
+    plt.savefig('./figures/figure2_eeg.png', dpi=300)
+    plt.savefig('./figures/figure2_eeg.pdf', dpi=300)
