@@ -292,5 +292,5 @@ if __name__ == '__main__':
 
     # plt.savefig('./figures/figure2_passiveTrue_Hay.png', dpi=600)
     # plt.savefig('./figures/figure2_passiveTrue_segev_new_diploc.png', dpi=600)
-    plt.savefig('./figures/figure2_eeg.png', dpi=300)
+    # plt.savefig('./figures/figure2_eeg.png', dpi=300)
     plt.savefig('./figures/figure2_eeg.pdf', dpi=300)
