@@ -422,7 +422,7 @@ if __name__ == '__main__':
                  Pz_traces = Pz_traces,
                  soma_vmem = soma_vmem)
 
-
+        # show synapse locations
         # zips_yz = []
         # for y, z in cell.get_idx_polygons(projection=('y', 'z')):
         #     zips_yz.append(list(zip(y, z)))
