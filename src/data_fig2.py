@@ -238,8 +238,8 @@ if __name__ == '__main__':
     sigmas = [0.3, 1.5, 0.015, 0.3]  #
     radii = [79000., 80000., 85000., 90000.]
 
-    active = True
-    # active = False
+    # active = True
+    active = False
 
     # make electrode array params
     num_electrodes = 40
@@ -401,7 +401,7 @@ if __name__ == '__main__':
         zmax = np.max(cell.zend)
         soma_vmem = cell.vmem[0]
 
-        filename = './data/data_fig2_segev_' + cell_dict['cellnames'][i] + 'spike' #active_' + str(active) + 'std_pms2'
+        filename = './data/data_fig2_segev_' + cell_dict['cellnames'][i] + 'active_' + str(active) + 'std_pms2'
         np.savez(filename,
                  lfp_multi = lfp_multi_dip_list,
                  lfp_single = lfp_single_dip_list,
