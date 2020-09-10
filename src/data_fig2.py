@@ -235,7 +235,7 @@ if __name__ == '__main__':
                              ]
                     }
     # make 4S-parameters
-    sigmas = [0.3, 1.5, 0.015, 0.3]  #
+    sigmas = [0.276, 1.65, 0.01, 0.465]
     radii = [79000., 80000., 85000., 90000.]
 
     # active = True
@@ -401,7 +401,7 @@ if __name__ == '__main__':
         zmax = np.max(cell.zend)
         soma_vmem = cell.vmem[0]
 
-        filename = './data/data_fig2_segev_' + cell_dict['cellnames'][i] + 'active_' + str(active) + 'std_pms2'
+        filename = './data/data_fig2_segev_' + cell_dict['cellnames'][i] + 'active_' + str(active)
         np.savez(filename,
                  lfp_multi = lfp_multi_dip_list,
                  lfp_single = lfp_single_dip_list,
