@@ -116,6 +116,8 @@ print(combined_pop_pos, pop_rmid)
 simple_eeg = np.array(four_sphere_top.calc_potential(summed_pop_cdm, pop_rmid))[0, :] * 1e3  # from mV to uV
 simple_eeg2 = np.array(four_sphere_top.calc_potential(summed_pop_cdm, combined_pop_pos))[0, :] * 1e3  # from mV to uV
 
+
+np.save(join(sim_folder, "summed_cdm.npy"), summed_pop_cdm)
 np.save(join(sim_folder, "summed_EEG.npy"), summed_eeg)
 np.save(join(sim_folder, "simple_EEG_single_pop.npy"), simple_eeg)
 np.save(join(sim_folder, "simple_EEG_pops_with_pos.npy"), simple_eeg_with_pop_pos)
