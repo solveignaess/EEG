@@ -467,7 +467,7 @@ if __name__ == '__main__':
     syninds = [481]
     [xrot, yrot, zrot] = [-np.pi/2, -np.pi/7, 0]
     dipole_fiel_data_dict = make_data(morphology, syninds, x_rot=xrot, y_rot=yrot)
-    print('time_max', time_max)
+    # print('time_max', time_max)
     fig = make_fig_1(**dipole_fiel_data_dict)
     # fig.savefig('./figures/fig_dipole_field.pdf', bbox_inches='tight', dpi=300, transparent=True)
     # fig.savefig('./figures/fig_dipole_field_passiveTrue_single_syn328.pdf', bbox_inches='tight', dpi=300, transparent=True)
