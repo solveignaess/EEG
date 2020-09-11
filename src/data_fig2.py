@@ -18,7 +18,8 @@ COMM = MPI.COMM_WORLD
 SIZE = COMM.Get_size()
 RANK = COMM.Get_rank()
 
-def make_data(morphology, cell_model, rot, rz, radii, sigmas, electrode_locs, syn_idcs, active=False):
+def make_data(morphology, cell_model, rot, rz, radii, sigmas,
+              electrode_locs, syn_idcs, active=False):
     # set cell and synapse parameters
 #    print(syn_idcs)
     cell_parameters, synapse_parameters = set_parameters(morphology, cell_model)
@@ -101,7 +102,9 @@ def make_data(morphology, cell_model, rot, rz, radii, sigmas, electrode_locs, sy
         soma_vmem = cell.vmem[0]
         tvec = cell.tvec
 
-    return p_list, p_loc_list, pz_traces, lfp_multi_dip_list, lfp_single_dip_list, RE_list, synlocs, zips, zmax, tvec, t_max_list, soma_vmem
+    return (p_list, p_loc_list, pz_traces, lfp_multi_dip_list,
+            lfp_single_dip_list, RE_list, synlocs, zips, zmax,
+            tvec, t_max_list, soma_vmem)
 
 def return_path_to_tip_idcs(cell, pos_x, pos_y, pos_z, section='allsec'):
 
@@ -244,7 +247,8 @@ def plot_neuron(axis, zips = None, cell=None, syn=False, lengthbar=False):
     # small length reference bar
     if lengthbar:
         axis.plot([-500, -500], [-100, 900], 'k', lw=2, clip_on=False)
-        axis.text(-430, 400, r'$1 \mathsf{mm}$', size = 8, va='center', ha='center', rotation = 'vertical')
+        axis.text(-430, 400, r'$1 \mathsf{mm}$', size = 8, va='center',
+                  ha='center', rotation = 'vertical')
     plt.axis('tight')
 
 
@@ -252,14 +256,14 @@ if __name__ == '__main__':
 
     # make 4S-parameters
     sigmas = [0.276, 1.65, 0.01, 0.465]
-    radii = [79000., 80000., 85000., 90000.]
+    radii = [89000., 90000., 95000., 100000.]
 
     # active = True
     active = False
 
     # make electrode array params
     num_electrodes = 40
-    electrode_loc_zs = list(np.linspace(78900., radii[-1], num_electrodes))
+    electrode_loc_zs = list(np.linspace(radii[0] - 100, radii[-1], num_electrodes))
     electrode_loc_zs.insert(1, radii[0])
     electrode_loc_zs.sort()
     num_electrodes += 1
@@ -275,7 +279,7 @@ if __name__ == '__main__':
 
     # cell parameters
     morphology = '2013_03_06_cell03_789_H41_03.ASC'
-    rz = np.array([0., 0., 78015.])
+    rz = np.array([0., 0., 88015.])
     rot = [-np.pi/2, -np.pi/7, 0]
 
     if active:
