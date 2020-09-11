@@ -1,4 +1,5 @@
 # Show px, py, pz and EEG from simulation of various neuron types with different input patterns
+import os
 import matplotlib
 matplotlib.use("AGG")
 import numpy as np
@@ -13,7 +14,7 @@ import time
 import random
 from os.path import join
 
-mod_folder = '../../LFPy/LFPy/LFPy/test'
+mod_folder = join(os.path.dirname(LFPy.__file__), "test")
 neuron.load_mechanisms(join(mod_folder))
 
 def make_cell(morphology, morph_type='l23'):
@@ -34,11 +35,6 @@ def make_cell(morphology, morph_type='l23'):
         'passive': True
         }
 
-    # if morph_type == 'l23':
-    #     cell_parameters['passive_parameters'] = {'g_pas' : 1./21400, 'e_pas' : -68.851} # S/cm^2, mV
-    #     cell_parameters['Ra'] = 282 # Ω cm
-    #     cell_parameters['cm'] = 0.49 # µF/cm^2
-
     # create cell with parameters in dictionary
     print('initiate cell')
     cell = LFPy.Cell(**cell_parameters)
@@ -49,9 +45,7 @@ def make_cell(morphology, morph_type='l23'):
         cell.set_rotation(y=-np.pi/7)
     else:
         cell.set_rotation(x=np.pi/2)
-        # soma_top_dist = np.max(cell.zend)
-        # soma_brain_surf_dist = soma_top_dist + 10.
-        # cell.set_pos(x = 0., y = 0., z = 378.)
+
 
     return cell
 
@@ -131,8 +125,9 @@ def make_input(cell, weight=0.01, syntype='Exp2Syn', morph_type='l23'):
     return cell, synapse
 
 def return_head_parameters():
-    radii = [79000., 80000., 85000., 90000.]
-    sigmas = [0.3, 1.5, 0.015, 0.3]
+    # From Huang et al. (2013): 10.1088/1741-2560/10/6/066004
+    sigmas = [0.276, 1.65, 0.01, 0.465]
+    radii = [89000., 90000., 95000., 100000.]
     rad_tol = 1e-2
     return radii, sigmas, rad_tol
 
@@ -142,16 +137,20 @@ def return_measurement_coords(radii, rad_tol):
     scalp_rad = radii[-1]
     return np.array([[0, 0, scalp_rad - rad_tol]])
 
-def return_eeg(cell, radii, sigmas, eeg_coords):
+def return_eeg(cell, radii, sigmas, eeg_coords, morph_type):
     # compute current dipole moment
     P = cell.current_dipole_moment
     # set dipole position
     r_soma_syns = [cell.get_intersegment_vector(idx0=0, idx1=i)
                    for i in cell.synidx]
     r_mid = np.average(r_soma_syns, axis=0)
-    somapos = np.array([0., 0., 77500])
+    if morph_type == 'l5i':
+        somapos = np.array([0., 0., radii[0]-1200])
+    else:
+        somapos = np.array([0., 0., radii[0] - np.max(cell.zend) - 50])
     dipole_pos = r_mid + somapos
     cell.set_pos(x=somapos[0], y=somapos[1], z=somapos[2])
+
     # multi_dipoles, dipole_locs = cell.get_multi_current_dipole_moments()
     # t_point = 800
     # P_from_multi_dipoles = np.sum(multi_dipoles[:,t_point,:],axis=0)
@@ -163,12 +162,10 @@ def return_eeg(cell, radii, sigmas, eeg_coords):
     eeg_multidip = fs_eeg.calc_potential_from_multi_dipoles(cell)
 
     eeg_avg = np.average(eeg, axis=0)
-    print('eeg_avg.shape', eeg_avg.shape)
     eeg_multidip_avg = np.average(eeg_multidip, axis=0)
-    print('eeg_mult_avg.shape', eeg_multidip_avg.shape)
     # convert from mV to pV:
-    eeg_avg = eeg_avg*1e9
-    eeg_multidip_avg = eeg_multidip_avg*1e9
+    eeg_avg = eeg_avg * 1e9
+    eeg_multidip_avg = eeg_multidip_avg * 1e9
 
     return eeg_avg, eeg_multidip_avg
 
@@ -221,12 +218,12 @@ if __name__ == '__main__':
         morphology = morphology_dict[m]
         cell = make_cell(morphology, morph_type=m)
 
-        cell,synapse = make_input(cell, weight=weight, syntype=syntype, morph_type=m)
+        cell, synapse = make_input(cell, weight=weight, syntype=syntype, morph_type=m)
         cell.simulate(rec_vmem=True, rec_current_dipole_moment=True, rec_imem=True)
         cells.append(cell)
 
         # compute EEG with 4s
-        eeg, eeg_multidip = return_eeg(cell, radii, sigmas, eeg_coords) # units [pV]
+        eeg, eeg_multidip = return_eeg(cell, radii, sigmas, eeg_coords, m) # units [pV]
         eegs.append(eeg)
         eegs_multidip.append(eeg_multidip)
         ind_max_error = np.argmax(np.abs(eeg_multidip))
@@ -254,11 +251,13 @@ if __name__ == '__main__':
     ax_p = plt.subplot2grid((2,2),(1,0))
     ax_eeg = plt.subplot2grid((2,2), (1,1))
 
+    morph_ylim = [radii[0] - 1500, radii[0]]
+
     num_cells = len(morphology_dict)
     # clrs = plt.cm.Accent(np.linspace(0, 0.8, num=num_cells))
     clrs = ['b', 'orangered', 'orange']
 
-    ax_syns.vlines([50, 100, 150, 200], 77500-250, 77500+1150, colors='k',
+    ax_syns.vlines([50, 100, 150, 200], radii[0]-1500, radii[0] - 50, colors='k',
                    linestyles='-', linewidth=0.5)
 
     ax_syns.plot(-cells[0].sptimeslist[0], cells[0].zmid[cells[0].synapses[0].idx], '.',
@@ -282,7 +281,7 @@ if __name__ == '__main__':
             m = '.' if syn.kwargs['e'] > -60 else 'o'
             mec = ec if syn.kwargs['e'] > -60 else 'k'
             # mew =
-            ms = 1 if syn.kwargs['e'] > -60 else 3
+            ms = 1 if syn.kwargs['e'] > -60 else 2.5
             zorder = -1 if syn.kwargs['e'] > -60 else 1  # Plot crosses in front for visibility
 
             ax_syns.plot(cell.sptimeslist[syn_number],
@@ -300,11 +299,11 @@ if __name__ == '__main__':
         ax_eeg.plot(cell.tvec, eegs_multidip[cellnum], ':', color='gray', lw=1.5)
         print('max eeg:', np.max(eegs[cellnum]))
 
-    ax_syns.text(38, 78720, 'apical', fontsize=6)
-    ax_syns.text(89, 78720, 'basal', fontsize=6)
-    ax_syns.text(135, 78720, 'uniform', fontsize=6)
-    ax_syns.text(185, 78770, 'uniform', fontsize=6)
-    ax_syns.text(176, 78700, '+ basal inhib.', fontsize=6)
+    ax_syns.text(35, radii[0] + 20, 'apical', fontsize=7)
+    ax_syns.text(85, radii[0] + 20, 'basal', fontsize=7)
+    ax_syns.text(130, radii[0] + 20, 'uniform', fontsize=7)
+    ax_syns.text(185, radii[0] + 50, 'uniform', fontsize=7)
+    ax_syns.text(185, radii[0] -40, '+ basal inhib.', fontsize=7)
 
     for i in range(num_cells):
         cell = cells[i]
@@ -324,9 +323,9 @@ if __name__ == '__main__':
     ax_morph.set_xticks([])
     ax_morph.set_xticklabels([])
     ax_morph.set_ylabel(r'z ($\mu$m)')
-    ax_morph.text(-220, 77170, 'human L2/3 PC', fontsize=6.)
-    ax_morph.text(570, 77170, 'rat L5 PC', fontsize=6.)
-    ax_morph.text(1220, 77170, 'rat L5 ChC', fontsize=6.)
+    ax_morph.text(-250, radii[0] - 1250, 'human L2/3 PC', fontsize=7.)
+    ax_morph.text(570, radii[0] - 1550, 'rat L5 PC', fontsize=7.)
+    ax_morph.text(1220, radii[0] - 1500, 'rat L5 ChC', fontsize=7.)
 
     for ax in [ax_syns, ax_p, ax_eeg]:
         ax.spines['top'].set_visible(False)
@@ -336,9 +335,10 @@ if __name__ == '__main__':
     ax_syns.legend(loc=1, bbox_to_anchor=(1.1, 0.8, 0.1, 0.1), fontsize='small', frameon=False)
 
     for ax in [ax_morph, ax_syns]:
-        ax.set_ylim([77500-250, 77500+1250])
-        ax.set_yticklabels([str(int(i)) for i in np.linspace(-250, 1250, num = 7)])
-    ax_eeg.set_ylim([-60, 40])
+        ax.set_ylim(morph_ylim)
+        ax.set_yticks(np.linspace(morph_ylim[0], morph_ylim[1], num=7))
+        ax.set_yticklabels([str(int(i)) for i in np.linspace(-1500, 0, num = 7)])
+    ax_eeg.set_ylim([-40, 30])
     # ax_eeg.set_yticks([-75, -50, -25., 0., 25., 50.])
     ax_eeg.legend(loc=1, bbox_to_anchor=(1.12, 0.8, 0.1, 0.1), fontsize='small', frameon=False)
 
