@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use("AGG")
 import numpy as np
 import matplotlib.pyplot as plt
 import plotting_convention as plotting_convention
@@ -17,13 +19,15 @@ def make_data(morphology, syninds, dip_loc=None, cell_model=None, x_rot=0, y_rot
     # X,Z = np.meshgrid(np.linspace(-1300,1301,101), np.linspace(-900,1800,101))
     # Y = np.zeros(X.shape)
     # compute LFP very close to neuron
-    X,Z = np.meshgrid(np.linspace(-550,550,101), np.linspace(-250,850,101))
+    X, Z = np.meshgrid(np.linspace(-550,550,101), np.linspace(-250,850,101))
     Y = np.zeros(X.shape)
     cell_parameters, synapse_parameters, grid_electrode_parameters = set_parameters(morphology, X, Y, Z, cell_model=cell_model)
-    cell, synapse, grid_electrode = simulate(cell_parameters, synapse_parameters, grid_electrode_parameters, syninds, x_rot=x_rot, y_rot=y_rot, z_rot=z_rot, active=active)
+    cell, synapse, grid_electrode = simulate(cell_parameters, synapse_parameters,
+                                             grid_electrode_parameters, syninds,
+                                             x_rot=x_rot, y_rot=y_rot, z_rot=z_rot,
+                                             active=active)
     ## multicompartment
     cb_LFP_close = grid_electrode.LFP*1e6
-
 
     ## multi-dipole
     multi_dips, multi_dip_locs = cell.get_multi_current_dipole_moments()
@@ -53,7 +57,10 @@ def make_data(morphology, syninds, dip_loc=None, cell_model=None, x_rot=0, y_rot
                                  'y': Y_f.flatten(),
                                  'z': Z_f.flatten()
                                  }
-    cell, synapse, grid_electrode_far = simulate(cell_parameters, synapse_parameters, grid_electrode_parameters, syninds, x_rot=x_rot, y_rot=y_rot, z_rot=z_rot, active=active)
+    cell, synapse, grid_electrode_far = simulate(cell_parameters, synapse_parameters,
+                                                 grid_electrode_parameters, syninds,
+                                                 x_rot=x_rot, y_rot=y_rot, z_rot=z_rot,
+                                                 active=active)
     ## multicompartment
     cb_LFP_far = grid_electrode_far.LFP*1e6
     ## multi dipole
@@ -70,8 +77,27 @@ def make_data(morphology, syninds, dip_loc=None, cell_model=None, x_rot=0, y_rot
     LFP_max_close = 100.  #np.round(np.max(np.abs(grid_electrode_LFP[:, time_max])))
     LFP_max_far = 100.
     print('-'*200)
-    return cell, cb_LFP_close, cb_LFP_far, multi_dip_LFP_close, multi_dip_LFP_far, db_LFP_close, db_LFP_far, LFP_max_close, LFP_max_far, time_max, multi_dips, multi_dip_locs, single_dip, r_mid, X, Z, X_f, Z_f
-    # print max_ind, time_max, LFP_max
+
+    results_dict = dict(cell=cell,
+                        cb_LFP_close=cb_LFP_close,
+                        cb_LFP_far=cb_LFP_far,
+                        multi_dip_LFP_close=multi_dip_LFP_close,
+                        multi_dip_LFP_far=multi_dip_LFP_far,
+                        db_LFP_close=db_LFP_close,
+                        db_LFP_far=db_LFP_far,
+                        LFP_max_close=LFP_max_close,
+                        LFP_max_far=LFP_max_far,
+                        time_max=time_max,
+                        multi_dips=multi_dips,
+                        multi_dip_locs=multi_dip_locs,
+                        single_dip=single_dip,
+                        r_mid=r_mid,
+                        X=X,
+                        Z=Z,
+                        X_f=X_f,
+                        Z_f=Z_f)
+
+    return results_dict
 
 def set_parameters(morphology, X, Y, Z, cell_model=None):
     """set cell, synapse and electrode parameters"""
@@ -203,7 +229,6 @@ def make_fig_1(cell,
                    'lightpurple': '#cab2d6', 'purple': '#6a3d9a',
                    'yellow': '#ffff33', 'brown': '#b15928'}
 
-
     fig = plt.figure()
 
     ax0 = plt.subplot2grid((3,3),(0,0))
@@ -220,8 +245,6 @@ def make_fig_1(cell,
     ax0.set_ylabel('neuron simulation', labelpad=-.2)
     ax1.set_ylabel(r'$\Phi$' + ' close-up')
     ax2.set_ylabel(r'$\Phi$' + ' zoomed out')
-
-
 
     # plot neuron morphology in top row
     plot_neuron(ax0, cell, syn=True, lengthbar=True)
@@ -294,8 +317,6 @@ def make_fig_1(cell,
                             color=arrow_colors[i], alpha=0.8, width = 12, #head_width = 60.,
                             length_includes_head = True)#,
 
-
-
     # colorbar
     cax = fig.add_axes([0.13, 0.03, 0.8, 0.01])
     # cax.plot(np.arange(100), np.arange(100))
@@ -311,12 +332,9 @@ def make_fig_1(cell,
     cbar.set_label('$\phi$ (nV)',labelpad = -0.4)
     cbar.outline.set_visible(False)
 
-
     ax0.set_title('compartment-based', fontsize='x-small')
     ax3.set_title('multi-dipole', fontsize='x-small')
     ax6.set_title('single-dipole', fontsize='x-small')
-
-
 
     fig.set_size_inches(8, 8)
     # plt.tight_layout()
@@ -448,19 +466,11 @@ if __name__ == '__main__':
     # syninds = [557]
     syninds = [481]
     [xrot, yrot, zrot] = [-np.pi/2, -np.pi/7, 0]
-    cell, cb_LFP_close, cb_LFP_far, multi_dip_LFP_close, multi_dip_LFP_far, db_LFP_close, db_LFP_far, LFP_max_close, LFP_max_far, time_max, multi_dips, multi_dip_locs, single_dip, r_mid, X, Z, X_f, Z_f = make_data(morphology, syninds, x_rot=xrot, y_rot=yrot)
+    dipole_fiel_data_dict = make_data(morphology, syninds, x_rot=xrot, y_rot=yrot)
     print('time_max', time_max)
-    fig = make_fig_1(cell,
-                     cb_LFP_close, cb_LFP_far,
-                     multi_dip_LFP_close, multi_dip_LFP_far,
-                     db_LFP_close, db_LFP_far,
-                     LFP_max_close, LFP_max_far,
-                     time_max,
-                     multi_dips, multi_dip_locs,
-                     single_dip, r_mid,
-                     X, Z, X_f, Z_f)
+    fig = make_fig_1(**dipole_fiel_data_dict)
     # fig.savefig('./figures/fig_dipole_field.pdf', bbox_inches='tight', dpi=300, transparent=True)
     # fig.savefig('./figures/fig_dipole_field_passiveTrue_single_syn328.pdf', bbox_inches='tight', dpi=300, transparent=True)
     # fig.savefig('./figures/fig_dipole_field_passiveTrue_single_syn557.pdf', bbox_inches='tight', dpi=300)
-    fig.savefig('./figures/fig_dipole_field_passiveTrue_single_syn481.pdf', bbox_inches='tight', dpi=300)
+    fig.savefig('./figures/fig_dipole_field_passiveTrue_single_syn481_mod.pdf', bbox_inches='tight', dpi=300)
     # fig.savefig('./figures/fig_dipole_field_passiveFalse2.pdf', bbox_inches='tight', dpi=300, transparent=True)

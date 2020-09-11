@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use("AGG")
 import numpy as np
 import matplotlib.pyplot as plt
 import plotting_convention as plotting_convention
@@ -10,6 +12,11 @@ from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 import neuron
 import os
 from os.path import join
+from mpi4py import MPI
+
+COMM = MPI.COMM_WORLD
+SIZE = COMM.Get_size()
+RANK = COMM.Get_rank()
 
 def return_path_to_tip_idcs(cell, pos_x, pos_y, pos_z, section='allsec'):
 
@@ -27,7 +34,7 @@ def return_path_to_tip_idcs(cell, pos_x, pos_y, pos_z, section='allsec'):
     curr_sec = tuft_tip_sec
     path_to_tip_sections = [tuft_tip_sec.name()]
     for _ in range(100):
-        print(curr_sec.name())
+        #print(curr_sec.name())
         curr_sec = curr_sec.parentseg().sec
         path_to_tip_sections.append(curr_sec.name())
         if "soma" in curr_sec.name():
@@ -83,7 +90,7 @@ def set_parameters(morphology, cell_model=None):
 
     synapse_parameters = {'e': 0., # reversal potential
                       # 'tau': 5., # synapse time constant (first fig version)
-                      'weight': 0.05, # 0.001, # synapse weight
+                      'weight': 0.002, # 0.001, # synapse weight
                       'record_current': True, # record synapse current
                       # parameters not included in first version of fig
                       'syntype': 'Exp2Syn',
@@ -92,7 +99,7 @@ def set_parameters(morphology, cell_model=None):
                       }
     return cell_parameters, synapse_parameters
 
-def create_cell(active=False, x_rot=0, y_rot=0, z_rot=0):
+def create_cell(cell_parameters, active=False, x_rot=0, y_rot=0, z_rot=0):
     # create cell with parameters in dictionary
     if not active:
         cell = LFPy.Cell(**cell_parameters)
@@ -105,16 +112,14 @@ def create_cell(active=False, x_rot=0, y_rot=0, z_rot=0):
 
     return cell
 
-def simulate(cell, synidx):
+def simulate(cell, synidx, input_time):
     """set synapse location. simulate cell, synapse and electrodes for input synapse location"""
 
     for idx in synidx:
         synapse_parameters['idx'] = idx #
         # create synapse with parameters in dictionary
         synapse = LFPy.Synapse(cell, **synapse_parameters)
-        synapse.set_spike_times(np.array([20.]))
-        #  simulation goes from t: 0-100 in ms. spike_time = 20ms
-        # timeres = 0.1 --> 801 measurements!
+        synapse.set_spike_times(np.array([input_time]))
 
     cell.simulate(rec_imem = True,
                   rec_vmem = True,
@@ -127,8 +132,8 @@ def simulate(cell, synidx):
     return cell, synapse, electrode_array
 
 def get_dipole_loc(rz, syn_loc):
-    mid_pos = np.array([syn_loc[0], syn_loc[1], syn_loc[2]])/2
-    dip_loc = rz + mid_pos
+    # mid_pos = np.array([syn_loc[0], syn_loc[1], syn_loc[2]])
+    dip_loc = (rz + syn_loc) / 2
     return dip_loc
 
 def get_mass_center(cell, timepoint):
@@ -148,7 +153,6 @@ def plot_neuron(axis, zips = None, cell=None, syn=False, lengthbar=False):
     # faster way to plot points:
     polycol = PolyCollection(list(zips), edgecolors = 'none', facecolors = 'k')
     axis.add_collection(polycol)
-
 
     plt.axis('tight')
 
@@ -176,55 +180,26 @@ if __name__ == '__main__':
                              # '2013_03_06_cell08_876_H41_05_Cell2.ASC'#,
                              # '2013_03_06_cell11_1125_H41_06.ASC'
                              ],
-                  'active_models': ['cell0603_03_model_476', #None
+                  'active_models': [None,#'cell0603_03_model_476', #None
                                     # 'cell1303_03_model_448',
                                     # 'cell1303_05_model_643',
                                     # 'cell1303_06_model_263',
                                     # 'cell0603_08_model_602'#,
                                     # 'cell0603_11_model_937.hoc',
                                     ],
-                   'rzs': [np.array([0., 0., 78015.]),
+                   'soma_positions': [np.array([0., 0., 88016.]), # From: [0, 0, radii[0] - np.max(cell.zend) - 200]
                            # np.array([0., 0., 77643.]),
                            # np.array([0., 0., 78175.]),
                            # np.array([0., 0., 77888.]),
                            # np.array([0., 0., 77947.])#,
                            # np.array([0., 0., 77747.])
                            ],
-                   'syn_idcs': [[0]
-                                # to right side for active 3a
-                                #[0,416,418,420,422,424,426,428,430,432,434,436,
-                                #438,440,442,444,446,521,523,525,527,529,531,
-                                #542,544,546,548,550,552],
-                                ###[[45.7, 29.76, 679.1]]
-                                # straight for active 3a
-                                # [0,416,418,420,422,424,425,426,428,429,430,431,
-                                #  432,433,434,435,436,588,589,590,591,592,706,
-                                #  707,708,709,710,711,712,713,714,715,716,717,
-                                #  718,719,720,721,722,723,724,725,726,727,735,
-                                #  736,737,738,739,740]
-                                 # # straight for passive 3a:
-                                 # [0,338,340,342,344,346,348,349,350,351,352,353,354,
-                                 #  355,469,470,471,472,473,563,564,565,566,567,
-                                 #  568,569,570,571,572,573,574,575,576,577,578,
-                                 #  579,580,586,587,588,589,590]
-                                                                   # [0,339,341,343,345,347,349,350,351,352,353,354,
-                                                                   #  355,469,470,471,472,473,563,564,565,566,567,
-                                                                   #  568,569,570,571,572,573,574,575,576,577,578,
-                                                                   #  579,580,586,587,588,589,590]
-                                # [0,465,469,473,475,477,479,481,483,548,563,565,
-                                 # 567,569,571,573,575,577,579,581,583,585,587,
-                                 # 589,591,593,595,597,599,601],
-                                # [0,492,494,496,498,500,502,649,651,
-                                 # 653,702,704,706,708,710,712,719,
-                                 # 728,730,732,734,736,738],
-                                # [0,605,609,613,617,619,621,623,625,627,629,698,
-                                 # 700,702,704,706,708,710,712,714,716,718,720,
-                                 # 722,724,726,737,739,741,743],
-                                # [0,350,454,638,640,655,657,659,661,663,665,667,
-                                 # 669,671,673,675,677,698,700,702,704,706]#,
-                                # [0,546,699,763,765,823,838,857,859,880,882,901,
-                                #  903,916,918,920,922,981,983,985,
-                                #  987,989,991,993,995,997,1004,1006,1008]
+                   'syn_idcs': [#[0]
+                                  [0,338,340,342,344,346,348,349,350,351,352,353,354,
+                                    355,469,470,471,472,473,563,564,565,566,567,
+                                    568,569,570,571,572,573,574,575,576,577,578,
+                                    579,580,586,587,588,589,590]  # from return_path_to_tip_idcs(cell, pos_x=0, pos_y=0, pos_z=1000)
+
                                 ],
                     'rots': [[-np.pi/2, -np.pi/7, 0],
                              # [np.pi/2, 0., 0.],
@@ -234,22 +209,38 @@ if __name__ == '__main__':
                              # [-np.pi/2, -np.pi/8, 0.],
                              ]
                     }
-    # make 4S-parameters
-    sigmas = [0.3, 1.5, 0.015, 0.3]  #
-    radii = [79000., 80000., 85000., 90000.]
+    savefolder = "data"
 
-    active = True
-    # active = False
+    # sigmas = [0.3, 1.5, 0.015, 0.3]  #
+    # radii = [79000., 80000., 85000., 90000.]
+    # From Huang et al. (2013): 10.1088/1741-2560/10/6/066004
+    sigmas = [0.276, 1.65, 0.01, 0.465]
+    radii = [89000., 90000., 95000., 100000.]
+
+    # active = True
+    active = False
+    syn_input_time = 20.
+
+    # cell_parameters, synapse_parameters = set_parameters(cell_dict['morphs'][0],
+    #                                                      cell_dict['active_models'][0])
+    # [xrot, yrot, zrot] = cell_dict['rots'][0]
+    # cell = create_cell(cell_parameters, active=active, x_rot=xrot, y_rot=yrot, z_rot=zrot)
+    # syn_idxs = return_path_to_tip_idcs(cell, pos_x=0, pos_y=0, pos_z=1000)
+
+    # soma_z_pos =  # Position cell top 200 um below brain surface
+    # soma_pos = [0, 0, radii[0] - np.max(cell.zend) - 200]
+    # print(soma_pos)
+    # sys.exit()
 
     # make electrode array params
     num_electrodes = 40
-    electrode_loc_zs = list(np.linspace(78900., radii[-1], num_electrodes))
+    electrode_loc_zs = list(np.linspace(radii[0] - 100, radii[-1], num_electrodes))
     electrode_loc_zs.insert(1, radii[0])
     electrode_loc_zs.sort()
     num_electrodes += 1
     electrode_locs = np.zeros((num_electrodes, 3))
 
-    electrode_locs[:,2] = np.array(electrode_loc_zs)
+    electrode_locs[:, 2] = np.array(electrode_loc_zs)
 
     electrodeParams = {'sigma': 0.3,
                         'x': electrode_locs[:,0],
@@ -258,16 +249,16 @@ if __name__ == '__main__':
                         }
     num_cells = len(cell_dict['morphs'])
     # num_cells=1
+
     for i in range(num_cells):
-        print('cell:', cell_dict['cellnames'][i])
+        cell_name = cell_dict['cellnames'][i]
         morphology = cell_dict['morphs'][i]
         cell_model = cell_dict['active_models'][i]
-        rz = cell_dict['rzs'][i]
+        print(cell_name)
+        soma_pos = cell_dict['soma_positions'][i]
         syn_idcs = cell_dict['syn_idcs'][i]
 
         num_syns = len(syn_idcs)
-
-
 
         # set cell and synapse parameters
         cell_parameters, synapse_parameters = set_parameters(morphology, cell_model)
@@ -285,41 +276,48 @@ if __name__ == '__main__':
         Pz_traces = []
         # get data from num_syns simulations
         for j in range(num_syns):
+            if not divmod(j, SIZE)[1] == RANK:
+                continue
             print('syn number:', j)
-            cell = create_cell(active=active,
+            cell = create_cell(cell_parameters, active=active,
                                x_rot=xrot, y_rot=yrot, z_rot=zrot)
+
             ## if you know synidx:
             syn_idx = syn_idcs[j]
             # if you only know synapse location:
             # syn_loc = syn_idcs[j]
             # syn_idx = cell.get_closest_idx(x=syn_loc[0], y=syn_loc[1], z=syn_loc[2])
-            print('syn_idx:', syn_idx)
-            cell, synapse, electrode_array = simulate(cell, [syn_idx])
-            print('cell simulated')
-            syn_loc = (cell.xmid[syn_idx], cell.ymid[syn_idx], cell.zmid[syn_idx])
-            synlocs.append((syn_loc[0], syn_loc[1], syn_loc[2]+rz[2]))
-            cell.set_pos(x=rz[0], y=rz[1], z=rz[2])
 
+            cell, synapse, electrode_array = simulate(cell, [syn_idx], syn_input_time)
+            print('cell simulated')
+            cell.set_pos(x=soma_pos[0], y=soma_pos[1], z=soma_pos[2])
+            syn_loc = (cell.xmid[syn_idx], cell.ymid[syn_idx], cell.zmid[syn_idx])
+
+            synlocs.append((syn_loc[0], syn_loc[1], syn_loc[2]))
+
+            # For active cells, we must subtract DC-dipole
+            t_idx_before_input = np.argmin(np.abs(cell.tvec - syn_input_time)) - 1
             dipoles = cell.current_dipole_moment
-            p_dc = (dipoles[0] + dipoles[319])/2
+            p_dc = dipoles[t_idx_before_input]
             dipoles -= p_dc
 
             # # P_traces.append(np.linalg.norm(dipoles, axis=1))
             Pz_traces.append(dipoles[:,2])
             # compute timepoint with biggest dipole
-            timemax = [np.argmax(np.linalg.norm(np.abs(dipoles),axis=1))]
+            timemax = [np.argmax(np.linalg.norm(np.abs(dipoles), axis=1))]
             t_max_list.append(timemax)
             p = dipoles[timemax]
             # compute LFP with single dipole
             # dip_loc = get_mass_center(cell, timemax)
-            dip_loc = get_dipole_loc(rz, syn_loc)
+            dip_loc = get_dipole_loc(soma_pos, syn_loc)
             lfp_single_dip = fs.calc_potential(p, dip_loc)
             print('pot from single dip computed')
             # compute LFP with multi-dipole
 
-            multi_p_0, multi_p_locs = cell.get_multi_current_dipole_moments([0])
-            multi_p_319, multi_p_locs = cell.get_multi_current_dipole_moments([319])
-            multi_p_dc = (multi_p_0 + multi_p_319)/2
+            # For active cells, we must subtract DC-dipole
+            # multi_p_0, multi_p_locs = cell.get_multi_current_dipole_moments([0])
+            multi_p_319, multi_p_locs = cell.get_multi_current_dipole_moments([t_idx_before_input])
+            multi_p_dc = multi_p_319
             multi_p, multi_p_locs = cell.get_multi_current_dipole_moments(timemax)
             multi_p -= multi_p_dc
 
@@ -335,30 +333,46 @@ if __name__ == '__main__':
             # compute relative errors
             RE = np.abs((lfp_single_dip - lfp_multi_dip)/lfp_multi_dip)
 
+            print('syn_idx: ', syn_idx)
+            print('syn_pos: ', syn_loc)
+            print("RE EEG: ", RE[-1])
             p_list.append(p)
             p_loc_list.append(dip_loc)
             lfp_single_dip_list.append(lfp_single_dip)
             lfp_multi_dip_list.append(lfp_multi_dip)
             RE_list.append(RE)
+
+            filename = join(savefolder, 'data_fig2_cellname:{}_active:{}_synidx:{}.npz'.format(cell_name, str(active), syn_idx))
+            np.savez(filename,
+                     lfp_multi = lfp_multi_dip,
+                     lfp_single = lfp_single_dip,
+                     dipole = p,
+                     dip_loc = dip_loc,
+                     sigmas = sigmas,
+                     radii = radii,
+                     syn_loc = syn_loc,
+                     syn_idx = syn_idx,
+                     zips = [list(zip(x, z)) for x, z in cell.get_idx_polygons()],
+                     zmax = np.max(cell.zend),
+                     soma_pos = soma_pos,
+                     tvec = cell.tvec,
+                     timemax = timemax,
+                     electrode_locs = electrode_locs,
+                     Pz_trace = dipoles[:, 2],
+                     soma_vmem = cell.somav)
+
+
             # ### uncomment if you want to make fig1 for each synapse location
-            # from fig_dipole_field import make_data, make_fig_1
-            # cell1, cb_LFP_close, cb_LFP_far, multi_dip_LFP_close, multi_dip_LFP_far, db_LFP_close, db_LFP_far, LFP_max_close, LFP_max_far, time_max, multi_dips, multi_dip_locs, single_dip, r_mid, X, Z, X_f, Z_f = make_data(morphology, [syn_idx], dip_loc=dip_loc-cell.somapos, cell_model=cell_model, x_rot=xrot, y_rot=yrot, z_rot=zrot, active=True)
-            # # cell1, cb_LFP_close, cb_LFP_far, multi_dip_LFP_close, multi_dip_LFP_far, db_LFP_close, db_LFP_far, LFP_max_close, LFP_max_far, time_max, multi_dips, multi_dip_locs, single_dip, r_mid, X, Z, X_f, Z_f = make_data(morphology, [syn_idx], dip_loc=dip_loc-cell.somapos, cell_model=cell_model, x_rot=xrot, y_rot=yrot, z_rot=zrot, active=False)
-            # fig = make_fig_1(cell1,
-            #                  cb_LFP_close, cb_LFP_far,
-            #                  multi_dip_LFP_close, multi_dip_LFP_far,
-            #                  db_LFP_close, db_LFP_far,
-            #                  LFP_max_close, LFP_max_far,
-            #                  time_max,
-            #                  multi_dips, multi_dip_locs,
-            #                  single_dip, r_mid,
-            #                  X, Z, X_f, Z_f)
-            # fig1_title = './figures/test_figs/fig_dipole_field_segev_active' + str(syn_idx) + '.png'
-            # # fig1_title = './figures/test_figs/fig_dipole_field_segev_passive' + str(syn_idx) + '.png'
-            # fig.savefig(fig1_title, bbox_inches='tight', dpi=300, transparent=True
+            from fig_dipole_field import make_data, make_fig_1
+            dipole_results_dict = make_data(morphology, [syn_idx], dip_loc=dip_loc-cell.somapos, cell_model=cell_model, x_rot=xrot, y_rot=yrot, z_rot=zrot, active=active)
+            # cell1, cb_LFP_close, cb_LFP_far, multi_dip_LFP_close, multi_dip_LFP_far, db_LFP_close, db_LFP_far, LFP_max_close, LFP_max_far, time_max, multi_dips, multi_dip_locs, single_dip, r_mid, X, Z, X_f, Z_f = make_data(morphology, [syn_idx], dip_loc=dip_loc-cell.somapos, cell_model=cell_model, x_rot=xrot, y_rot=yrot, z_rot=zrot, active=False)
+            fig = make_fig_1(**dipole_results_dict)
+            fig1_title = './figures/test_figs/fig_dipole_field_{}.png'.format(syn_idx)
+            # fig1_title = './figures/test_figs/fig_dipole_field_segev_passive' + str(syn_idx) + '.png'
+            fig.savefig(fig1_title, bbox_inches='tight', dpi=300, transparent=True)
             #
-            # # uncomment if you want to check imems
-            # plt.close('all')
+            # # # uncomment if you want to check imems
+            plt.close('all')
             # fig2 = plt.figure()
             # ax1 = plt.subplot2grid((1,3),(0,0))
             # ax2 = plt.subplot2grid((1,3),(0,1))
@@ -389,38 +403,41 @@ if __name__ == '__main__':
             # fig2.set_size_inches(12,6)
             # # fig2.savefig('./figures/test_figs/fig_dipole_field_segev_active' + str(syn_idx) + 'imems.png', dpi=600)
             # fig2.savefig('./figures/test_figs/fig_dipole_field_segev_active' + str(syn_idx) + 'imems_zoomed.png', dpi=600)
-        k_100 = 100 # convert to percentage
-        eeg_ind = -1
-        ecog_ind = 2
-        RE_EEG = np.array(RE_list).reshape(num_syns, num_electrodes)[:,eeg_ind]*k_100
-        RE_ECoG = np.array(RE_list).reshape(num_syns, num_electrodes)[:,ecog_ind]*k_100
 
-        zips = []
-        for x, z in cell.get_idx_polygons():
-            zips.append(list(zip(x, z)))
-        zmax = np.max(cell.zend)
-        soma_vmem = cell.vmem[0]
+        # k_100 = 100 # convert to percentage
+        # eeg_ind = -1
+        # ecog_ind = 2
+        # RE_EEG = np.array(RE_list).reshape(num_syns, num_electrodes)[:,eeg_ind]*k_100
+        # RE_ECoG = np.array(RE_list).reshape(num_syns, num_electrodes)[:,ecog_ind]*k_100
+        #
+        # zips = [zips.append(list(zip(x, z))) for x, z in cell.get_idx_polygons()]
+        #
+        # zmax = np.max(cell.zend)
+        # soma_vmem = cell.vmem[0]
+        #
+        # filename = './data/data_fig2_' + cell_dict['cellnames'][i] + '_active_' + str(active)
+        # np.savez(filename,
+        #          lfp_multi = lfp_multi_dip_list,
+        #          lfp_single = lfp_single_dip_list,
+        #          re_eeg = RE_EEG,
+        #          re_ecog = RE_ECoG,
+        #          re = RE_list,
+        #          dipoles = p_list,
+        #          dip_locs = p_loc_list,
+        #          sigmas = sigmas,
+        #          radii = radii,
+        #          synlocs = synlocs,
+        #          syn_idxs = syn_idxs,
+        #          zips = zips,
+        #          zmax = zmax,
+        #          rz = soma_pos,
+        #          tvec = cell.tvec,
+        #          t_max_list = t_max_list,
+        #          electrode_locs = electrode_locs,
+        #          Pz_traces = Pz_traces,
+        #          soma_vmem = soma_vmem)
 
-        filename = './data/data_fig2_segev_' + cell_dict['cellnames'][i] + 'spike' #active_' + str(active) + 'std_pms2'
-        np.savez(filename,
-                 lfp_multi = lfp_multi_dip_list,
-                 lfp_single = lfp_single_dip_list,
-                 re_eeg = RE_EEG,
-                 re_ecog = RE_ECoG,
-                 re = RE_list,
-                 dipoles = p_list,
-                 dip_locs = p_loc_list,
-                 sigmas = sigmas,
-                 radii = radii,
-                 synlocs = synlocs,
-                 zips = zips,
-                 zmax = zmax,
-                 rz = rz,
-                 tvec = cell.tvec,
-                 t_max_list = t_max_list,
-                 electrode_locs = electrode_locs,
-                 Pz_traces = Pz_traces,
-                 soma_vmem = soma_vmem)
+
 
         # show synapse locations
         # zips_yz = []
