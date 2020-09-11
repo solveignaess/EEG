@@ -210,7 +210,7 @@ if __name__ == '__main__':
                              ]
                     }
     savefolder = "data"
-    # make 4S-parameters
+
     # sigmas = [0.3, 1.5, 0.015, 0.3]  #
     # radii = [79000., 80000., 85000., 90000.]
     # From Huang et al. (2013): 10.1088/1741-2560/10/6/066004
@@ -221,9 +221,9 @@ if __name__ == '__main__':
     active = False
     syn_input_time = 20.
 
-    cell_parameters, synapse_parameters = set_parameters(cell_dict['morphs'][0],
-                                                         cell_dict['active_models'][0])
-    [xrot, yrot, zrot] = cell_dict['rots'][0]
+    # cell_parameters, synapse_parameters = set_parameters(cell_dict['morphs'][0],
+    #                                                      cell_dict['active_models'][0])
+    # [xrot, yrot, zrot] = cell_dict['rots'][0]
     # cell = create_cell(cell_parameters, active=active, x_rot=xrot, y_rot=yrot, z_rot=zrot)
     # syn_idxs = return_path_to_tip_idcs(cell, pos_x=0, pos_y=0, pos_z=1000)
 
@@ -231,6 +231,7 @@ if __name__ == '__main__':
     # soma_pos = [0, 0, radii[0] - np.max(cell.zend) - 200]
     # print(soma_pos)
     # sys.exit()
+
     # make electrode array params
     num_electrodes = 40
     electrode_loc_zs = list(np.linspace(radii[0] - 100, radii[-1], num_electrodes))
@@ -402,6 +403,7 @@ if __name__ == '__main__':
             # fig2.set_size_inches(12,6)
             # # fig2.savefig('./figures/test_figs/fig_dipole_field_segev_active' + str(syn_idx) + 'imems.png', dpi=600)
             # fig2.savefig('./figures/test_figs/fig_dipole_field_segev_active' + str(syn_idx) + 'imems_zoomed.png', dpi=600)
+
         # k_100 = 100 # convert to percentage
         # eeg_ind = -1
         # ecog_ind = 2
@@ -434,6 +436,8 @@ if __name__ == '__main__':
         #          electrode_locs = electrode_locs,
         #          Pz_traces = Pz_traces,
         #          soma_vmem = soma_vmem)
+
+
 
         # show synapse locations
         # zips_yz = []
