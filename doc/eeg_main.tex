@@ -240,25 +240,26 @@ The calculation of current-dipole moments from simulated neural activity was imp
 Electric potentials will be affected by the geometries and conductivities of the various parts of the head \citep{NUNEZ2006}, which is especially important for electrode locations outside of the brain. This can be incorporated into our extracellular potential calculations by applying simplified or complex head models.
 
 \subsubsection{Four-sphere head model}\label{subsubsec:4S}
-The four-sphere head model is a simple analytical model consisting of four concentric shells representing brain tissue, cerebrospinal fluid (CSF), skull and scalp, where the conductivity can be set individually for each shell \citep{SRINIVASAN1998,NUNEZ2006}, see Table~\ref{tab:4sphere} for parameters used in this paper. The model solution is given in \cite{NAESS2017} and is found by solving the Poisson equation subject to boundary conditions ensuring continuity of current and electric potentials over the boundaries, as well as no current escaping the outer shell. This model is based on the current dipole approximation.
-
-
+The four-sphere head model is a simple analytical model consisting of four concentric shells representing brain tissue, cerebrospinal fluid (CSF), skull and scalp, where the conductivity can be set individually for each shell \citep{SRINIVASAN1998,NUNEZ2006}. 
+The model solution is given in \cite{NAESS2017} and is found by solving the Poisson equation subject to boundary conditions ensuring continuity of current and electric potentials over the boundaries, as well as no current escaping the outer shell. This model is based on the current dipole approximation.
+\newtxt{The parameters used in this paper (Table~\ref{tab:4sphere}) were taken from \cite{HUANG2013} to be consistent with the parameters used in the construction of the more complex New York head model (see next section).}
+\newtxt{
 \begin{table*}[ht]
   \centering
   \begin{tabular}{c|c|c}
     \hline
     \rule{0pt}{2ex}  & Radius (\si{cm}) & $\sigma$ (\si{S/m}) \\ 
     \hline 
-    \rule{0pt}{2ex} Brain & 7.9 & 0.3 \\ 
-    CSF & 8.0 & 1.5 \\ 
-    Skull & 8.5 & 0.015 \\ 
-    Scalp & 9.0 & 0.3 \\ 
+    \rule{0pt}{2ex} Brain & \newtxt{8.9} & \newtxt{0.276} \\ 
+    CSF & \newtxt{9.0} & \newtxt{1.65} \\ 
+    Skull & \newtxt{9.5} & \newtxt{0.01}\\ 
+    Scalp & \newtxt{10.0} & \newtxt{0.465} \\ 
     \hline
   \end{tabular}
   \caption{\textbf{Radii and electrical conductivities used in the four-sphere model.} The radius of each spherical shell in the four-sphere model, with $\sigma$ denoting the respective electrical conductivities.}
   \label{tab:4sphere}
 \end{table*}
-
+}
 \subsubsection{New York Head model}\label{subsubsec:NYH}
 The New York Head model is a detailed head model based on high-resolution, anatomical MRI-data from 152 adult heads \citep{HUANG2015}. The model was constructed by taking advantage of the reciprocity theorem, stating that the position of the electrode and the dipolar source can be switched without affecting the measured potential \citep{RUSH1969}. This means, that virtually injecting current at the locations of the EEG electrodes and using the finite element method \citep{LOGG2012} to compute the resulting potential anywhere in the brain, gives the link between current dipoles in the brain and the resulting EEG signals \citep{Malmivuo1995, Ziegler2014, HUANG2016, Dmochowski2017}.
 This link was captured in a matrix known as the \textit{lead field} ${\bf L}$ \citep{NUNEZ2006}: 

@@ -12,8 +12,11 @@ populations = [f for f in os.listdir(join(sim_folder, "cdm"))
                if os.path.isdir(join(sim_folder, "cdm", f))]
 
 # four_sphere properties
-radii = [79000., 80000., 85000., 90000.]
-sigmas = [0.3, 1.5, 0.015, 0.3]
+# From Huang et al. (2013): 10.1088/1741-2560/10/6/066004
+sigmas = [0.276, 1.65, 0.01, 0.465]
+radii = [89000., 90000., 95000., 100000.]
+# radii = [79000., 80000., 85000., 90000.]
+# sigmas = [0.3, 1.5, 0.015, 0.3]
 rad_tol = 1e-2
 
 eeg_coords_top = np.array([[0., 0., radii[3] - rad_tol]])
