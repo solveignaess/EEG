@@ -33,30 +33,20 @@ if __name__ == '__main__':
     for item, value in data.items():
         print(item, value)
 
-    # data = np.load('./data/data_fig2_segev_8.npz')
-    # data = np.load('./data/compare_multi_single_dipole_segev_syns_from_path_passiveTrue_new_diploc.npz')
-    # data = np.load('./data/compare_multi_single_dipole_segev_syns_from_path_passiveTrue.npz')
-    # data = np.load('./data/compare_multi_single_dipole_Hay_syns_from_path_passiveTrue.npz')
-    # idcs_to_plot = [i for i in range(0,41)]  #[0, 1, 2] + [i for i in range(4,41)]
     lfp_multi_dip_list = data['lfp_multi']#[idcs_to_plot]
     lfp_single_dip_list = data['lfp_single']#[idcs_to_plot]
-    RE_EEG = data['re_eeg']#[idcs_to_plot]
-    RE_ECoG = data['re_ecog']#[idcs_to_plot]
     p_list = data['dipoles']#[idcs_to_plot]
-    p_loc_list = data['dip_locs']#[idcs_to_plot]
-    sigmas = data['sigmas']
-    radii = data['radii']
+
+    sigmas = data["sigmas"]
+    radii = data["radii"]
     synlocs = data['synlocs']#[idcs_to_plot]
-    # RE_EEG_30syns = data['RE_EEG_30syns']
     zips = data['zips']
     zmax = data['zmax']
     rz = data['rz']
     electrode_locs = data['electrode_locs']
     tvec = data['tvec']
-    t_max_list = data['t_max_list']
-    Pz_traces = data['Pz_traces']#[idcs_to_plot]
-    # data_pz = np.load('./data/pz_segev_2.npz')
-    # Pz_traces = data_pz['Pz_traces']#[idcs_to_plot,:1601]
+    Pz_traces = data['pz_traces']#[idcs_to_plot]
+
 
     # compute values for plotting
     num_syns = len(synlocs)
@@ -65,8 +55,8 @@ if __name__ == '__main__':
     p_z = np.abs(p_list.reshape(num_syns,3)[:,2])
     # p_z = p_list.reshape(num_syns,3)[:,2]
 
-    RE_list = np.abs((lfp_single_dip_list - lfp_multi_dip_list)/lfp_multi_dip_list)
-
+    RE_list = np.abs((lfp_single_dip_list - lfp_multi_dip_list)/lfp_multi_dip_list) * 100 # Convert to percent
+    RE_EEG = RE_list[:, -1, 0]
     k_eeg = 1e9 # convert from mV to pV
     EEG = np.array(lfp_multi_dip_list).reshape(num_syns, len(electrode_locs))[:, -1]*k_eeg
 
@@ -89,12 +79,6 @@ if __name__ == '__main__':
     ax_RE_EEG_EEG = plt.subplot2grid((3,4),(2,2), colspan=2)
     # ax_RE_ECoG_p = plt.subplot2grid((4,4),(3,2), colspan=2)
 
-    # # plot dipole strength as function of synapse distance from soma
-    # ax_p.scatter(syn_loc_zs, p_z, s = 5., c = clrs)
-    # ax_p.set_xlabel(r'synapse distance from soma ($\mu$m)', fontsize=8, labelpad=0.5)
-    # ax_p.set_ylabel(r'dipole moment $|\mathbf{p}_z|$ (nA$\mu$m)', fontsize=8, labelpad=5)
-    # # ax_p.set_xticklabels([])
-
     # plot EEG amplitude as function of synapse distance from soma
     ax_EEG.scatter(syn_loc_zs, np.abs(EEG), s = 5., c = clrs)
     ax_EEG.set_xlabel(r'synapse distance from soma ($\mu$m)', fontsize=10, labelpad=0.5)
@@ -107,18 +91,11 @@ if __name__ == '__main__':
     ax_RE_EEG.set_ylabel(r'RE for EEG (%)', fontsize=10, labelpad=5)
 
     # plot RE at EEG distance as function of dipole strength
-    # ax_RE_EEG_p.plot(np.arange(16), np.ones(16)*RE_EEG_30syns, 'k--', label="all synapses active simultaneously")
-    # ax_RE_EEG_p.scatter(dip_strength, RE_EEG, s = 5., c = clrs)
     ax_RE_EEG_EEG.scatter(np.abs(EEG), RE_EEG, s = 5., c = clrs, clip_on=False)
     ax_RE_EEG_EEG.set_xlabel(r'$|$EEG$|$ (pV)', fontsize=10)
     ax_RE_EEG_EEG.set_ylabel(r'RE for EEG (%)', fontsize=10, labelpad=5)
     # ax_RE_EEG_p.legend(loc=1, fontsize=6, frameon=False)
 
-
-    # # plot RE at ECoG distance as function of dipole strength
-    # ax_RE_ECoG_p.scatter(dip_strength, RE_ECoG, s = 5., c = clrs)
-    # ax_RE_ECoG_p.set_xlabel(r'dipole strength $|p|$ (nA$\mu$m)', fontsize=7)
-    # ax_RE_ECoG_p.set_ylabel(r'RE at ECoG distance (%)', fontsize=7)
 
     # plot setup, potentials and RE as function of distance to electrode
     radii_tweaked = [radii[0]] + [r + 500 for r in radii[1:]]
@@ -127,12 +104,12 @@ if __name__ == '__main__':
         ax_setup.add_patch(plt.Circle((0, 0), radius = radii_tweaked[-1-i], color = head_colors[-1-i], fill=True, ec = 'k', lw = .1))
 
     # # plot morphology with synapses
-    neuron_offset = 57000.
+    # neuron_offset = 57000.
     plot_neuron(ax_setup, zips=zips)
     ax_setup.plot(0,0,'o', ms = 1e-4)
     # zoom in on neuron:
-    zoom_ax = zoomed_inset_axes(ax_setup, 110, bbox_to_anchor=(290, 500))
-    x1, x2, y1, y2 = -350, 350, 77700, 78900
+    zoom_ax = zoomed_inset_axes(ax_setup, 130, bbox_to_anchor=(290, 500))
+    x1, x2, y1, y2 = -350, 350, radii[0]- 1250, radii[0]-150
     zoom_ax.set_facecolor(head_colors[0])
     zoom_ax.set_xlim(x1, x2)
     zoom_ax.set_ylim(y1, y2)
@@ -172,17 +149,6 @@ if __name__ == '__main__':
     ax_cdm.set_yticklabels(['10'], fontsize=8)
     ax_cdm.set_ylim([0,10])
     ax_cdm.yaxis.set_label_coords(-.13, .43)
-    # ax_cdm.annotate('', xy = (0,1), xycoords=('data', 'axes fraction'),
-    #                 textcoords='offset points',
-    #                 arrowprops=dict(arrowstyle='<-', facecolor='black'))
-    # ax_cdm.annotate('', xy = (20,0), xycoords=('data', 'axes fraction'),
-    #                 textcoords='offset points',
-    #                 arrowprops=dict(arrowstyle='<-', facecolor='black'))
-
-
-    # plt.axis('tight')
-    # ax_setup.axis('off')
-    # ax_setup.set_aspect('equal')
 
     electrode_locs_z = electrode_locs[:,2] - zmax
     # syns_to_plot = np.arange(0, num_syns, 5)
@@ -205,11 +171,11 @@ if __name__ == '__main__':
         ax_pot.loglog(electrode_locs_z, np.abs(lfp_multi_dip), '--', color=clrs[i], linewidth=1.)
 
         # plot relative errors
-        RE = RE_list[i].reshape(electrode_locs_z.shape)*k_100
+        RE = RE_list[i].reshape(electrode_locs_z.shape)
         print('RE for synapse idx', i, 'at ECoG location:', RE[ecog_idx][0] ,'%.')
         print('RE for synapse idx', i, 'at EEG location:', RE[eeg_idx][0] ,'%.')
         ax_pot_RE.semilogx(electrode_locs_z, RE, color = clrs[i], label=str(i), linewidth=1.)
-        zoom_ax.plot(synlocs[i][0], synlocs[i][2], 'o', color=clrs[i], ms = 5)
+        zoom_ax.plot(synlocs[i][0], synlocs[i][2], 'o', color=clrs[i], ms=7)
     ax_pot.plot(100, 0, 'k--', label='multi-dipole', lw=0.8)
     ax_pot.plot(100, 0, 'k-', label='single-dipole', lw=0.8)
     ax_pot.legend(loc=1, fontsize=8, frameon=False)
@@ -227,8 +193,8 @@ if __name__ == '__main__':
         ax.axvline(layer_dist_from_neuron[0], linestyle='--', linewidth=0.6, color='gray')
         ax.axvline(layer_dist_from_neuron[3]-0.13, linestyle='--', linewidth=0.6, color='gray')
     # ax_pot.set_xticklabels([])
-    ax_pot.set_ylim([1e-6, 1e-1])
-    ax_pot.set_yticks([1e-5, 1e-3, 1e-1])
+    ax_pot.set_ylim([1e-7, 1e-1])
+    ax_pot.set_yticks([1e-7, 1e-4, 1e-1])
     ax_pot_RE.set_ylim([0, 100])
     ax_pot.set_ylabel(r'electric potential $|\Phi|$ ($\mu$V)', fontsize=10)
     ax_pot_RE.set_ylabel(r'RE (%)', fontsize=10, labelpad=9)
@@ -238,29 +204,16 @@ if __name__ == '__main__':
     plt.text(0.47, 0.65, 'EEG', fontsize=9, transform=plt.gcf().transFigure)
 
     # mark 4-sphere head model layers
-    txt_brain = plt.text(0.1, 0.295, 'brain', fontweight='bold', fontsize=8, transform=plt.gcf().transFigure, color='k')
-    # txt_brain.set_path_effects([path_effects.Stroke(linewidth=.6, foreground='black'), path_effects.Normal()])
-    txt_csf = plt.text(0.2, 0.295, 'CSF', fontweight='bold', fontsize=8, transform=plt.gcf().transFigure, color='k')
-    # txt_csf.set_path_effects([path_effects.Stroke(linewidth=.7, foreground='black'), path_effects.Normal()])
-    txt_skull = plt.text(0.35, 0.295, 'skull', fontweight='bold', fontsize=8, transform=plt.gcf().transFigure, color='k')
-    # txt_skull.set_path_effects([path_effects.Stroke(linewidth=.8, foreground='black'), path_effects.Normal()])
-    txt_scalp = plt.text(0.44, 0.295, 'scalp', fontweight='bold', fontsize=8, transform=plt.gcf().transFigure, color='k')
-    # txt_scalp.set_path_effects([path_effects.Stroke(linewidth=.9, foreground='black'), path_effects.Normal()])
+    txt_brain = plt.text(0.099, 0.297, 'brain', fontweight='bold', fontsize=9, transform=plt.gcf().transFigure, color='k')
+    txt_csf = plt.text(0.2, 0.297, 'CSF', fontweight='bold', fontsize=9, transform=plt.gcf().transFigure, color='k')
+    txt_skull = plt.text(0.35, 0.297, 'skull', fontweight='bold', fontsize=9, transform=plt.gcf().transFigure, color='k')
+    txt_scalp = plt.text(0.437, 0.297, 'scalp', fontweight='bold', fontsize=9, transform=plt.gcf().transFigure, color='k')
 
     for ax in [ax_EEG, ax_RE_EEG]:
         ax.set_xlim([-20, 800])
 
     for ax in [ax_RE_EEG, ax_RE_EEG_EEG]:
-    #     ax.set_ylim([0, 20])
         ax.set_ylim([0, 15])
-
-    # pmin = 0
-    # pmax = int(round(np.max(p_z) + 1))
-    #
-    # ax_RE_EEG_p.set_xlim([pmin, pmax])
-    # ax_RE_EEG_p.set_xticks([round(num) for num in range(pmin, pmax+1, 3)])
-    # ax_p.set_ylim([pmin, pmax])
-    # ax_p.set_yticks([round(num) for num in range(pmin, pmax+1, 3)])
 
     EEGmin = 0
     EEGmax = int(round(np.max(np.abs(EEG))))
@@ -270,15 +223,9 @@ if __name__ == '__main__':
     ax_EEG.set_ylim([EEGmin, EEGmax+4])
     # ax_EEG.set_yticks([round(num) for num in range(EEGmin, EEGmax+4, 3)])
 
-
     for ax in [ax_pot, ax_pot_RE, ax_EEG, ax_RE_EEG, ax_RE_EEG_EEG]:
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
-
-    # fig.tight_layout(pad=0.5, h_pad=.1, w_pad=-1.)
-    # fig.set_size_inches(8., 7.)
-    # fig.subplots_adjust(bottom=.08, top=.91)
-    # plotting_convention.mark_subplots(fig.axes[:-1], xpos=-0.25)
 
     # label axes
     xpos = [0.04, 0.04, 0.04, 0.53, 0.53, 0.53]
@@ -291,7 +238,4 @@ if __name__ == '__main__':
              fontweight='demibold',
              fontsize=12)
 
-    # plt.savefig('./figures/figure2_passiveTrue_Hay.png', dpi=600)
-    # plt.savefig('./figures/figure2_passiveTrue_segev_new_diploc.png', dpi=600)
-    # plt.savefig('./figures/figure2_eeg.png', dpi=300)
-    plt.savefig('./figures/figure2_eeg_resimulated.pdf', dpi=300)
+    plt.savefig('./figures/figure2.pdf', dpi=300)

@@ -16,7 +16,6 @@ from os.path import join
 def make_data(morphology, cell_model, rot, rz, radii, sigmas,
               electrode_locs, syn_idcs, active, syn_input_time):
     # set cell and synapse parameters
-#    print(syn_idcs)
     cell_parameters, synapse_parameters = set_parameters(morphology, cell_model)
     [xrot, yrot, zrot] = rot
     # create four-sphere class instance
@@ -30,7 +29,6 @@ def make_data(morphology, cell_model, rot, rz, radii, sigmas,
     RE_list = []
     synlocs = []
     pz_traces = []
-#    print(syn_idcs)
     # get data from num_syns simulations
     num_syns = len(syn_idcs)
     for j in range(num_syns):
@@ -69,7 +67,6 @@ def make_data(morphology, cell_model, rot, rz, radii, sigmas,
         # compute LFP with multi-dipole
 
         # subtract DC-component
-        # multi_p_0, multi_p_locs = cell.get_multi_current_dipole_moments([0])
         multi_p_319, multi_p_locs = cell.get_multi_current_dipole_moments([input_idx_before_input])
         multi_p_dc = multi_p_319
         multi_p, multi_p_locs = cell.get_multi_current_dipole_moments(timemax)
@@ -92,16 +89,16 @@ def make_data(morphology, cell_model, rot, rz, radii, sigmas,
         lfp_multi_dip_list.append(lfp_multi_dip)
         RE_list.append(RE)
 
-        zips = []
-        for x, z in cell.get_idx_polygons():
-            zips.append(list(zip(x, z)))
-        zmax = np.max(cell.zend)
-        soma_vmem = cell.vmem[0]
-        tvec = cell.tvec
+    # Do this for only one cell for plotting
+    zips = []
+    for x, z in cell.get_idx_polygons():
+        zips.append(list(zip(x, z)))
+    zmax = np.max(cell.zend)
+    soma_vmem = cell.vmem[0]
+    tvec = cell.tvec
 
-    return (p_list, p_loc_list, pz_traces, lfp_multi_dip_list,
-            lfp_single_dip_list, RE_list, synlocs, zips, zmax,
-            tvec, t_max_list, soma_vmem)
+    return (p_list, pz_traces, lfp_multi_dip_list, lfp_single_dip_list,
+            synlocs, zips, zmax, tvec, soma_vmem)
 
 def return_path_to_tip_idcs(cell, pos_x, pos_y, pos_z, section='allsec'):
 
@@ -294,15 +291,16 @@ if __name__ == '__main__':
         filename = './data/data_fig2'
 
     print(syn_idcs)
-    p_list, p_loc_list, pz_traces, lfp_multi, lfp_single, RE_list, synlocs, zips, zmax, tvec, t_max_list, soma_vmem = make_data(morphology, cell_model, rot, rz, radii, sigmas, electrode_locs, syn_idcs, active, syn_input_time)
+    (p_list, pz_traces, lfp_multi, lfp_single, synlocs, zips,
+     zmax, tvec, soma_vmem) = make_data(morphology, cell_model, rot, rz, radii,
+                                        sigmas, electrode_locs, syn_idcs,
+                                        active, syn_input_time)
 
 
     np.savez(filename,
              lfp_multi = lfp_multi,
              lfp_single = lfp_single,
              dipoles = p_list,
-             RE = RE_list,
-             radii = radii,
              synlocs = synlocs,
              zips = zips,
              zmax = zmax,
@@ -310,4 +308,7 @@ if __name__ == '__main__':
              electrode_locs = electrode_locs,
              tvec = tvec,
              pz_traces = pz_traces,
-             soma_vmem = soma_vmem)
+             soma_vmem = soma_vmem,
+             sigmas=sigmas,
+             radii=radii,
+             syn_idcs=syn_idcs)
