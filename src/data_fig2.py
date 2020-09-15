@@ -12,16 +12,10 @@ from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 import neuron
 import os
 from os.path import join
-from mpi4py import MPI
-
-COMM = MPI.COMM_WORLD
-SIZE = COMM.Get_size()
-RANK = COMM.Get_rank()
 
 def make_data(morphology, cell_model, rot, rz, radii, sigmas,
-              electrode_locs, syn_idcs, active=False):
+              electrode_locs, syn_idcs, active, syn_input_time):
     # set cell and synapse parameters
-#    print(syn_idcs)
     cell_parameters, synapse_parameters = set_parameters(morphology, cell_model)
     [xrot, yrot, zrot] = rot
     # create four-sphere class instance
@@ -35,11 +29,10 @@ def make_data(morphology, cell_model, rot, rz, radii, sigmas,
     RE_list = []
     synlocs = []
     pz_traces = []
-#    print(syn_idcs)
     # get data from num_syns simulations
     num_syns = len(syn_idcs)
     for j in range(num_syns):
-        print('syn number:', j)
+
         cell = create_cell(cell_parameters, active=active,
                            x_rot=xrot, y_rot=yrot, z_rot=zrot)
         ## if you know synidx:
@@ -48,15 +41,17 @@ def make_data(morphology, cell_model, rot, rz, radii, sigmas,
         # syn_loc = syn_idcs[j]
         # syn_idx = cell.get_closest_idx(x=syn_loc[0], y=syn_loc[1], z=syn_loc[2])
 #        print('syn_idx:', syn_idx)
-        cell, synapse, electrode_array = simulate(cell, synapse_parameters, [syn_idx])
-        print('cell simulated')
-        syn_loc = (cell.xmid[syn_idx], cell.ymid[syn_idx], cell.zmid[syn_idx])
-        synlocs.append((syn_loc[0], syn_loc[1], syn_loc[2]+rz[2]))
+        cell, synapse, electrode_array = simulate(cell, synapse_parameters, [syn_idx], syn_input_time)
+        # print('cell simulated')
+
         cell.set_pos(x=rz[0], y=rz[1], z=rz[2])
+        syn_loc = (cell.xmid[syn_idx], cell.ymid[syn_idx], cell.zmid[syn_idx])
+        synlocs.append((syn_loc[0], syn_loc[1], syn_loc[2]))
 
         # compute current dipole moment and subtract DC-component
         dipoles = cell.current_dipole_moment
-        p_dc = (dipoles[0] + dipoles[319])/2
+        input_idx_before_input = np.argmin(np.abs(cell.tvec - syn_input_time)) - 1
+        p_dc = dipoles[input_idx_before_input]
         dipoles -= p_dc
 
         pz_traces.append(dipoles[:,2])
@@ -68,13 +63,12 @@ def make_data(morphology, cell_model, rot, rz, radii, sigmas,
         # dip_loc = get_mass_center(cell, timemax)
         dip_loc = get_dipole_loc(rz, syn_loc)
         lfp_single_dip = fs.calc_potential(p, dip_loc)
-        print('pot from single dip computed')
+        # print('pot from single dip computed')
         # compute LFP with multi-dipole
 
         # subtract DC-component
-        multi_p_0, multi_p_locs = cell.get_multi_current_dipole_moments([0])
-        multi_p_319, multi_p_locs = cell.get_multi_current_dipole_moments([319])
-        multi_p_dc = (multi_p_0 + multi_p_319)/2
+        multi_p_319, multi_p_locs = cell.get_multi_current_dipole_moments([input_idx_before_input])
+        multi_p_dc = multi_p_319
         multi_p, multi_p_locs = cell.get_multi_current_dipole_moments(timemax)
         multi_p -= multi_p_dc
 
@@ -84,10 +78,10 @@ def make_data(morphology, cell_model, rot, rz, radii, sigmas,
             pot = fs.calc_potential(multi_p[num], multi_p_locs[num])
             lfp_multi_dip += pot
 
-        print('pot from multi dip computed')
+        # print('pot from multi dip computed')
         # compute relative errors
         RE = np.abs((lfp_single_dip - lfp_multi_dip)/lfp_multi_dip)
-
+        print('syn number: {}; syn dist from soma: {}; RE_EEG: {}'.format(syn_idx, syn_loc[2] - rz[2], RE[-1]))
         #add data to lists for storage
         p_list.append(p)
         p_loc_list.append(dip_loc)
@@ -95,16 +89,16 @@ def make_data(morphology, cell_model, rot, rz, radii, sigmas,
         lfp_multi_dip_list.append(lfp_multi_dip)
         RE_list.append(RE)
 
-        zips = []
-        for x, z in cell.get_idx_polygons():
-            zips.append(list(zip(x, z)))
-        zmax = np.max(cell.zend)
-        soma_vmem = cell.vmem[0]
-        tvec = cell.tvec
+    # Do this for only one cell for plotting
+    zips = []
+    for x, z in cell.get_idx_polygons():
+        zips.append(list(zip(x, z)))
+    zmax = np.max(cell.zend)
+    soma_vmem = cell.vmem[0]
+    tvec = cell.tvec
 
-    return (p_list, p_loc_list, pz_traces, lfp_multi_dip_list,
-            lfp_single_dip_list, RE_list, synlocs, zips, zmax,
-            tvec, t_max_list, soma_vmem)
+    return (p_list, pz_traces, lfp_multi_dip_list, lfp_single_dip_list,
+            synlocs, zips, zmax, tvec, soma_vmem)
 
 def return_path_to_tip_idcs(cell, pos_x, pos_y, pos_z, section='allsec'):
 
@@ -200,7 +194,7 @@ def create_cell(cell_parameters, active=False, x_rot=0, y_rot=0, z_rot=0):
 
     return cell
 
-def simulate(cell, synapse_parameters, synidx):
+def simulate(cell, synapse_parameters, synidx, input_time=20.):
     """set synapse location. simulate cell, synapse and electrodes for input synapse location"""
 
     for idx in synidx:
@@ -261,6 +255,8 @@ if __name__ == '__main__':
     # active = True
     active = False
 
+    syn_input_time = 20.
+
     # make electrode array params
     num_electrodes = 40
     electrode_loc_zs = list(np.linspace(radii[0] - 100, radii[-1], num_electrodes))
@@ -295,15 +291,16 @@ if __name__ == '__main__':
         filename = './data/data_fig2'
 
     print(syn_idcs)
-    p_list, p_loc_list, pz_traces, lfp_multi, lfp_single, RE_list, synlocs, zips, zmax, tvec, t_max_list, soma_vmem = make_data(morphology, cell_model, rot, rz, radii, sigmas, electrode_locs, syn_idcs, active=active)
+    (p_list, pz_traces, lfp_multi, lfp_single, synlocs, zips,
+     zmax, tvec, soma_vmem) = make_data(morphology, cell_model, rot, rz, radii,
+                                        sigmas, electrode_locs, syn_idcs,
+                                        active, syn_input_time)
 
 
     np.savez(filename,
              lfp_multi = lfp_multi,
              lfp_single = lfp_single,
              dipoles = p_list,
-             RE = RE_list,
-             radii = radii,
              synlocs = synlocs,
              zips = zips,
              zmax = zmax,
@@ -311,4 +308,7 @@ if __name__ == '__main__':
              electrode_locs = electrode_locs,
              tvec = tvec,
              pz_traces = pz_traces,
-             soma_vmem = soma_vmem)
+             soma_vmem = soma_vmem,
+             sigmas=sigmas,
+             radii=radii,
+             syn_idcs=syn_idcs)
