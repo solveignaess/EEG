@@ -7,4 +7,8 @@ Requires the file https://www.parralab.org/nyhead/sa_nyhead.mat
 
 Includes a conda environment file, which was needed to plot the head model in mayavi.
 
- 
+To execute the simulations and store results to file, run 
+"python3 make_data_figure6.py"
+and to make the figure,
+"python3 make_figure6.py"
+
