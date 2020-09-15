@@ -5,6 +5,8 @@ Calculate EEG signals based on the head model from: https://www.parralab.org/nyh
 
 Requires the file https://www.parralab.org/nyhead/sa_nyhead.mat
 
+Depends on LFPy for comparison with four-sphere head model.
+
 Includes a conda environment file, which was needed to plot the head model in mayavi.
 
 To execute the simulations and store results to file, run 
