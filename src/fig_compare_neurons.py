@@ -4,14 +4,8 @@ import matplotlib
 matplotlib.use("AGG")
 import numpy as np
 import matplotlib.pyplot as plt
-import plotting_convention as plotting_convention
 import LFPy
 import neuron
-from neuron import h
-from matplotlib import colorbar
-from matplotlib.collections import PolyCollection
-import time
-import random
 from os.path import join
 
 mod_folder = join(os.path.dirname(LFPy.__file__), "test")
@@ -49,13 +43,14 @@ def make_cell(morphology, morph_type='l23'):
 
     return cell
 
+
 def make_synapse(cell, weight, input_idx, input_spike_train, e=0., syntype='Exp2Syn'):
     synapse_parameters = {
         'idx': input_idx,
         'e': e,
         'syntype': syntype,
-        'tau1' : 1.,                   #Time constant, rise
-        'tau2' : 3., #5                #Time constant, decay
+        'tau1': 1.,                   #Time constant, rise
+        'tau2': 3., #5                #Time constant, decay
         'weight': weight,
         'record_current': False,
     }
@@ -63,6 +58,7 @@ def make_synapse(cell, weight, input_idx, input_spike_train, e=0., syntype='Exp2
     synapse = LFPy.Synapse(cell, **synapse_parameters)
     synapse.set_spike_times(np.array([input_spike_train]))
     return cell, synapse
+
 
 def make_input(cell, weight=0.01, syntype='Exp2Syn', morph_type='l23'):
 
@@ -124,6 +120,7 @@ def make_input(cell, weight=0.01, syntype='Exp2Syn', morph_type='l23'):
                                      e=-90., syntype=syntype)
     return cell, synapse
 
+
 def return_head_parameters():
     # From Huang et al. (2013): 10.1088/1741-2560/10/6/066004
     sigmas = [0.276, 1.65, 0.01, 0.465]
@@ -133,9 +130,9 @@ def return_head_parameters():
 
 
 def return_measurement_coords(radii, rad_tol):
-    rad_tol = 1e-2
     scalp_rad = radii[-1]
     return np.array([[0, 0, scalp_rad - rad_tol]])
+
 
 def return_eeg(cell, radii, sigmas, eeg_coords, morph_type):
     # compute current dipole moment
@@ -168,6 +165,7 @@ def return_eeg(cell, radii, sigmas, eeg_coords, morph_type):
     eeg_multidip_avg = eeg_multidip_avg * 1e9
 
     return eeg_avg, eeg_multidip_avg
+
 
 def plot_neuron(axis, cell, clr, lengthbar=False, celltype='l23'):
     shift = 0.
