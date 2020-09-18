@@ -430,7 +430,7 @@ def simulate_spike_current_dipole_moment():
     simplify_axes(fig.axes)
 
     # plt.savefig(join("figures", 'ca_spike_{}_resim.png'.format(cell_name)))
-    plt.savefig(join("figures", 'ca_spike_{}.pdf'.format(cell_name)))
+    plt.savefig(join("figures", 'Figure5.pdf'))
 
 
 def simulate_laminar_LFP():

@@ -10,7 +10,7 @@ Depends on LFPy for comparison with four-sphere head model.
 Includes a conda environment file, which was needed to plot the head model in mayavi.
 
 To execute the simulations and store results to file, run 
-"python3 make_data_figure6.py"
+"python3 make_data_figure7.py"
 and to make the figure,
-"python3 make_figure6.py"
+"python3 make_figure7.py"
 

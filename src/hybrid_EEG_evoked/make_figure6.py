@@ -218,8 +218,8 @@ def fig_intro(params, fraction=0.05, rasterized=False):
 
     ax_top_EEG.set_xlim(T)
 
-    fig.savefig(join('hybrid_with_EEG.png'), dpi=300)
-    fig.savefig(join('hybrid_with_EEG.pdf'), dpi=300)
+    fig.savefig(join('Figure6.png'), dpi=300)
+    fig.savefig(join('Figure6.pdf'), dpi=300)
 
 
 def plot_foursphere_to_ax(ax):

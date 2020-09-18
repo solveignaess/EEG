@@ -7,4 +7,21 @@ The software is written in Python and depends on LFPy, which in the simplest cas
 
 
 
+# To run the code
 
+The code is in the "src" folder. The data needed to plot Figures 2, 3 and 7 is made and stored to 
+file by executing 
+
+"python3 make_data_figureX.py"
+
+and the figures can then be made by
+
+"python3 make_figureX.py"
+
+Figures 4 and 5 can be made directly by 
+
+"python3 make_figureX.py"
+
+Making Figure 6 (large-scale network simulation) is more complicated, 
+and in general requires super computer access. 
+See separate README file in the folder "hybrid_EEG_evoked" for more information.

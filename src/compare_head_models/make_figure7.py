@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 # load data from dipole placed in visual cortex
-data_back_of_head = np.load('../data/figure6_occipital_lobe.npz')
+data_back_of_head = np.load('../data/figure7_occipital_lobe.npz')
 radii = data_back_of_head['radii']
 P_rot_back = data_back_of_head['p_rot']
 P_loc_4s_back = data_back_of_head['p_loc_4s']
@@ -22,7 +22,7 @@ time_idx = data_back_of_head['time_idx']
 tvec = data_back_of_head['tvec']
 
 # load data from dipole placed on the side of cortex
-data_side_top_sulcus = np.load('../data/figure6_parietal_lobe.npz')
+data_side_top_sulcus = np.load('../data/figure7_parietal_lobe.npz')
 
 P_rot_side = data_side_top_sulcus['p_rot']
 P_loc_4s_side = data_side_top_sulcus['p_loc_4s']
@@ -285,4 +285,4 @@ for i in range(len(letters)):
          fontweight='demibold',
          fontsize=12)
 
-plt.savefig('../figures/figure_eeg_complex_head.pdf', dpi=300)
+plt.savefig('../figures/Figure7.pdf', dpi=300)

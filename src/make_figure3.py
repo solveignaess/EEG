@@ -29,7 +29,7 @@ if __name__ == '__main__':
     # data = np.load('./data/compare_multi_single_dipole_segev_syns_from_path_passiveTrue_Segev2018_cell11.npz')
     # data = np.load('./data/data_fig2_segev_3a.npz')
     # data = np.load('./data/data_fig2_segev_3a_active_Falsestd_pms2.npz')
-    data = np.load('data/data_fig2.npz')
+    data = np.load('data/data_fig3.npz')
     for item, value in data.items():
         print(item, value)
 
@@ -238,4 +238,4 @@ if __name__ == '__main__':
              fontweight='demibold',
              fontsize=12)
 
-    plt.savefig('./figures/figure2.pdf', dpi=300)
+    plt.savefig('./figures/Figure3.pdf', dpi=300)

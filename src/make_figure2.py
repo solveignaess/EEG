@@ -216,7 +216,7 @@ def plot_neuron(axis, syninds, xmids, zmids, zips, syn=False, lengthbar=False, c
 
 if __name__ == '__main__':
     # load data
-    data = np.load('./data/data_fig1.npz')
+    data = np.load('./data/data_fig2.npz')
 
     totnsegs = data['totnsegs']
     imem = data['imem']
@@ -250,4 +250,4 @@ if __name__ == '__main__':
                      multi_dips, multi_dip_locs,
                      single_dip, r_mid,
                      X, Z, X_far, Z_far)
-    fig.savefig('./figures/fig1.pdf', bbox_inches='tight', dpi=300)
+    fig.savefig('./figures/Figure2.pdf', bbox_inches='tight', dpi=300)

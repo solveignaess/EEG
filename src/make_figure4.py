@@ -376,8 +376,8 @@ if __name__ == '__main__':
 
     fig.tight_layout(pad=0.5, h_pad=1.3, w_pad=.7)
     if current_based:
-        title = './figures/figure3_current_based.pdf'
+        title = './figures/Figure4_current_based.pdf'
     else:
         # title = './figures/fig_compare_neurons_l5ChC_wmd.png'
-        title = './figures/figure3.pdf'
+        title = './figures/Figure4.pdf'
     plt.savefig(title, dpi=600) #_nbc

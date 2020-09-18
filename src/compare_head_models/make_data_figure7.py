@@ -88,7 +88,7 @@ def generate_eegs_nyh_n_4s(dip_loc):
 
     tvec = np.arange(P.shape[0]) + 875
 
-    np.savez('../data/figure6_%s.npz' % dip_loc,
+    np.savez('../data/figure7_%s.npz' % dip_loc,
         radii = radii,
         p_rot = P_rot,
         p_loc_4s = P_loc_4s,

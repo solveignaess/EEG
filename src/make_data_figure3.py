@@ -281,14 +281,14 @@ if __name__ == '__main__':
     if active:
         cell_model = 'cell0603_03_model_476'
         syn_idcs = [0]
-        filename = './data/data_fig2_active'
+        filename = './data/data_fig3_active'
     else:
         cell_model = None
         syn_idcs = [0,338,340,342,344,346,348,349,350,351,352,353,354,
                     355,469,470,471,472,473,563,564,565,566,567,
                     568,569,570,571,572,573,574,575,576,577,578,
                     579,580,586,587,588,589,590]
-        filename = './data/data_fig2'
+        filename = './data/data_fig3'
 
     print(syn_idcs)
     (p_list, pz_traces, lfp_multi, lfp_single, synlocs, zips,

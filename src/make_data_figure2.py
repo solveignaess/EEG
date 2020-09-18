@@ -175,7 +175,7 @@ if __name__ == '__main__':
     for x, z in cell.get_idx_polygons():
         morph_zips.append(list(zip(x, z)))
 
-    np.savez('./data/data_fig1',
+    np.savez('./data/data_fig2',
              totnsegs=cell.totnsegs,
              imem=cell.imem,
              syninds=cell.synidx,
