@@ -20,6 +20,7 @@ import analysis_params
 from params_evoked_with_EEG import multicompartment_params
 from plot_methods import plot_population, plot_signal_sum
 
+
 def plot_cdms(fig, params, dt, T):
     L5E_subpops = ["p5(L56)", "p5(L23)"]
     L5I_subpops = ["b5", "nb5"]
@@ -124,7 +125,7 @@ def fig_intro(params, fraction=0.05, rasterized=False):
     ax_4s = fig.add_axes([0.42, 0.05, 0.25, 0.2], frameon=False, aspect=1,
                          title='head model', xticks=[], yticks=[])
     ax_top_EEG = fig.add_axes([0.65, 0.02, 0.33, 0.32], frameon=False, xticks=[], yticks=[],
-                              ylim=[-0.7, .3])
+                              ylim=[-0.5, .25])
     dt = 1
     t_idx = 875
     T = [t_idx, t_idx + 75]
@@ -218,14 +219,14 @@ def fig_intro(params, fraction=0.05, rasterized=False):
 
     ax_top_EEG.set_xlim(T)
 
-    fig.savefig(join('Figure6.png'), dpi=300)
-    fig.savefig(join('Figure6.pdf'), dpi=300)
+    fig.savefig(join("..", "figures", 'Figure6.png'), dpi=300)
+    fig.savefig(join("..", "figures", 'Figure6.pdf'), dpi=300)
 
 
 def plot_foursphere_to_ax(ax):
 
     # four_sphere properties
-    radii = [79000., 80000., 85000., 90000.]
+    radii = [89000., 90000., 95000., 100000.]
     radii_name = ["Cortex", "CSF", "Skull", "Scalp"]
 
     xlim = [-7000, 7000]
