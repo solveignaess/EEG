@@ -25,11 +25,15 @@ def plot_neuron(axis, zips = None, cell=None, syn=False, lengthbar=False):
     # plt.axis('tight')
 
 if __name__ == '__main__':
+
+    spiking = False
     # load data from file
     # data = np.load('./data/compare_multi_single_dipole_segev_syns_from_path_passiveTrue_Segev2018_cell11.npz')
     # data = np.load('./data/data_fig2_segev_3a.npz')
     # data = np.load('./data/data_fig2_segev_3a_active_Falsestd_pms2.npz')
-    data = np.load('data/data_fig3.npz')
+    filename = 'data/data_fig3_spiking.npz' if spiking else 'data/data_fig3.npz'
+
+    data = np.load(filename)
     # for item, value in data.items():
     #     print(item, value)
 
@@ -124,7 +128,10 @@ if __name__ == '__main__':
     zoom_ax.yaxis.set_ticklabels([])
 
     # syns_to_plot = np.array([-9, 2])
-    syns_to_plot = np.array([-7, 4])
+    if spiking:
+        syns_to_plot = np.array([0])
+    else:
+        syns_to_plot = np.array([-7, 4])
 
     # plot p(t) mini panel
     # k_nA_to_pA = 1e3
@@ -238,4 +245,9 @@ if __name__ == '__main__':
              fontweight='demibold',
              fontsize=12)
 
-    plt.savefig('./figures/Figure3.pdf', dpi=300)
+    if spiking:
+        figname = './figures/Figure3_spiking.pdf'
+    else:
+        figname = './figures/Figure3.pdf'
+
+    plt.savefig(figname, dpi=300)
