@@ -14,9 +14,9 @@ import os
 from os.path import join
 
 def make_data(morphology, cell_model, rot, rz, radii, sigmas,
-              electrode_locs, syn_idcs, active, syn_input_time):
+              electrode_locs, syn_idcs, spiking, syn_input_time):
     # set cell and synapse parameters
-    cell_parameters, synapse_parameters = set_parameters(morphology, cell_model)
+    cell_parameters, synapse_parameters = set_parameters(morphology, cell_model, spiking)
     [xrot, yrot, zrot] = rot
     # create four-sphere class instance
     fs = LFPy.FourSphereVolumeConductor(radii, sigmas, electrode_locs)
@@ -33,7 +33,7 @@ def make_data(morphology, cell_model, rot, rz, radii, sigmas,
     num_syns = len(syn_idcs)
     for j in range(num_syns):
 
-        cell = create_cell(cell_parameters, active=active,
+        cell = create_cell(cell_parameters, active=spiking,
                            x_rot=xrot, y_rot=yrot, z_rot=zrot)
         ## if you know synidx:
         syn_idx = syn_idcs[j]
@@ -128,7 +128,7 @@ def return_path_to_tip_idcs(cell, pos_x, pos_y, pos_z, section='allsec'):
     path_to_tip_idcs.sort()
     return path_to_tip_idcs
 
-def set_parameters(morphology, cell_model=None):
+def set_parameters(morphology, cell_model=None, spiking=False):
     """set cell, synapse and electrode parameters"""
     model_folder = join("cell_models", "EyalEtAl2018")
     morph_path = join(model_folder, "Morphs", morphology)
@@ -170,16 +170,16 @@ def set_parameters(morphology, cell_model=None):
         }
 
 
-    synapse_parameters = {'e': 0., # reversal potential
-                      # 'tau': 5., # synapse time constant (first fig version)
-                      'weight': 0.002, # synapse weight
-                      'record_current': True, # record synapse current
+    synapse_parameters = {'e': 0.,  # reversal potential
+                      'weight': 0.002 if not spiking else 0.05,  # synapse weight
+                      'record_current': True,  # record synapse current
                       # parameters not included in first version of fig
                       'syntype': 'Exp2Syn',
-                      'tau1': 1., #Time constant, rise
-                      'tau2': 3., #Time constant, decay
-                      }
+                      'tau1': 1.,  #Time constant, rise
+                      'tau2': 3.,  #Time constant, decay
+                          }
     return cell_parameters, synapse_parameters
+
 
 def create_cell(cell_parameters, active=False, x_rot=0, y_rot=0, z_rot=0):
     # create cell with parameters in dictionary
@@ -194,6 +194,7 @@ def create_cell(cell_parameters, active=False, x_rot=0, y_rot=0, z_rot=0):
 
     return cell
 
+
 def simulate(cell, synapse_parameters, synidx, input_time=20.):
     """set synapse location. simulate cell, synapse and electrodes for input synapse location"""
 
@@ -203,9 +204,7 @@ def simulate(cell, synapse_parameters, synidx, input_time=20.):
         synapse = LFPy.Synapse(cell, **synapse_parameters)
         synapse.set_spike_times(np.array([input_time]))
 
-    cell.simulate(rec_imem = True,
-                  rec_vmem = True,
-                  rec_current_dipole_moment=True)
+    cell.simulate(rec_imem=True, rec_vmem=True, rec_current_dipole_moment=True)
 
     #create grid electrodes
     electrode_array = LFPy.RecExtElectrode(cell, **electrodeParams)
@@ -252,8 +251,7 @@ if __name__ == '__main__':
     sigmas = [0.276, 1.65, 0.01, 0.465]
     radii = [89000., 90000., 95000., 100000.]
 
-    # active = True
-    active = False
+    spiking = False
 
     syn_input_time = 20.
 
@@ -278,10 +276,10 @@ if __name__ == '__main__':
     rz = np.array([0., 0., 88015.])
     rot = [-np.pi/2, -np.pi/7, 0]
 
-    if active:
+    if spiking:
         cell_model = 'cell0603_03_model_476'
         syn_idcs = [0]
-        filename = './data/data_fig3_active'
+        filename = './data/data_fig3_spiking'
     else:
         cell_model = None
         syn_idcs = [0,338,340,342,344,346,348,349,350,351,352,353,354,
@@ -290,11 +288,10 @@ if __name__ == '__main__':
                     579,580,586,587,588,589,590]
         filename = './data/data_fig3'
 
-    print(syn_idcs)
     (p_list, pz_traces, lfp_multi, lfp_single, synlocs, zips,
      zmax, tvec, soma_vmem) = make_data(morphology, cell_model, rot, rz, radii,
                                         sigmas, electrode_locs, syn_idcs,
-                                        active, syn_input_time)
+                                        spiking, syn_input_time)
 
 
     np.savez(filename,
