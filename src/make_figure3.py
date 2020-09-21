@@ -30,8 +30,8 @@ if __name__ == '__main__':
     # data = np.load('./data/data_fig2_segev_3a.npz')
     # data = np.load('./data/data_fig2_segev_3a_active_Falsestd_pms2.npz')
     data = np.load('data/data_fig3.npz')
-    for item, value in data.items():
-        print(item, value)
+    # for item, value in data.items():
+    #     print(item, value)
 
     lfp_multi_dip_list = data['lfp_multi']#[idcs_to_plot]
     lfp_single_dip_list = data['lfp_single']#[idcs_to_plot]

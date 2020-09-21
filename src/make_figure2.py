@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use("AGG")
 import numpy as np
 import matplotlib.pyplot as plt
 import plotting_convention as plotting_convention

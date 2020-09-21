@@ -1,6 +1,7 @@
 # load data from file and plot eegs from population current dipole moment
 # (hybrid) placed in visual cortex and on the right side of the head
-
+import matplotlib
+matplotlib.use("AGG")
 from os.path import join
 import numpy as np
 import matplotlib.pyplot as plt
