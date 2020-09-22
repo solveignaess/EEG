@@ -72,10 +72,10 @@ ax_cort_o = fig.add_axes([0.025, 0.07, 0.2, 0.3], aspect=1, xticks=[],
 ax_cort_p = fig.add_axes([0.025, 0.4, 0.2, 0.3], aspect=1, xticks=[],
                          yticks=[], frameon=False)
 
-ax_4s = fig.add_axes([xstart + 0.165, 0.78, 0.18, 0.18], aspect=1,
+ax_4s = fig.add_axes([xstart + 0.164, 0.73, 0.18, 0.22], aspect=1,
                      title='four-sphere', frameon=False, xticks=[],
                      yticks=[], xlim=(-110000, 110000)) # 4S model
-ax_NYH = fig.add_axes([xstart + 0.02, 0.78, 0.15, 0.18], aspect=1,
+ax_NYH = fig.add_axes([xstart + 0.02, 0.73, 0.15, 0.22], aspect=1,
                       title='New York head', frameon=False, xticks=[], yticks=[]) # NYH model
 ax2 = fig.add_axes([xstart+0.18, ystart_2-0.015, xwidth, ywidth],
                    frameon=False, xticks=[], yticks=[],
@@ -99,8 +99,8 @@ ax9 = fig.add_axes([xstart+0.66, ystart_3, 0.15, ywidth],
                    xlabel='electrode distance (mm)',
                    ylabel='|$\Phi$($t = t_{max}$)| ($\mu$V)') # EEG at electrodes occipital
 
-ax2.set_title(r'4S EEG($t = t_{max}$)', fontsize=10, pad=11)
-ax3.set_title(r'NYH EEG($t = t_{max}$)', fontsize=10, pad=11)
+#ax2.set_title(r'4S EEG($t = t_{max}$)', fontsize=10, pad=11)
+#ax3.set_title(r'NYH EEG($t = t_{max}$)', fontsize=10, pad=11)
 ax4.set_title('EEG at closest electrode', fontsize=10)
 
 
@@ -210,7 +210,7 @@ ax4.axvline(tvec[time_idx], ls=':', color='gray', lw=1)
 l1, = ax4.plot(tvec, eeg_4s_side[np.argmin(elec_dists_4s_side), :], 'k', lw=2.5)
 l2, = ax4.plot(tvec, eeg_nyh_side[np.argmin(elec_dists_nyh_side), :], 'gray', lw=2.5)
 
-fig.legend([l2, l1], ["NY head", "four-sphere"], frameon=False, ncol=2, loc=(0.65, 0.8))
+fig.legend([l2, l1], ["New York head", "four-sphere"], frameon=False, ncol=2, loc=(0.60, 0.8))
 
 ax4.legend(fontsize=10, frameon=False, loc=(0.45, 0))
 
