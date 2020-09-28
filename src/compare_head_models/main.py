@@ -75,9 +75,11 @@ class NYHeadModel:
 
     def make_dipole_timecourse(self, t0=0):
         t0_idx = np.argmin(np.abs(self.t - t0))
+        # np.random.seed(1234)
+        # dipole_moment = np.random.normal(0, 100, size=(3, self.num_tsteps))
         dipole_moment = np.zeros((3, self.num_tsteps))
 
-        dipole_moment[2, t0_idx:] = 1000 * np.exp(-self.t[:self.num_tsteps - t0_idx])  # Units nA um
+        dipole_moment[2, t0_idx:] += 1000 * np.exp(-self.t[:self.num_tsteps - t0_idx])  # Units nA um
         self.set_dipole_moment(dipole_moment)
 
     def load_hybrid_current_dipole(self):
@@ -90,7 +92,7 @@ class NYHeadModel:
         plt.plot(self.t, self.dipole_moment[0, :])
         plt.plot(self.t, self.dipole_moment[1, :])
         plt.plot(self.t, self.dipole_moment[2, :])
-        plt.savefig(join(self.illustrations_folder, figname))
+        plt.savefig(join(figname))
 
     def set_dipole_pos(self, dipole_pos_0=None):
 
@@ -150,18 +152,15 @@ class NYHeadModel:
         self.eeg = np.zeros((self.num_elecs, self.num_tsteps))
 
         if normal:
-            for tstep in range(self.num_tsteps):
-                for elec in range(self.num_elecs):
-                    eeg_ = (self.lead_field_normal[self.closest_vertex_idx, elec].T
-                            * self.dipole_moment[2, tstep])
-                    self.eeg[elec, tstep] += eeg_
+            self.eeg[:, :] = self.lead_field_normal[None, self.closest_vertex_idx, :].T @  self.dipole_moment[None, 2, :]
         else:
             dipole_moment_rot = self.rotate_dipole_moment()
-            for tstep in range(self.num_tsteps):
-                for elec in range(self.num_elecs):
-                    eeg_ = np.dot(self.lead_field[:, self.closest_vertex_idx, elec].T,
-                                  dipole_moment_rot[:, tstep])
-                    self.eeg[elec, tstep] += eeg_
+
+            # for tstep in range(self.num_tsteps):
+                # for elec in range(self.num_elecs):
+                #     eeg_ = np.dot(self.lead_field[:, self.closest_vertex_idx, elec].T,
+                #                   dipole_moment_rot[:, tstep])
+            self.eeg[:, :] = self.lead_field[:, self.closest_vertex_idx, :].T @ dipole_moment_rot[:, :]
             print("no lead_field_normal")
         print('no conversion of eeg')
         print("Max 4o EEG amp: {:2.02f}".format(np.max(np.abs(self.eeg[:, 0:]))))
@@ -496,12 +495,26 @@ if __name__ == '__main__':
     # head.plot_hybrid_current_dipole()
     # head.plot_lead_fields()
     # head.plot_brain_crossections()
-    head.plot_head_model()
+    # head.plot_head_model()
     # head.plot_all_elec_max_amps()
-    # head.set_dipole_pos()
+    head.set_dipole_pos()
+    head.make_dipole_timecourse(t0=2)
     # head.set_dipole_moment()
-    # head.make_dipole_timecourse(t0=2)
-    # head.plot_dipole_timecorse()
-    # head.calculate_eeg_signal()
-    # head.plot_EEG_results("test_EEG_results.png")
+    head.plot_dipole_timecorse()
+    normal = False
+    import time
+    t0 = time.time()
+    head.calculate_eeg_signal(normal=normal)
+    t1 = time.time()
+    eeg1 = head.eeg.copy()
+    t2 = time.time()
+    head.calculate_eeg_signal_mat(normal=normal)
+    t3 = time.time()
+    eeg2 = head.eeg.copy()
+
+    print("Time orig: {:1.3f}".format(t1 - t0))
+    print("Time new: {:1.3f}".format(t3 - t2))
+    print("Max relative difference: ", np.max(np.abs(eeg1 - eeg2)) / np.max(np.abs(eeg1)))
+
+    head.plot_EEG_results("test_EEG_results_normal:{}.png".format(normal))
     # head.plot_field_and_crossection("test_cross_section.png")
