@@ -15,9 +15,10 @@ class NYHeadModel:
     """
     Main class for New York head model
     Huang Y, Parra LC, Haufe S (2016) Neuroimage 140:150–162.
-    Assumes units of nA * um for current dipole moment, and uV for EEG
+    Assumes units of nA * um for current dipole moment, and pV for EEG
     NOTE: The original unit of the New York model current dipole moment
-    is (probably?) nA * cm, and the EEG output is V
+    is (probably?) mA * m, and the EEG output is V
+    LFPy's current dipole moments have units nA*um, giving EEGs in pV.
     """
 
     def __init__(self, num_tsteps=None, dt=1):
@@ -59,7 +60,7 @@ class NYHeadModel:
         # elecs2D = np.array(f["sa"]["locs_2D"])
 
         self.num_elecs = self.elecs.shape[1]
-
+        print(self.num_elecs)
         self.num_tsteps = num_tsteps
         self.dt = dt
         if not None in [dt, num_tsteps]:
@@ -254,7 +255,7 @@ class NYHeadModel:
         ax1 = fig.add_subplot(245, aspect=1, xlabel="x (mm)", ylabel='y (mm)', xlim=self.x_lim, ylim=self.y_lim)
         ax2 = fig.add_subplot(246, aspect=1, xlabel="x (mm)", ylabel='z (mm)', xlim=self.x_lim, ylim=self.z_lim)
         ax3 = fig.add_subplot(247, aspect=1, xlabel="y (mm)", ylabel='z (mm)', xlim=self.y_lim, ylim=self.z_lim)
-        ax_eeg = fig.add_subplot(244, xlabel="Time (ms)", ylabel='$n$V', title='EEG')
+        ax_eeg = fig.add_subplot(244, xlabel="Time (ms)", ylabel='$p$V', title='EEG')
 
         ax_cdm = fig.add_subplot(248, xlabel="Time (ms)", ylabel='nA$\cdot \mu$m', title='Current dipole moment')
         dist, closest_elec_idx = head.find_closest_electrode()
@@ -271,7 +272,7 @@ class NYHeadModel:
         ), va='center', rotation=90, fontsize=14)
 
         fig.text(0.01, 0.75, "EEG", va='center', rotation=90, fontsize=22)
-        fig.text(0.03, 0.75, "Max: {:1.2f} $\mu$V at idx {}\n({:1.1f}, {:1.1f} {:1.1f})".format(
+        fig.text(0.03, 0.75, "Max: {:1.2f} pV at idx {}\n({:1.1f}, {:1.1f} {:1.1f})".format(
                  max_eeg, max_eeg_idx, max_eeg_pos[0], max_eeg_pos[1], max_eeg_pos[2]), va='center',
                  rotation=90, fontsize=14)
 
@@ -505,16 +506,8 @@ if __name__ == '__main__':
     import time
     t0 = time.time()
     head.calculate_eeg_signal(normal=normal)
-    t1 = time.time()
-    eeg1 = head.eeg.copy()
-    t2 = time.time()
-    head.calculate_eeg_signal_mat(normal=normal)
     t3 = time.time()
     eeg2 = head.eeg.copy()
-
-    print("Time orig: {:1.3f}".format(t1 - t0))
-    print("Time new: {:1.3f}".format(t3 - t2))
-    print("Max relative difference: ", np.max(np.abs(eeg1 - eeg2)) / np.max(np.abs(eeg1)))
 
     head.plot_EEG_results("test_EEG_results_normal:{}.png".format(normal))
     # head.plot_field_and_crossection("test_cross_section.png")
