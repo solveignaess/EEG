@@ -154,7 +154,7 @@ def return_eeg(cell, radii, sigmas, eeg_coords, morph_type):
     # print('single dipole:', P[t_point])
     # print('sum of multi-dipoles', P_from_multi_dipoles)
     # compute eeg with 4S model
-    fs_eeg = LFPy.FourSphereVolumeConductor(radii, sigmas, eeg_coords)
+    fs_eeg = LFPy.FourSphereVolumeConductor(eeg_coords, radii=radii, sigmas=sigmas)
     eeg = fs_eeg.calc_potential(P, dipole_pos)
     eeg_multidip = fs_eeg.calc_potential_from_multi_dipoles(cell)
 
