@@ -19,7 +19,7 @@ def make_data(morphology, cell_model, rot, rz, radii, sigmas,
     cell_parameters, synapse_parameters = set_parameters(morphology, cell_model, spiking)
     [xrot, yrot, zrot] = rot
     # create four-sphere class instance
-    fs = LFPy.FourSphereVolumeConductor(radii, sigmas, electrode_locs)
+    fs = LFPy.FourSphereVolumeConductor(electrode_locs, radii=radii, sigmas=sigmas)
     # lists for storing data:
     p_list = []
     t_max_list = []
