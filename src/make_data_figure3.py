@@ -16,7 +16,8 @@ from os.path import join
 def make_data(morphology, cell_model, rot, rz, radii, sigmas,
               electrode_locs, syn_idcs, spiking, syn_input_time):
     # set cell and synapse parameters
-    cell_parameters, synapse_parameters = set_parameters(morphology, cell_model, spiking)
+    cell_parameters, synapse_parameters = set_parameters(morphology,
+                                                         cell_model, spiking)
     [xrot, yrot, zrot] = rot
     # create four-sphere class instance
     fs = LFPy.FourSphereVolumeConductor(radii, sigmas, electrode_locs)
