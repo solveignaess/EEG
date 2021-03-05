@@ -79,7 +79,7 @@ def make_fig_1(totnsegs, imem, syninds, xmids, zmids, zips,
 
     # plot multi-dipole arrows
     for i in range(len(multi_dips)):
-        p = multi_dips[i, time_max]*10
+        p = multi_dips[i, :, time_max]*10
         loc = multi_dip_locs[i]
         w = np.linalg.norm(p)*2
         ax3.arrow(loc[0] - 0.5*p[0],
@@ -90,7 +90,7 @@ def make_fig_1(totnsegs, imem, syninds, xmids, zmids, zips,
                   )
 
     # plot single dipole arrow
-    arrow = single_dip[time_max]*25
+    arrow = single_dip[:, time_max] * 25
 
     arrow_colors = ['gray', 'w']
     arrow_axes = [ax6, ax7]
@@ -106,8 +106,7 @@ def make_fig_1(totnsegs, imem, syninds, xmids, zmids, zips,
     # colorbar
     cax = fig.add_axes([0.13, 0.03, 0.8, 0.01])
     cbar = fig.colorbar(ep_intervals,cax=cax,
-                orientation='horizontal', format='%3.3f',
-                extend = 'max')
+                orientation='horizontal', format='%3.3f')
     cbar.set_ticks(ticks)
     labels = [r'$-10^{\/\/2}$', r'$-10^{\/\/1}$', r'$-1.0$', r'$-10^{-1}$',r'$-10^{-2}$',
               r'$\/\/10^{-2}$', r'$\/\/10^{-1}$', r'$\/\/1.0$',
@@ -146,13 +145,14 @@ def plot_lfp(fig, ax, LFP_measurements, max_LFP, timestep, X, Z, colorax = False
                                zorder=-2, colors = colors,
                                levels=levels_norm, extend = 'both') #norm = LogNorm())#,
                                           # norm = SymLogNorm(1E-30))#, vmin = -40, vmax = 40))
-    ax.contour(X, Z, LFP_norm, lw = 0.4,  # 20,
+    ax.contour(X, Z, LFP_norm, #linewidths = 0.4,  # 20,
                colors='k', zorder = -2,  # extend='both')
                levels=levels_norm)
 
     if lengthbar:
         ax.plot([-400, -400], [-200, 800], 'k', lw=2, clip_on=False)
-        ax.text(-330, 400, r'$1 \mathsf{mm}$', color='k', size = 8, va='center', ha='center', rotation = 'vertical')
+        ax.text(-330, 400, r'$1 \mathsf{mm}$', color='k', size = 8,
+                va='center', ha='center', rotation = 'vertical')
 
     ax.axis('off')
     ax.set_xlim([-500,500])
@@ -173,7 +173,7 @@ def plot_lfp_far(fig, ax, LFP_measurements, max_LFP, timestep, X_f, Z_f, colorax
     ep_intervals = ax.contourf(X_f, Z_f, LFP_norm,
                                zorder=-2, colors = colors,
                                levels=levels_norm, extend = 'both')
-    ep_lines = ax.contour(X_f, Z_f, LFP_norm, lw = 0.4,
+    ep_lines = ax.contour(X_f, Z_f, LFP_norm,
                colors='k', zorder = -2,
                levels=levels_norm)
 
