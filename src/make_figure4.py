@@ -44,7 +44,8 @@ def make_cell(morphology, morph_type='l23'):
     return cell
 
 
-def make_synapse(cell, weight, input_idx, input_spike_train, e=0., syntype='Exp2Syn'):
+def make_synapse(cell, weight, input_idx, input_spike_train, e=0.,
+                 syntype='Exp2Syn'):
     synapse_parameters = {
         'idx': input_idx,
         'e': e,
@@ -63,11 +64,11 @@ def make_synapse(cell, weight, input_idx, input_spike_train, e=0., syntype='Exp2
 def make_input(cell, weight=0.01, syntype='Exp2Syn', morph_type='l23'):
 
     if morph_type == 'l5i':
-        zmin_apical = np.min(cell.zmid)
-        zmax_basal = np.max(cell.zmid)
+        zmin_apical = np.min(cell.z)
+        zmax_basal = np.max(cell.z)
     else:
-        zmin_apical = np.max(cell.zmid)-200
-        zmax_basal = cell.zmid[0]+100
+        zmin_apical = np.max(cell.z) - 200
+        zmax_basal = cell.z[0].mean() + 100
 
     # apical exc input at time=50
     num_apic = 100
@@ -84,7 +85,8 @@ def make_input(cell, weight=0.01, syntype='Exp2Syn', morph_type='l23'):
     num_basal = 100
     pulse_center = 100
     input_idxs = cell.get_rand_idx_area_norm(section='allsec', nidx=num_basal,
-                                             z_min=np.min(cell.zmid), z_max=zmax_basal)
+                                             z_min=np.min(cell.z),
+                                             z_max=zmax_basal)
     weight_basal = weight / num_basal
     input_spike_train = np.random.normal(pulse_center, 3, size=num_basal)
     for n, input_idx in enumerate(input_idxs):
@@ -111,7 +113,7 @@ def make_input(cell, weight=0.01, syntype='Exp2Syn', morph_type='l23'):
     num_inhib = 50
     weight_inhib = weight / num_inhib
     input_idxs = cell.get_rand_idx_area_norm(section='allsec', nidx=num_inhib,
-                                             z_min=np.min(cell.zmid), z_max=zmax_basal)
+                                             z_min=np.min(cell.z), z_max=zmax_basal)
     input_spike_train = np.random.normal(pulse_center, 3, size=num_inhib)
     for n, input_idx in enumerate(input_idxs):
 
@@ -136,7 +138,8 @@ def return_measurement_coords(radii, rad_tol):
 
 def return_eeg(cell, radii, sigmas, eeg_coords, morph_type):
     # compute current dipole moment
-    P = cell.current_dipole_moment
+    cdm = LFPy.CurrentDipoleMoment(cell)
+    P = cdm.get_transformation_matrix() @ cell.imem
     # set dipole position
     r_soma_syns = [cell.get_intersegment_vector(idx0=0, idx1=i)
                    for i in cell.synidx]
@@ -144,7 +147,7 @@ def return_eeg(cell, radii, sigmas, eeg_coords, morph_type):
     if morph_type == 'l5i':
         somapos = np.array([0., 0., radii[0]-1200])
     else:
-        somapos = np.array([0., 0., radii[0] - np.max(cell.zend) - 50])
+        somapos = np.array([0., 0., radii[0] - np.max(cell.z) - 50])
     dipole_pos = r_mid + somapos
     cell.set_pos(x=somapos[0], y=somapos[1], z=somapos[2])
 
@@ -154,9 +157,11 @@ def return_eeg(cell, radii, sigmas, eeg_coords, morph_type):
     # print('single dipole:', P[t_point])
     # print('sum of multi-dipoles', P_from_multi_dipoles)
     # compute eeg with 4S model
-    fs_eeg = LFPy.FourSphereVolumeConductor(eeg_coords, radii=radii, sigmas=sigmas)
-    eeg = fs_eeg.calc_potential(P, dipole_pos)
-    eeg_multidip = fs_eeg.calc_potential_from_multi_dipoles(cell)
+    fs_eeg = LFPy.FourSphereVolumeConductor(eeg_coords, radii=radii,
+                                            sigmas=sigmas)
+
+    eeg = fs_eeg.get_transformation_matrix(dipole_pos) @ P
+    eeg_multidip = fs_eeg.get_dipole_potential_from_multi_dipoles(cell)
 
     eeg_avg = np.average(eeg, axis=0)
     eeg_multidip_avg = np.average(eeg_multidip, axis=0)
@@ -173,9 +178,8 @@ def plot_neuron(axis, cell, clr, lengthbar=False, celltype='l23'):
         shift = 750.
     elif celltype == 'l5i':
         shift = 1400.
-    [axis.plot([cell.xstart[idx] + shift, cell.xend[idx] + shift],
-                   [cell.zstart[idx], cell.zend[idx]], c=clr, clip_on=False)
-                   for idx in range(cell.totnsegs)]
+    axis.plot(cell.x.T + shift, cell.z.T, c=clr, clip_on=False)
+
     # axis.plot(cell.xmid[0] + shift, cell.zmid[0], 'o', c="k", ms=0.001)
     plt.axis('tight')
     # axis.axis('off')
@@ -216,8 +220,9 @@ if __name__ == '__main__':
         morphology = morphology_dict[m]
         cell = make_cell(morphology, morph_type=m)
 
-        cell, synapse = make_input(cell, weight=weight, syntype=syntype, morph_type=m)
-        cell.simulate(rec_vmem=True, rec_current_dipole_moment=True, rec_imem=True)
+        cell, synapse = make_input(cell, weight=weight, syntype=syntype,
+                                   morph_type=m)
+        cell.simulate(rec_vmem=True, rec_imem=True)
         cells.append(cell)
 
         # compute EEG with 4s
@@ -255,22 +260,27 @@ if __name__ == '__main__':
     # clrs = plt.cm.Accent(np.linspace(0, 0.8, num=num_cells))
     clrs = ['b', 'orangered', 'orange']
 
-    ax_syns.vlines([50, 100, 150, 200], radii[0]-1500, radii[0] - 50, colors='k',
+    ax_syns.vlines([50, 100, 150, 200], radii[0]-1500, radii[0] - 50,
+                   colors='k',
                    linestyles='-', linewidth=0.5)
 
-    ax_syns.plot(-cells[0].sptimeslist[0], cells[0].zmid[cells[0].synapses[0].idx], '.',
+    ax_syns.plot(-cells[0]._sptimeslist[0],
+                 cells[0].z[cells[0].synapses[0].idx].mean(), '.',
                  ms = 1, markerfacecolor = 'gray', markeredgecolor='gray',
                  label='excitatory')
 
-    ax_syns.plot(-cells[0].sptimeslist[0], cells[0].zmid[cells[0].synapses[0].idx], 'o',
+    ax_syns.plot(-cells[0]._sptimeslist[0],
+                 cells[0].z[cells[0].synapses[0].idx].mean(), 'o',
                  ms = 3., markerfacecolor = 'gray', markeredgecolor='k',
                  label='inhibitory')
 
-    ax_eeg.vlines([50, 100, 150, 200], -96, 41, colors='k', linestyles='-', linewidth=.5)
+    ax_eeg.vlines([50, 100, 150, 200], -96, 41, colors='k', linestyles='-',
+                  linewidth=.5)
     ax_eeg.plot([300, 310], [0, 10], 'gray', label='single-dipole')
     ax_eeg.plot([300, 310], [0, 10], 'gray',ls=':', label='multi-dipole')
 
-    ax_p.vlines([50, 100, 150, 200], -110, 301, colors='k', linestyles='-', linewidth=.5)
+    ax_p.vlines([50, 100, 150, 200], -110, 301, colors='k', linestyles='-',
+                linewidth=.5)
 
     for cellnum in range(num_cells):
         cell = cells[cellnum]
@@ -280,16 +290,17 @@ if __name__ == '__main__':
             mec = ec if syn.kwargs['e'] > -60 else 'k'
             # mew =
             ms = 1 if syn.kwargs['e'] > -60 else 2.5
-            zorder = -1 if syn.kwargs['e'] > -60 else 1  # Plot crosses in front for visibility
+            zorder = -1 if syn.kwargs['e'] > -60 else 1
 
-            ax_syns.plot(cell.sptimeslist[syn_number],
-                       np.ones(len(cell.sptimeslist[syn_number])) * cell.zmid[syn.idx],
+            ax_syns.plot(cell._sptimeslist[syn_number],
+               np.ones(len(cell._sptimeslist[syn_number])) * cell.z[syn.idx].mean(),
                        marker=m, ms = ms, mec=mec, zorder=zorder, c=ec)
 
-        p = cell.current_dipole_moment
-        ax_p.plot(cell.tvec, p[:,0] + 100, color=clrs[cellnum], lw=1.5)
-        ax_p.plot(cell.tvec, p[:,1] + 50, color=clrs[cellnum], lw=1.5)
-        ax_p.plot(cell.tvec, p[:,2], color=clrs[cellnum], lw=1.5)
+        cdm = LFPy.CurrentDipoleMoment(cell)
+        p = cdm.get_transformation_matrix() @ cell.imem
+        ax_p.plot(cell.tvec, p[0, :] + 100, color=clrs[cellnum], lw=1.5)
+        ax_p.plot(cell.tvec, p[1, :] + 50, color=clrs[cellnum], lw=1.5)
+        ax_p.plot(cell.tvec, p[2, :], color=clrs[cellnum], lw=1.5)
         print('morph:', list(morphology_dict.keys())[cellnum])
         # print('min pz:', np.min(p[:,2]))
         # print('max px:', np.max(p[:,0]+100))
