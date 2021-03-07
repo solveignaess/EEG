@@ -174,14 +174,16 @@ def run_cell_simulation(make_ca_spike, dt, cell_name="hay"):
 
     delay = 30
     synapse_s = LFPy.Synapse(cell, idx=cell.get_closest_idx(z=0),
-                             syntype='Exp2Syn', weight=weights[0], tau1=0.1, tau2=1.)
+                             syntype='Exp2Syn', weight=weights[0],
+                             tau1=0.1, tau2=1.)
     synapse_s.set_spike_times(np.array([delay]))
 
     if make_ca_spike:
         synapse_a = LFPy.Synapse(cell, idx=cell.get_closest_idx(z=400),
-                                 syntype='Exp2Syn', weight=weights[1], tau1=0.1, tau2=10.)
+                                 syntype='Exp2Syn', weight=weights[1],
+                                 tau1=0.1, tau2=10.)
         synapse_a.set_spike_times(np.array([delay]))
-    cell.simulate(rec_imem=True, rec_vmem=True, rec_current_dipole_moment=True)
+    cell.simulate(rec_imem=True, rec_vmem=True)
     print("MAX |I_mem(soma, apic)|: ", np.max(np.abs(cell.imem[plot_idxs]), axis=1))
 
     return cell, idx_clr, plot_idxs
@@ -300,8 +302,10 @@ def simulate_spike_current_dipole_moment():
 
     elec_clr = 'r'
 
-    cell_woca, idx_clr, plot_idxs = run_cell_simulation(make_ca_spike=False, dt=dt, cell_name=cell_name)
-    cell_wca, idx_clr, plot_idxs = run_cell_simulation(make_ca_spike=True, dt=dt, cell_name=cell_name)
+    cell_woca, idx_clr, plot_idxs = run_cell_simulation(make_ca_spike=False,
+                                                    dt=dt, cell_name=cell_name)
+    cell_wca, idx_clr, plot_idxs = run_cell_simulation(make_ca_spike=True,
+                                                   dt=dt, cell_name=cell_name)
 
     fig = plt.figure(figsize=[8, 7])
     fig.subplots_adjust(hspace=0.5, left=0.0, wspace=0.4, right=0.96,
@@ -309,10 +313,9 @@ def simulate_spike_current_dipole_moment():
 
     ax_m = fig.add_axes([-0.01, 0.05, 0.25, 0.97], aspect=1, frameon=False,
                         xticks=[], yticks=[])
-    [ax_m.plot([cell_wca.xstart[idx], cell_wca.xend[idx]],
-              [cell_wca.zstart[idx], cell_wca.zend[idx]], c='k')
-     for idx in range(cell_wca.totnsegs)]
-    [ax_m.plot(cell_wca.xmid[idx], cell_wca.zmid[idx], 'o',
+    ax_m.plot(cell_wca.x.T, cell_wca.z.T, c='k')
+
+    [ax_m.plot(cell_wca.x[idx].mean(), cell_wca.z[idx].mean(), 'o',
                c=idx_clr[idx], ms=13) for idx in plot_idxs]
     ax_m.plot(elec_x, elec_z, elec_clr, marker='D')
 
@@ -329,7 +332,8 @@ def simulate_spike_current_dipole_moment():
     levels_norm = scale_max * np.concatenate((-levels[::-1], levels))
     bwr_cmap = plt.cm.get_cmap('bwr_r')  # rainbow, spectral, RdYlBu
 
-    colors_from_map = [bwr_cmap(i * np.int(255 / (len(levels_norm) - 2))) for i in range(len(levels_norm) - 1)]
+    colors_from_map = [bwr_cmap(i * np.int(255 / (len(levels_norm) - 2)))
+                       for i in range(len(levels_norm) - 1)]
     colors_from_map[num - 1] = (1.0, 1.0, 1.0, 1.0)
 
     spike_plot_time_idxs = [1030, 1151]
@@ -338,45 +342,51 @@ def simulate_spike_current_dipole_moment():
         ax_left += plot_row * 0.25
 
         elec = LFPy.RecExtElectrode(cell, **electrode_parameters)
-        elec.calc_lfp()
+        elec_LFP = elec.get_transformation_matrix() @ cell.imem
 
-        elec.LFP -= elec.LFP[:, 0, None]
+        elec_LFP -= elec_LFP[:, 0, None]
 
         time_idx = spike_plot_time_idxs[plot_row]
         print(cell.tvec[time_idx])
 
         grid_electrode = LFPy.RecExtElectrode(cell, **grid_elec_params)
-        grid_electrode.calc_lfp()
-        grid_LFP = 1e3 * grid_electrode.LFP
+        grid_LFP = 1e3 * grid_electrode.get_transformation_matrix() @ cell.imem
 
         grid_LFP -= grid_LFP[:, 0, None]
 
 
         grid_LFP_ = grid_LFP[:, time_idx].reshape(grid_x.shape)
-        ax_ = fig.add_axes([0.75, 0.55 - plot_row * 0.46, 0.3, 0.45], xticks=[], yticks=[], aspect=1, frameon=False)
+        ax_ = fig.add_axes([0.75, 0.55 - plot_row * 0.46, 0.3, 0.45],
+                           xticks=[], yticks=[], aspect=1, frameon=False)
         mark_subplots(ax_, [["D"], ["E"]][plot_row], ypos=0.95, xpos=0.35)
-        [ax_.plot([cell_wca.xstart[idx], cell_wca.xend[idx]],
-        [cell.zstart[idx], cell.zend[idx]], c='k')
-            for idx in range(cell_wca.totnsegs)]
+
+        ax_.plot(cell_wca.x.T, cell.z.T, c='k')
+
         ep_intervals = ax_.contourf(grid_x, grid_z, grid_LFP_,
                                    zorder=-2, colors=colors_from_map,
                                    levels=levels_norm, extend='both')
 
-        ax_.contour(grid_x, grid_z, grid_LFP_, colors='k', linewidths=(1), zorder=-2,
-                   levels=levels_norm)
+        ax_.contour(grid_x, grid_z, grid_LFP_, colors='k', linewidths=(1),
+                    zorder=-2, levels=levels_norm)
 
         if plot_row == 1:
             cax = fig.add_axes([0.82, 0.12, 0.16, 0.01])
             cbar = fig.colorbar(ep_intervals, cax=cax, orientation='horizontal',
-                                format='%.0E', extend='max')
+                                format='%.0E')
 
-            cbar.set_ticks(np.array([-1, -0.1, -0.01, 0, 0.01,  0.1, 1]) * scale_max)
-            cax.set_xticklabels(np.array(np.array([-1, -0.1, -0.01, 0, 0.01, 0.1, 1]) * scale_max, dtype=int),
+            cbar.set_ticks(np.array([-1, -0.1, -0.01, 0, 0.01,  0.1, 1])
+                           * scale_max)
+            cax.set_xticklabels(np.array(np.array(
+                [-1, -0.1, -0.01, 0, 0.01, 0.1, 1]) * scale_max, dtype=int),
                                 fontsize=11, rotation=45)
             cbar.set_label('$\phi$ ($\mu$V)', labelpad=-5)
-        cell.current_dipole_moment -= cell.current_dipole_moment[0, :]
 
-        sum_tvec, summed_cdm = sum_jittered_cdm(cell.current_dipole_moment[:, 2],
+        cdm = LFPy.CurrentDipoleMoment(cell)
+        cdm = cdm.get_transformation_matrix() @ cell.imem
+
+        cdm -= cdm[:, 0, None]
+
+        sum_tvec, summed_cdm = sum_jittered_cdm(cdm[2, :],
                                             dt, jitter_std, num_trials)
 
         summed_cdm_max[plot_row] = np.max(np.abs(summed_cdm))
@@ -419,9 +429,10 @@ def simulate_spike_current_dipole_moment():
         #  for idx in plot_idxs]
 
 
-        [ax_eap.plot(cell.tvec, 1000 * elec.LFP[idx], c=elec_clr) for idx in range(len(elec_x))]
+        [ax_eap.plot(cell.tvec, 1000 * elec_LFP[idx], c=elec_clr)
+         for idx in range(len(elec_x))]
 
-        ax_cdm.plot(cell.tvec, 1e-3 * cell.current_dipole_moment[:, 2], c='k')
+        ax_cdm.plot(cell.tvec, 1e-3 * cdm[2, :], c='k')
         ax_cdm_sum.plot(sum_tvec, 1e-3 * summed_cdm, c='k')
 
     print("Summed CDM max (abs), ratio", summed_cdm_max * 1e-3, )

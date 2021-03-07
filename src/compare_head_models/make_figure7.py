@@ -122,7 +122,8 @@ radii_tweaked = [radii[0]] + [r + 500 for r in radii[1:]]
 # plot 4s-model
 for i in range(4):
     ax_4s.add_patch(plt.Circle((0, 0), radius=radii_tweaked[-1 - i],
-                               color=head_colors[-1-i], fill=True, ec='k', lw=.1))
+                               color=head_colors[-1-i], fill=True,
+                               ec='k', lw=.1))
 
 ax_4s.plot(P_loc_4s_back[0], P_loc_4s_back[2], 'ko', ms=0.00001)
 
@@ -159,15 +160,18 @@ for idx in upper_idxs:
     ax2.plot(x_eeg[idx], y_eeg[idx], 'o', ms=8, mec='k', zorder=z_eeg[idx],
                 c=clr(eeg_4s_side[idx, time_idx]))
 
-ax2.plot(P_loc_4s_side[0], P_loc_4s_side[1], '*', ms=8, color='orange', zorder=1e6)
+ax2.plot(P_loc_4s_side[0], P_loc_4s_side[1], '*', ms=8, color='orange',
+         zorder=1e6)
 
 ax6.yaxis.set_label_coords(-.21, .44)
 
 for idx in backhead_idxs:
     zorder = y_eeg[idx]
     ax6.plot(x_eeg[idx], z_eeg[idx], 'o',
-            c=clr(eeg_4s_back[idx, time_idx]), ms=8, mec='k', zorder=-zorder, clip_on=False, mew=0.1)
-ax6.plot(P_loc_4s_back[0], P_loc_4s_back[2], '*', ms=7, color='orange', zorder=1e6)
+            c=clr(eeg_4s_back[idx, time_idx]), ms=8, mec='k', zorder=-zorder,
+             clip_on=False)
+ax6.plot(P_loc_4s_back[0], P_loc_4s_back[2], '*', ms=7,
+         color='orange', zorder=1e6)
 
 # fig.text(0.08, 0.7, 'max amplitude at EEG electrodes', fontsize=10)
 
@@ -178,17 +182,21 @@ for idx in range(len(eeg_nyh_back)):
     ax3.plot(eeg_coords_nyh[0, idx], eeg_coords_nyh[1, idx], 'o', ms=8,
                     c=clr(eeg_nyh_side[idx, time_idx]), mec='k',
              zorder=eeg_coords_nyh[2, idx], clip_on=False)
-ax3.plot(P_loc_nyh_side[0] * 1000, P_loc_nyh_side[1] * 1000, '*', ms=7, color='orange', zorder=1e6)
+ax3.plot(P_loc_nyh_side[0] * 1000, P_loc_nyh_side[1] * 1000, '*', ms=7,
+         color='orange', zorder=1e6)
 
 # plot EEG from NYH on head:
 # max_elec_idx = np.argmax(np.std(eeg_nyh_side, axis=1))
 
 
 for idx in range(len(eeg_nyh_side)):
-    ax7.plot(eeg_coords_nyh[0, idx], eeg_coords_nyh[2, idx], 'o', ms=8, clip_on=False,
-             c=clr(eeg_nyh_back[idx, time_idx]), mec='k', zorder=-eeg_coords_nyh[1, idx])
+    ax7.plot(eeg_coords_nyh[0, idx], eeg_coords_nyh[2, idx], 'o',
+             ms=8, clip_on=False,
+             c=clr(eeg_nyh_back[idx, time_idx]), mec='k',
+             zorder=-eeg_coords_nyh[1, idx])
 
-ax7.plot(P_loc_nyh_back[0] * 1000, P_loc_nyh_back[2] * 1000, '*', ms=7, color='orange', zorder=1e6)
+ax7.plot(P_loc_nyh_back[0] * 1000, P_loc_nyh_back[2] * 1000, '*', ms=7,
+         color='orange', zorder=1e6)
 plot_coord_syst()
 
 
@@ -201,16 +209,20 @@ cbar = fig.colorbar(m, cax=cax,
                     extend='both', orientation='horizontal')
 cbar.outline.set_visible(False)
 cbar.set_ticks(ticks)
-plt.xticks(ticks, [str(round(tick,2)) for tick in ticks], fontsize=10)
+# plt.xticks(ticks, [str(round(tick,2)) for tick in ticks], fontsize=10)
 cbar.set_label(r'$\Phi$ ($\rm \mu$V)', labelpad=-1, fontsize=10)
 
 # plot EEG at closest electrode for 4S and NYH
 # dipole in back of head
 ax4.axvline(tvec[time_idx], ls=':', color='gray', lw=1)
-l1, = ax4.plot(tvec, eeg_4s_side[np.argmin(elec_dists_4s_side), :], 'k', lw=2.5)
-l2, = ax4.plot(tvec, eeg_nyh_side[np.argmin(elec_dists_nyh_side), :], 'gray', lw=2.5)
 
-fig.legend([l2, l1], ["New York head", "four-sphere"], frameon=False, ncol=2, loc=(0.60, 0.8))
+l1, = ax4.plot(tvec, eeg_4s_side[np.argmin(elec_dists_4s_side), :],
+               'k', lw=2.5)
+l2, = ax4.plot(tvec, eeg_nyh_side[np.argmin(elec_dists_nyh_side), :],
+               'gray', lw=2.5)
+
+fig.legend([l2, l1], ["New York head", "four-sphere"], frameon=False,
+           ncol=2, loc=(0.60, 0.8))
 
 ax4.legend(fontsize=10, frameon=False, loc=(0.45, 0))
 
@@ -218,7 +230,7 @@ ax4.legend(fontsize=10, frameon=False, loc=(0.45, 0))
 # dipole in side of head
 ax8.axvline(tvec[time_idx], ls=':', color='gray', lw=1)
 ax8.plot(tvec, eeg_4s_back[np.argmin(elec_dists_4s_back), :], 'k', lw=2.5,)
-ax8.plot(tvec, eeg_nyh_back[np.argmin(elec_dists_nyh_back), :], 'gray', lw=2.5,)
+ax8.plot(tvec, eeg_nyh_back[np.argmin(elec_dists_nyh_back), :], 'gray', lw=2.5)
 
 
 # print RE between 4S and NYH for the two dip locs, using NYH as gold standard:

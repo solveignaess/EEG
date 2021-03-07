@@ -164,7 +164,7 @@ class NYHeadModel:
             self.eeg[:, :] = self.lead_field[:, self.closest_vertex_idx, :].T @ dipole_moment_rot[:, :]
             print("no lead_field_normal")
         print('no conversion of eeg')
-        print("Max 4o EEG amp: {:2.02f}".format(np.max(np.abs(self.eeg[:, 0:]))))
+        #print("Max 4o EEG amp: {:2.02f}".format(np.max(np.abs(self.eeg[:, 0:]))))
 
     def return_closest_idx(self, pos):
         return np.argmin((self.cortex[0, :] - pos[0])**2 +

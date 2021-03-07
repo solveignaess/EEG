@@ -22,7 +22,7 @@ def generate_eegs_nyh_n_4s(dip_loc):
     nyh = NYHeadModel()
     # hybrid current dipole moment
     nyh.load_hybrid_current_dipole()
-    P = nyh.dipole_moment.T[875:951,:]
+    P = nyh.dipole_moment[:, 875:951]
     # place dipole and find normal vector
     P_loc_nyh = nyh.dipole_pos_dict[dip_loc]
 
@@ -34,7 +34,7 @@ def generate_eegs_nyh_n_4s(dip_loc):
     # parallel to norm_vec from nyh.
     # length of position vector
     P_loc_4s = norm_vec*P_loc_4s_length
-    P_rot = nyh.rotate_dipole_moment().T[875:951,:]
+    P_rot = nyh.rotate_dipole_moment()[:, 875:951]
     # use this when comparing execution times
 
     elec_dists_4s = np.sqrt(np.sum((eeg_coords_4s - P_loc_4s)**2, axis=1))
@@ -42,15 +42,15 @@ def generate_eegs_nyh_n_4s(dip_loc):
     min_dist_idx = np.argmin(elec_dists_4s)
     print("Minimum 4o distance {:2.02f} mm".format(elec_dists_4s[min_dist_idx]))
 
-    time_idx = np.argmax(np.linalg.norm(P_rot, axis=1))
+    time_idx = np.argmax(np.linalg.norm(P_rot, axis=0))
     # if execution times:
     # time_idx = np.argmax(np.linalg.norm(P_rot[875:951,:], axis=1))
 
     # potential in 4S with db
 
-    four_sphere = LFPy.FourSphereVolumeConductor(radii, sigmas, eeg_coords_4s)
+    four_sphere = LFPy.FourSphereVolumeConductor(eeg_coords_4s, radii, sigmas)
     start_4s = time.time()
-    eeg_4s = four_sphere.calc_potential(P_rot, P_loc_4s)#[:,0]
+    eeg_4s = four_sphere.get_dipole_potential(P_rot, P_loc_4s)
     end_4s = time.time()
     time_4s = end_4s - start_4s
     # when comparing execution times:
@@ -86,7 +86,7 @@ def generate_eegs_nyh_n_4s(dip_loc):
     dist, closest_elec_idx = nyh.find_closest_electrode()
     print("Closest electrode to dipole: {:1.2f} mm".format(dist))
 
-    tvec = np.arange(P.shape[0]) + 875
+    tvec = np.arange(P.shape[1]) + 875
 
     np.savez('../data/figure7_%s.npz' % dip_loc,
         radii = radii,
