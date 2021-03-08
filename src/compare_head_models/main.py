@@ -11,8 +11,12 @@ else:
 import ssl
 
 
+### THIS FILE IS NO LONGER NEEDED, AS IT HAS BEEN INCORPORATED INTO LFPy2.2
+### IT IS ONLY STILL INCLUDED BECAUSE IT OFFERS SOME ADDITIONAL PLOTTING TOOLS
+
 class NYHeadModel:
     """
+    # THIS IS NO LONGER NEEDED, AS IT HAS BEEN INCORPORATED INTO LFPy2.2
     Main class for New York head model
     Huang Y, Parra LC, Haufe S (2016) Neuroimage 140:150–162.
     Assumes units of nA * um for current dipole moment, and pV for EEG
@@ -164,7 +168,7 @@ class NYHeadModel:
             self.eeg[:, :] = self.lead_field[:, self.closest_vertex_idx, :].T @ dipole_moment_rot[:, :]
             print("no lead_field_normal")
         print('no conversion of eeg')
-        print("Max 4o EEG amp: {:2.02f}".format(np.max(np.abs(self.eeg[:, 0:]))))
+        #print("Max 4o EEG amp: {:2.02f}".format(np.max(np.abs(self.eeg[:, 0:]))))
 
     def return_closest_idx(self, pos):
         return np.argmin((self.cortex[0, :] - pos[0])**2 +

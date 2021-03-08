@@ -18,7 +18,7 @@ radii = [89000., 90000., 95000., 100000.]
 rad_tol = 1e-2
 
 eeg_coords_top = np.array([[0., 0., radii[3] - rad_tol]])
-four_sphere_top = LFPy.FourSphereVolumeConductor(radii, sigmas, eeg_coords_top)
+four_sphere_top = LFPy.FourSphereVolumeConductor(eeg_coords_top, radii, sigmas)
 
 
 plt.close("all")
@@ -50,7 +50,7 @@ num_tsteps = 1201 #16801
 dt = 1
 tvec = np.arange(num_tsteps) * dt
 summed_eeg = np.zeros(num_tsteps)
-summed_pop_cdm = np.zeros((num_tsteps, 3))
+summed_pop_cdm = np.zeros((3, num_tsteps))
 
 pop_avrg_pos = {}
 pop_sum_cdm = {}
@@ -72,11 +72,15 @@ for pop_name, subpops in sub_pop_groups_dict.items():
         if not len(files) == len(positions):
             raise RuntimeError("Missmatch!")
 
-        summed_cdm = np.zeros((num_tsteps, 3))
+        summed_cdm = np.zeros((3, num_tsteps))
         for idx, f in enumerate(files):
-            cdm = np.load(join(cdm_folder, f))
+            # NOTE: In the version of hybridLFPy used for these simulations
+            # the current dipole moments were saved transposed relative
+            # to how they would have been saved in updated versions!
+            # If resimulated with newer version of hybridLFPy, remove .T below
+            cdm = np.load(join(cdm_folder, f)).T
             r_mid = positions[idx]
-            eeg_top = np.array(four_sphere_top.calc_potential(cdm, r_mid))[0] * 1e3  # from mV to uV
+            eeg_top = np.array(four_sphere_top.get_dipole_potential(cdm, r_mid))[0] * 1e3  # from mV to uV
             if np.isnan(eeg_top).any():
                 print(np.isnan(cdm).any(), pop_name, subpop, idx, f)
                 sys.exit()
@@ -89,7 +93,7 @@ for pop_name, subpops in sub_pop_groups_dict.items():
             summed_pop_cdm[:, 2] += summed_cdm[:, 2]
             pop_avrg_pos[subpop] = np.average(positions, axis=0)
             pop_sum_cdm[subpop] = np.zeros(summed_cdm.shape)
-            pop_sum_cdm[subpop][:, 2] = summed_cdm[:, 2]
+            pop_sum_cdm[subpop][2, :] = summed_cdm[2, :]
             print(pop_avrg_pos[subpop])
 
     print(np.average(positions, axis=0))
@@ -108,14 +112,16 @@ for pop in dominating_pops:
     pop_cdm = pop_sum_cdm[pop]
     cdm_pos = pop_avrg_pos[pop]
     combined_pop_pos += cdm_pos
-    simple_eeg_with_pop_pos += np.array(four_sphere_top.calc_potential(pop_cdm,
-                     cdm_pos))[0, :] * 1e3  # from mV to uV
+    simple_eeg_with_pop_pos += np.array(four_sphere_top.get_dipole_potential(
+        pop_cdm, cdm_pos))[0, :] * 1e3  # from mV to uV
 
 combined_pop_pos /= len(dominating_pops)
 pop_rmid = np.array([0, 0, radii[0] - 1000])
 print(combined_pop_pos, pop_rmid)
-simple_eeg = np.array(four_sphere_top.calc_potential(summed_pop_cdm, pop_rmid))[0, :] * 1e3  # from mV to uV
-simple_eeg2 = np.array(four_sphere_top.calc_potential(summed_pop_cdm, combined_pop_pos))[0, :] * 1e3  # from mV to uV
+simple_eeg = np.array(four_sphere_top.get_dipole_potential(summed_pop_cdm,
+                                       pop_rmid))[0, :] * 1e3  # from mV to uV
+simple_eeg2 = np.array(four_sphere_top.get_dipole_potential(summed_pop_cdm,
+                                combined_pop_pos))[0, :] * 1e3  # from mV to uV
 
 
 np.save(join(sim_folder, "summed_cdm.npy"), summed_pop_cdm)
@@ -136,13 +142,19 @@ error_at_max_1 = np.abs(y1[max_sig_idx] - y2[max_sig_idx]) / np.abs(y1[max_sig_i
 error_at_max_2 = np.abs(y1[max_sig_idx] - y3[max_sig_idx]) / np.abs(y1[max_sig_idx])
 error_at_max_3 = np.abs(y1[max_sig_idx] - y4[max_sig_idx]) / np.abs(y1[max_sig_idx])
 
-max_error_1 = np.max(np.abs(y1[t0_plot_idx:t1_plot_idx] - y2[t0_plot_idx:t1_plot_idx]) / np.max(np.abs(y1[t0_plot_idx:t1_plot_idx])))
-max_error_2 = np.max(np.abs(y1[t0_plot_idx:t1_plot_idx] - y3[t0_plot_idx:t1_plot_idx]) / np.max(np.abs(y1[t0_plot_idx:t1_plot_idx])))
-max_error_3 = np.max(np.abs(y1[t0_plot_idx:t1_plot_idx] - y4[t0_plot_idx:t1_plot_idx]) / np.max(np.abs(y1[t0_plot_idx:t1_plot_idx])))
+max_error_1 = np.max(np.abs(y1[t0_plot_idx:t1_plot_idx] - y2[t0_plot_idx:t1_plot_idx]) /
+                     np.max(np.abs(y1[t0_plot_idx:t1_plot_idx])))
+max_error_2 = np.max(np.abs(y1[t0_plot_idx:t1_plot_idx] - y3[t0_plot_idx:t1_plot_idx]) /
+                     np.max(np.abs(y1[t0_plot_idx:t1_plot_idx])))
+max_error_3 = np.max(np.abs(y1[t0_plot_idx:t1_plot_idx] - y4[t0_plot_idx:t1_plot_idx]) /
+                     np.max(np.abs(y1[t0_plot_idx:t1_plot_idx])))
 
-print("Single dipole: error at sig max (t={:1.3f} ms): {:1.4f}. Max relative error: {:1.4f}".format(tvec[max_sig_idx], error_at_max_1, max_error_1))
-print("Single dipole opt pos: error at sig max (t={:1.3f} ms): {:1.4f}. Max relative error: {:1.4f}".format(tvec[max_sig_idx], error_at_max_2, max_error_2))
-print("Pop dipoles: error at sig max (t={:1.3f} ms): {:1.4f}. Max relative error: {:1.4f}".format(tvec[max_sig_idx], error_at_max_3, max_error_3))
+print("Single dipole: error at sig max (t={:1.3f} ms): {:1.4f}. Max relative error: {:1.4f}".format(
+    tvec[max_sig_idx], error_at_max_1, max_error_1))
+print("Single dipole opt pos: error at sig max (t={:1.3f} ms): {:1.4f}. Max relative error: {:1.4f}".format(
+    tvec[max_sig_idx], error_at_max_2, max_error_2))
+print("Pop dipoles: error at sig max (t={:1.3f} ms): {:1.4f}. Max relative error: {:1.4f}".format(
+    tvec[max_sig_idx], error_at_max_3, max_error_3))
 
 
 ax1.plot(tvec, y1, c="k", lw=2., label="Sum")

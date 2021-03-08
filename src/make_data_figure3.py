@@ -16,10 +16,12 @@ from os.path import join
 def make_data(morphology, cell_model, rot, rz, radii, sigmas,
               electrode_locs, syn_idcs, spiking, syn_input_time):
     # set cell and synapse parameters
-    cell_parameters, synapse_parameters = set_parameters(morphology, cell_model, spiking)
+    cell_parameters, synapse_parameters = set_parameters(morphology,
+                                                         cell_model, spiking)
     [xrot, yrot, zrot] = rot
     # create four-sphere class instance
-    fs = LFPy.FourSphereVolumeConductor(radii, sigmas, electrode_locs)
+    fs = LFPy.FourSphereVolumeConductor(electrode_locs, radii=radii,
+                                        sigmas=sigmas)
     # lists for storing data:
     p_list = []
     t_max_list = []
@@ -41,47 +43,56 @@ def make_data(morphology, cell_model, rot, rz, radii, sigmas,
         # syn_loc = syn_idcs[j]
         # syn_idx = cell.get_closest_idx(x=syn_loc[0], y=syn_loc[1], z=syn_loc[2])
 #        print('syn_idx:', syn_idx)
-        cell, synapse, electrode_array = simulate(cell, synapse_parameters, [syn_idx], syn_input_time)
+        cell, synapse = simulate(cell, synapse_parameters, [syn_idx],
+                                 syn_input_time)
         # print('cell simulated')
 
         cell.set_pos(x=rz[0], y=rz[1], z=rz[2])
-        syn_loc = (cell.xmid[syn_idx], cell.ymid[syn_idx], cell.zmid[syn_idx])
+        syn_loc = (cell.x[syn_idx].mean(), cell.y[syn_idx].mean(),
+                   cell.z[syn_idx].mean())
         synlocs.append((syn_loc[0], syn_loc[1], syn_loc[2]))
 
         # compute current dipole moment and subtract DC-component
-        dipoles = cell.current_dipole_moment
-        input_idx_before_input = np.argmin(np.abs(cell.tvec - syn_input_time)) - 1
-        p_dc = dipoles[input_idx_before_input]
-        dipoles -= p_dc
+        cdm = LFPy.CurrentDipoleMoment(cell)
+        dipoles = cdm.get_transformation_matrix() @ cell.imem
+        input_idx_before_input = np.argmin(np.abs(cell.tvec -
+                                                  syn_input_time)) - 1
+        p_dc = dipoles[:, input_idx_before_input]
+        dipoles -= p_dc[:, None]
 
-        pz_traces.append(dipoles[:,2])
+        pz_traces.append(dipoles[2, :])
         # compute timepoint with biggest dipole
-        timemax = [np.argmax(np.linalg.norm(np.abs(dipoles),axis=1))]
+        timemax = [np.argmax(np.linalg.norm(np.abs(dipoles), axis=0))]
         t_max_list.append(timemax)
-        p = dipoles[timemax]
+        p = dipoles[:, timemax]
         # compute LFP with single dipole
         # dip_loc = get_mass_center(cell, timemax)
         dip_loc = get_dipole_loc(rz, syn_loc)
-        lfp_single_dip = fs.calc_potential(p, dip_loc)
+
+        lfp_single_dip = fs.get_transformation_matrix(dip_loc) @ p
         # print('pot from single dip computed')
         # compute LFP with multi-dipole
 
         # subtract DC-component
-        multi_p_319, multi_p_locs = cell.get_multi_current_dipole_moments([input_idx_before_input])
+        multi_p_319, multi_p_locs = cell.get_multi_current_dipole_moments(
+            [input_idx_before_input])
         multi_p_dc = multi_p_319
         multi_p, multi_p_locs = cell.get_multi_current_dipole_moments(timemax)
         multi_p -= multi_p_dc
 
-        Ni, Nt, Nd = multi_p.shape
+        Ni, Nd, Nt = multi_p.shape
         lfp_multi_dip = np.zeros((len(electrode_locs), Nt))
         for num in range(Ni):
-            pot = fs.calc_potential(multi_p[num], multi_p_locs[num])
+
+            pot = fs.get_transformation_matrix(multi_p_locs[num]) @ multi_p[num]
+            # fs.calc_potential(multi_p[num], multi_p_locs[num])
             lfp_multi_dip += pot
 
         # print('pot from multi dip computed')
         # compute relative errors
         RE = np.abs((lfp_single_dip - lfp_multi_dip)/lfp_multi_dip)
-        print('syn number: {}; syn dist from soma: {}; RE_EEG: {}'.format(syn_idx, syn_loc[2] - rz[2], RE[-1]))
+        print('syn number: {}; syn dist from soma: {}; RE_EEG: {}'.format(
+            syn_idx, syn_loc[2] - rz[2], RE[-1]))
         #add data to lists for storage
         p_list.append(p)
         p_loc_list.append(dip_loc)
@@ -93,7 +104,7 @@ def make_data(morphology, cell_model, rot, rz, radii, sigmas,
     zips = []
     for x, z in cell.get_idx_polygons():
         zips.append(list(zip(x, z)))
-    zmax = np.max(cell.zend)
+    zmax = np.max(cell.z)
     soma_vmem = cell.vmem[0]
     tvec = cell.tvec
 
@@ -102,7 +113,8 @@ def make_data(morphology, cell_model, rot, rz, radii, sigmas,
 
 def return_path_to_tip_idcs(cell, pos_x, pos_y, pos_z, section='allsec'):
 
-    tuft_tip_idx = cell.get_closest_idx(x=pos_x, y=pos_y, z=pos_z, section=section)
+    tuft_tip_idx = cell.get_closest_idx(x=pos_x, y=pos_y, z=pos_z,
+                                        section=section)
     tuft_tip_name = cell.get_idx_name(tuft_tip_idx)[1]
     # print(tuft_tip_idx, tuft_tip_name)
 
@@ -137,7 +149,8 @@ def set_parameters(morphology, cell_model=None, spiking=False):
         cell_parameters = {
             'v_init': -70,
             'morphology': morph_path,
-            'passive_parameters': {'g_pas' : 1./30000, 'e_pas' : -70}, # S/cm^2, mV
+            'passive_parameters': {'g_pas' : 1./30000, # S/cm^2
+                                   'e_pas' : -70}, #  mV
             'Ra' : 150, # Ω cm
             'cm' : 1, # µF/cm^2
             'nsegs_method': "lambda_f",
@@ -171,7 +184,7 @@ def set_parameters(morphology, cell_model=None, spiking=False):
 
 
     synapse_parameters = {'e': 0.,  # reversal potential
-                      'weight': 0.002 if not spiking else 0.05,  # synapse weight
+                      'weight': 0.002 if not spiking else 0.05,  # syn weight
                       'record_current': True,  # record synapse current
                       # parameters not included in first version of fig
                       'syntype': 'Exp2Syn',
@@ -196,7 +209,8 @@ def create_cell(cell_parameters, active=False, x_rot=0, y_rot=0, z_rot=0):
 
 
 def simulate(cell, synapse_parameters, synidx, input_time=20.):
-    """set synapse location. simulate cell, synapse and electrodes for input synapse location"""
+    """set synapse location. simulate cell, synapse and
+    electrodes for input synapse location"""
 
     for idx in synidx:
         synapse_parameters['idx'] = idx #
@@ -204,13 +218,13 @@ def simulate(cell, synapse_parameters, synidx, input_time=20.):
         synapse = LFPy.Synapse(cell, **synapse_parameters)
         synapse.set_spike_times(np.array([input_time]))
 
-    cell.simulate(rec_imem=True, rec_vmem=True, rec_current_dipole_moment=True)
+    cell.simulate(rec_imem=True, rec_vmem=True)
 
     #create grid electrodes
-    electrode_array = LFPy.RecExtElectrode(cell, **electrodeParams)
-    electrode_array.calc_lfp()
+    # electrode_array = LFPy.RecExtElectrode(cell, **electrodeParams)
+    # electrode_array.calc_lfp()
 
-    return cell, synapse, electrode_array
+    return cell, synapse#, electrode_array
 
 def get_dipole_loc(rz, syn_loc):
     # mid_pos = np.array([syn_loc[0], syn_loc[1], syn_loc[2]])
@@ -223,7 +237,8 @@ def get_mass_center(cell, timepoint):
     print('masses', masses, masses.shape)
     print('dips', dips, dips.shape)
     print('dip_locs', dip_locs, dip_locs.shape)
-    mass_center = 1. / np.sum(masses) * np.sum(np.dot(masses.T, dip_locs), axis=0)
+    mass_center = 1. / np.sum(masses) * np.sum(np.dot(masses.T,
+                                                      dip_locs), axis=0)
     return mass_center
 
 def plot_neuron(axis, zips = None, cell=None, syn=False, lengthbar=False):
@@ -257,7 +272,8 @@ if __name__ == '__main__':
 
     # make electrode array params
     num_electrodes = 40
-    electrode_loc_zs = list(np.linspace(radii[0] - 100, radii[-1], num_electrodes))
+    electrode_loc_zs = list(np.linspace(radii[0] - 100,
+                                        radii[-1], num_electrodes))
     electrode_loc_zs.insert(1, radii[0])
     electrode_loc_zs.sort()
     num_electrodes += 1
