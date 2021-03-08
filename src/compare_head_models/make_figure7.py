@@ -141,9 +141,9 @@ ax_cort_o.imshow(img, aspect='equal')
 fig.text(0.005, 0.15, "dipole in\noccipital lobe", rotation=90, fontsize=15,)
 fig.text(0.005, 0.48, "dipole in\nparietal lobe", rotation=90, fontsize=15)
 
-x_eeg = eeg_coords_4s[:,0]
-y_eeg = eeg_coords_4s[:,1]
-z_eeg = eeg_coords_4s[:,2]
+x_eeg = eeg_coords_4s[:, 0]
+y_eeg = eeg_coords_4s[:, 1]
+z_eeg = eeg_coords_4s[:, 2]
 
 # indices to plot
 backhead_idxs = np.where(np.array(y_eeg) < 0)[0]
