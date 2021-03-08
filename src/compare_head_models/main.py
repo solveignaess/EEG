@@ -11,8 +11,12 @@ else:
 import ssl
 
 
+### THIS FILE IS NO LONGER NEEDED, AS IT HAS BEEN INCORPORATED INTO LFPy2.2
+### IT IS ONLY STILL INCLUDED BECAUSE IT OFFERS SOME ADDITIONAL PLOTTING TOOLS
+
 class NYHeadModel:
     """
+    # THIS IS NO LONGER NEEDED, AS IT HAS BEEN INCORPORATED INTO LFPy2.2
     Main class for New York head model
     Huang Y, Parra LC, Haufe S (2016) Neuroimage 140:150–162.
     Assumes units of nA * um for current dipole moment, and pV for EEG
