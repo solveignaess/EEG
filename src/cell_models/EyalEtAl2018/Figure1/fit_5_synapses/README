@@ -1,4 +1,0 @@
-README
-
-fit results for the case of five contacts per synapse.
-The fits for each case of putative synapses are in the different folders (As created by fit_5_synapses.py), and the textfiles in this folder is the summary of all putative synapses for each experimental EPSP (as created by peak_AMPA_cond_per_syn.py)
