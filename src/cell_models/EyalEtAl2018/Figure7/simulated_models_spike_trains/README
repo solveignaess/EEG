@@ -1,4 +1,0 @@
-README
-
-Results of simulating the six human models in response to a step current injection as in Eyal et al 2017 Fig7A. 
-To re-create files run Fig7A with re_simulate_models=True

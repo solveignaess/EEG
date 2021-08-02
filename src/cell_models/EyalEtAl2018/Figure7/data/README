@@ -1,7 +1,0 @@
-README
-
-Data as recorded by Thijs Verhoog and colabs in the Mansvelder lab.
-At least ten repetitions of a step current injection were recorded in the six HL2/L3 cells. 
-The voltage traces are avaiable as txtfile where the first number defines the input amplitude in pA
-
-Another set of data was IF cruves from 25 other HL2/L3 PCs (see Deitcher et al 2017) and can be found as matlab data files in the folder IF_data

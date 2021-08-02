@@ -1,8 +1,0 @@
-README
-
-In figure 3 we put a model of a synapse from figure 1 on the top of a spine head model with properties as found in figure 2. 
-simulating_spines_on_all_models.py, runs these simulations by stimulating individually a synapse on a spine head on each of the compartments of each of the six human models from eyal et al 2016. 
-The results of these simulations are available in the folder human_spines_simulations. You can re-create them by re-running simulating_spines_on_all_models.py
-simulating_spines_on_cell0603_08.py runs the same simulation but only for the model in Figure1.
-fig3B.py simulates one example case as shown in Figure3B
-

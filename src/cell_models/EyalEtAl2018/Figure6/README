@@ -1,9 +1,0 @@
-README
-
-The scripts of Fig6B.py and Fig6C.py creates the corresponding figures form Eyal et al. 
-In Figure 6, we searched for the maximal number of non-linear subunits in the six models of human neurons. 
-The number of non-linear subunits was defined as the maximal number of independent NMDA spikes we could generate in a model. C
-Clusters that creates NMDA spike (as defined in the paper) were distributed on the distal tips of the models. Clusters were added as long as they remained independent (and did not destroy the independency of the previous NMDA spikes).  Independency was defined by the spread of the voltage, whether two NMDA spikes created a voltage in their nearest junction that is above some threshold. 
-To find the maximal number of clusters we used manual and simple recursive functions.
-
-
